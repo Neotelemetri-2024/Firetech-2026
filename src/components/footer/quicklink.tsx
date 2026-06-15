@@ -33,7 +33,7 @@ export default function QuickLinks() {
     <div className="flex flex-col items-start gap-5">
       <span
         className={`text-sm font-bold uppercase tracking-widest ${
-          darkMode ? "text-slate-300" : "text-slate-600"
+          darkMode ? "text-slate-600" : "text-slate-300"
         }`}
       >
         Quick Links
@@ -46,8 +46,8 @@ export default function QuickLinks() {
               href={`#${item.toLowerCase()}`}
               className={`inline-block px-4 py-2 text-xs font-bold rounded-full border-2 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${
                 darkMode
-                  ? "border-slate-600 text-slate-300 bg-slate-900 hover:bg-red-700 hover:text-white hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_20px_rgba(185,28,28,0.25)]"
-                  : "border-slate-300 text-slate-700 bg-slate-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_20px_rgba(37,99,235,0.25)]"
+                  ? "border-slate-300 text-slate-700 bg-slate-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_20px_rgba(37,99,235,0.25)]"
+                  : "border-slate-600 text-slate-300 bg-slate-900 hover:bg-red-700 hover:text-white hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_20px_rgba(185,28,28,0.25)]"
               }`}
             >
               {item}
@@ -59,7 +59,7 @@ export default function QuickLinks() {
       <div className="w-full">
         <h4
           className={`text-sm font-bold uppercase tracking-widest mb-3.5 ${
-            darkMode ? "text-slate-300" : "text-slate-600"
+            darkMode ? "text-slate-600" : "text-slate-300"
           }`}
         >
           Events
@@ -74,8 +74,8 @@ export default function QuickLinks() {
                 key={event.name}
                 className={`flex items-center gap-3 transition-all duration-300 hover:translate-x-1 ${
                   darkMode
-                    ? "text-slate-400 hover:text-white"
-                    : "text-slate-500 hover:text-slate-900"
+                    ? "text-slate-500 hover:text-slate-900"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
                 <Icon size={15} className="shrink-0" />

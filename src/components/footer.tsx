@@ -4,16 +4,14 @@ import OurTeam from "./footer/ourteam";
 import Connect from "./footer/connect";
 import QuickLinks from "./footer/quicklink";
 import Firetech from "../assets/firetech.webp";
-import Firetech2 from "../assets/firetechwhite.webp";
 
 export default function Footer() {
   const { darkMode } = useTheme();
-  const accentColor = darkMode ? "text-red-700" : "text-blue-700";
-  const logoSrc = darkMode ? Firetech2 : Firetech;
+  const accentColor = darkMode ? "text-blue-700" : "text-red-700";
   return (
     <footer
       className={`relative w-full overflow-hidden border ${
-        darkMode ? "bg-black border-red-700" : "bg-white border-blue-600"
+        darkMode ? "bg-white border-blue-700" : "bg-black border-red-600"
       }`}
     >
       {/* Decorative top bar */}
@@ -23,8 +21,8 @@ export default function Footer() {
             key={index}
             className={`flex-1 h-full ${
               darkMode
-                ? "bg-linear-to-r from-red-700 to-red-400"
-                : "bg-linear-to-r from-blue-700 to-blue-400"
+                ? "bg-linear-to-r from-blue-700 to-blue-400"
+                : "bg-linear-to-r from-red-700 to-red-400"
             }`}
           />
         ))}
@@ -37,7 +35,7 @@ export default function Footer() {
           <div className="flex flex-col items-start gap-5">
             <div className="flex items-center gap-3">
               <img
-                src={logoSrc}
+                src={Firetech}
                 alt="Firetech Logo"
                 className="h-24 w-24 object-contain transition-all duration-500 hover:-translate-y-0.5 cursor-pointer"
               />
@@ -77,7 +75,7 @@ export default function Footer() {
 
               <div
                 className={`h-px w-12 mt-1 ${
-                  darkMode ? "bg-red-700/50" : "bg-blue-600/50"
+                  darkMode ? "bg-blue-700/50" : "bg-red-600/50"
                 }`}
               />
 

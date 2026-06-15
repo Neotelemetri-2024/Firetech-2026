@@ -51,15 +51,13 @@ const contactInfo = {
 export default function Connect() {
   const { darkMode } = useTheme();
 
-  const accentColor = darkMode
-    ? "text-red-700"
-    : "text-blue-700";
+  const accentColor = darkMode ? "text-blue-700" : "text-red-700";
 
   return (
     <div className="flex flex-col items-start gap-5">
       <span
         className={`text-sm font-bold uppercase tracking-widest ${
-          darkMode ? "text-slate-300" : "text-slate-600"
+          darkMode ? "text-slate-600" : "text-slate-300"
         }`}
       >
         Connect With Us
@@ -75,15 +73,15 @@ export default function Connect() {
             aria-label={label}
             className={`group relative p-2.5 rounded-xl border-2 transition-all duration-300 hover:-translate-y-1 hover:scale-105 ${
               darkMode
-                ? "border-slate-700 bg-slate-900 hover:bg-red-700 hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_25px_rgba(185,28,28,0.25)]"
-                : "border-slate-200 bg-slate-50 hover:bg-blue-700 hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_25px_rgba(37,99,235,0.25)]"
+                ? "border-slate-200 bg-slate-50 hover:bg-blue-700 hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_25px_rgba(37,99,235,0.25)]"
+                : "border-slate-700 bg-slate-900 hover:bg-red-700 hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_25px_rgba(185,28,28,0.25)]"
             }`}
           >
             <img
               src={src}
               alt={alt}
               className={`h-5 w-5 object-contain transition-all duration-200 group-hover:scale-110 ${
-                darkMode ? "invert brightness-0" : ""
+                darkMode ? "" : "invert brightness-0"
               }`}
             />
           </a>
@@ -93,28 +91,20 @@ export default function Connect() {
       <div className="flex flex-col gap-3 text-sm w-full">
         <div
           className={`flex items-start gap-2.5 ${
-            darkMode ? "text-slate-400" : "text-slate-500"
+            darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
-          <Mail
-            size={15}
-            className={`${accentColor} mt-0.5 shrink-0`}
-          />
+          <Mail size={15} className={`${accentColor} mt-0.5 shrink-0`} />
 
-          <span className="break-all">
-            {contactInfo.email}
-          </span>
+          <span className="break-all">{contactInfo.email}</span>
         </div>
 
         <div
           className={`flex items-start gap-2.5 ${
-            darkMode ? "text-slate-400" : "text-slate-500"
+            darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
-          <Phone
-            size={15}
-            className={`${accentColor} mt-0.5 shrink-0`}
-          />
+          <Phone size={15} className={`${accentColor} mt-0.5 shrink-0`} />
 
           <div>
             <div>{contactInfo.phone1}</div>
@@ -124,17 +114,12 @@ export default function Connect() {
 
         <div
           className={`flex items-start gap-2.5 ${
-            darkMode ? "text-slate-400" : "text-slate-500"
+            darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
-          <MapPin
-            size={15}
-            className={`${accentColor} mt-0.5 shrink-0`}
-          />
+          <MapPin size={15} className={`${accentColor} mt-0.5 shrink-0`} />
 
-          <span className="leading-relaxed">
-            {contactInfo.address}
-          </span>
+          <span className="leading-relaxed">{contactInfo.address}</span>
         </div>
       </div>
     </div>
