@@ -1,100 +1,139 @@
 import { useTheme } from "../context/themecontext";
-import Instagram from "../assets/socialmedia/instagram.webp";
-import Linkedin from "../assets/socialmedia/linkedin.webp";
-import Github from "../assets/socialmedia/github.webp";
-import Youtube from "../assets/socialmedia/youtube.webp";
-import TikTok from "../assets/socialmedia/tiktok.webp";
-
-const navItems = ["Home", "About", "Event", "Contact"];
+import Neotelemetri from "../assets/neotelemetri.webp";
+import OurTeam from "./footer/ourteam";
+import Connect from "./footer/connect";
+import QuickLinks from "./footer/quicklink";
 
 export default function Footer() {
   const { darkMode } = useTheme();
 
   return (
     <footer
-      className={`w-full border-t py-8 mt-16 ${
-        darkMode ? "bg-black border-slate-700" : "bg-white border-slate-200"
+      className={`relative w-full overflow-hidden border ${
+        darkMode ? "bg-black border-red-700" : "bg-white border-blue-600"
       }`}
     >
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8 px-4">
-        {/* Logo */}
-        <div className="shrink-0 flex items-center">
-          <span
-            className={`text-2xl font-extrabold ${darkMode ? "text-white" : "text-black"}`}
-          >
-            Firetech
-          </span>
-        </div>
+      {/* Decorative top bar */}
+      <div className="absolute top-0 left-0 w-full h-1 flex">
+        {[...Array(12)].map((_, index) => (
+          <div
+            key={index}
+            className={`flex-1 h-full ${
+              darkMode
+                ? "bg-linear-to-r from-red-700 to-red-400"
+                : "bg-linear-to-r from-blue-700 to-blue-400"
+            }`}
+          />
+        ))}
+      </div>
 
-        {/* Quick Links */}
-        <div className="flex flex-col items-center">
-          <span
-            className={`font-semibold mb-2 ${darkMode ? "text-slate-200" : "text-slate-700"}`}
-          >
-            Quick Links
-          </span>
-          <ul className="flex flex-col md:flex-row gap-2 md:gap-6">
-            {navItems.map((item) => (
-              <li key={item}>
-                <a
-                  href={`#${item.toLowerCase()}`}
-                  className={`transition ${
-                    darkMode
-                      ? "text-slate-300 hover:text-pink-400"
-                      : "text-slate-600 hover:text-indigo-600"
-                  }`}
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Social Media */}
-        <div className="flex gap-4">
-          {[
-            {
-              src: Instagram,
-              alt: "Instagram",
-              href: "https://www.instagram.com/neotelemetri/",
-            },
-            {
-              src: Linkedin,
-              alt: "Linkedin",
-              href: "https://www.linkedin.com/company/neotelemetri/",
-            },
-            {
-              src: Github,
-              alt: "Github",
-              href: "https://github.com/Neotelemetri-2024",
-            },
-            {
-              src: Youtube,
-              alt: "Youtube",
-              href: "https://youtube.com/@neotelemetri?si=kn0nRkzjQDjCvVuu",
-            },
-            {
-              src: TikTok,
-              alt: "TikTok",
-              href: "https://www.tiktok.com/@neotelemetri",
-            },
-          ].map(({ src, alt, href }) => (
-            <a
-              key={alt}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={alt}
-              className="hover:opacity-80"
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* Brand Section */}
+          <div className="flex flex-col items-start gap-5">
+            <span
+              className="text-3xl font-black tracking-tight"
+              style={{
+                textShadow: darkMode
+                  ? "3px 3px 0 #ffffff"
+                  : "3px 3px 0 #000000",
+              }}
             >
-              <img
-                src={src}
-                alt={alt}
-                className={`h-6 w-6 object-contain ${darkMode ? "invert brightness-50" : ""}`}
+              <span
+                className={`transition-colors duration-500 ${
+                  darkMode ? "text-blue-700" : "text-red-700"
+                }`}
+              >
+                Fire
+              </span>
+
+              <span
+                className={`transition-colors duration-500 ${
+                  darkMode ? "text-red-700" : "text-blue-700"
+                }`}
+              >
+                tech
+              </span>
+            </span>
+
+            <div className="flex flex-col gap-1">
+              <p
+                className={`text-sm leading-relaxed ${
+                  darkMode ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
+                Harmonizing Tech and Humanity
+              </p>
+
+              <div
+                className={`h-px w-12 mt-1 ${
+                  darkMode ? "bg-red-700/50" : "bg-blue-600/50"
+                }`}
               />
-            </a>
-          ))}
+
+              <div
+                className={`text-xs leading-relaxed mt-2 ${
+                  darkMode ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
+                Neo Telemetri, Lt. 2,
+                <br />
+                Gedung Pusat Kegiatan Mahasiswa,
+                <br />
+                Universitas Andalas,
+                <br />
+                Kota Padang, Sumatera Barat,
+                <br />
+                Indonesia.
+              </div>
+            </div>
+          </div>
+
+          {/* Our Team */}
+          <OurTeam />
+
+          {/* Quick Links + Events */}
+          <QuickLinks />
+
+          {/* Connect with us */}
+          <Connect />
+        </div>
+
+        {/* Divider */}
+        <div
+          className={`mt-12 pt-6 border-t ${
+            darkMode ? "border-slate-800" : "border-slate-200"
+          } flex flex-col sm:flex-row items-center justify-between gap-4`}
+        >
+          <p
+            className={`text-xs font-medium ${
+              darkMode ? "text-slate-500" : "text-slate-400"
+            }`}
+          >
+            &copy; {new Date().getFullYear()} Firetech. All rights reserved.
+          </p>
+
+          <a
+            href="https://neotelemetri.id"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 transition hover:-translate-y-0.5"
+          >
+            <span
+              className={`text-xs font-semibold ${
+                darkMode ? "text-slate-400" : "text-slate-500"
+              }`}
+            >
+              Made by
+            </span>
+
+            <img
+              src={Neotelemetri}
+              alt="Neotelemetri"
+              className="h-6 w-auto object-contain"
+            />
+          </a>
         </div>
       </div>
     </footer>
