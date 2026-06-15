@@ -3,10 +3,13 @@ import Neotelemetri from "../assets/neotelemetri.webp";
 import OurTeam from "./footer/ourteam";
 import Connect from "./footer/connect";
 import QuickLinks from "./footer/quicklink";
+import Firetech from "../assets/firetech.webp";
+import Firetech2 from "../assets/firetechwhite.webp";
 
 export default function Footer() {
   const { darkMode } = useTheme();
-
+  const accentColor = darkMode ? "text-red-700" : "text-blue-700";
+  const logoSrc = darkMode ? Firetech2 : Firetech;
   return (
     <footer
       className={`relative w-full overflow-hidden border ${
@@ -27,41 +30,47 @@ export default function Footer() {
         ))}
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
           {/* Brand Section */}
           <div className="flex flex-col items-start gap-5">
-            <span
-              className="text-3xl font-black tracking-tight"
-              style={{
-                textShadow: darkMode
-                  ? "3px 3px 0 #ffffff"
-                  : "3px 3px 0 #000000",
-              }}
-            >
-              <span
-                className={`transition-colors duration-500 ${
-                  darkMode ? "text-blue-700" : "text-red-700"
-                }`}
-              >
-                Fire
-              </span>
+            <div className="flex items-center gap-3">
+              <img
+                src={logoSrc}
+                alt="Firetech Logo"
+                className="h-24 w-24 object-contain transition-all duration-500 hover:-translate-y-0.5 cursor-pointer"
+              />
 
               <span
-                className={`transition-colors duration-500 ${
-                  darkMode ? "text-red-700" : "text-blue-700"
-                }`}
+                className="text-3xl font-black tracking-tight"
+                style={{
+                  textShadow: darkMode
+                    ? "3px 3px 0 #ffffff"
+                    : "3px 3px 0 #000000",
+                }}
               >
-                tech
+                <span
+                  className={`transition-colors duration-500 ${
+                    darkMode ? "text-blue-700" : "text-red-700"
+                  }`}
+                >
+                  Fire
+                </span>
+
+                <span
+                  className={`transition-colors duration-500 ${
+                    darkMode ? "text-red-700" : "text-blue-700"
+                  }`}
+                >
+                  tech
+                </span>
               </span>
-            </span>
+            </div>
 
             <div className="flex flex-col gap-1">
               <p
-                className={`text-sm leading-relaxed ${
-                  darkMode ? "text-slate-400" : "text-slate-500"
-                }`}
+                className={`text-sm leading-relaxed font-medium transition-colors duration-500 ${accentColor}`}
               >
                 Harmonizing Tech and Humanity
               </p>
