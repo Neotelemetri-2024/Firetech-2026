@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
+/* Import Google Fonts di baris paling atas */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@400;600&family=Syncopate:wght@400;700&display=swap");
+
+/* Daftarkan font ke dalam tema Tailwind */
+@theme {
+  --font-syncopate: "Syncopate", sans-serif;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-space: "Space Grotesk", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
-html, body {
+html,
+body {
   min-height: 100%;
   height: 100%;
 }
@@ -10,3 +22,162 @@ html, body {
 body {
   @apply bg-white dark:bg-black;
 }
+
+@keyframes proof-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes proof-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes proof-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes proof-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+.active-card {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.12);
+}
+
+.noise {
+  background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+}
+
+.animated-border {
+  position: relative;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(239, 68, 68, 0.9),
+    rgba(255, 255, 255, 0.05),
+    rgba(249, 115, 22, 0.9),
+    rgba(255, 255, 255, 0.05)
+  );
+
+  background-size: 300% 300%;
+
+  animation: borderMove 8s linear infinite;
+}
+
+.shine {
+  position: absolute;
+
+  left: -120%;
+
+  top: 0;
+
+  height: 100%;
+
+  width: 40%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+
+  animation: shine 6s infinite;
+}
+
+.beam {
+  position: absolute;
+
+  top: -30%;
+
+  left: -40%;
+
+  width: 35%;
+
+  height: 180%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.14),
+    transparent
+  );
+
+  transform: rotate(20deg);
+
+  animation: beam 7s linear infinite;
+}
+.coming-soon{
+    background:linear-gradient(
+        90deg,
+        #ef4444,
+        #dc2626,
+        #2563eb,
+        #ef4444
+    );
+
+    background-size:250% auto;
+
+    -webkit-background-clip:text;
+    color:transparent;
+
+    transition:all .5s ease;
+}
+
+.group:hover .coming-soon{
+
+    animation:gradientMove 2.5s linear infinite;
+
+    filter:
+        drop-shadow(0 0 8px rgba(239,68,68,.45))
+        drop-shadow(0 0 18px rgba(37,99,235,.35));
+
+    transform:scale(1.04);
+}
+
+@keyframes gradientMove{
+
+    from{
+        background-position:0%;
+    }
+
+    to{
+        background-position:250%;
+    }
+
+}
+

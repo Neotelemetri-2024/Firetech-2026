@@ -1,12 +1,50 @@
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import { UserRound, ChevronDown } from "lucide-react";
 import ThemeSwitcher from "./themeswitcher";
 import { useTheme } from "../context/themecontext";
-import { motion, LayoutGroup } from "framer-motion";
+import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
 
-const navItems = ["Home", "About", "Event", "Contact"];
+interface NavChild {
+  label: string;
+  hash: string;
+}
+
+interface NavItem {
+  label: string;
+  children?: NavChild[];
+}
+
+const navItems: NavItem[] = [
+  { label: "Home" },
+  {
+    label: "About",
+    children: [
+      { label: "Firetech", hash: "firetech" },
+      { label: "Sponsor", hash: "sponsor" },
+      { label: "Partner", hash: "partner" },
+    ],
+  },
+  {
+    label: "Event",
+    children: [
+      { label: "Hackathon", hash: "hackathon" },
+      { label: "UI/UX", hash: "uiux" },
+      { label: "Fast Typing", hash: "ft" },
+      { label: "E-Football", hash: "ef" },
+    ],
+  },
+  { label : "Timeline"},
+  { label : "FAQ"},
+  { label: "Contact" }
+];
+
+// Flat list of all possible hashes for active detection
+const allHashes = navItems.flatMap((item) => [
+  item.label.toLowerCase(),
+  ...(item.children?.map((c) => c.hash) ?? []),
+]);
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,6 +52,9 @@ export default function Navbar() {
   const [showAos, setShowAos] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
 
   // Hilangkan data-aos setelah render pertama
@@ -37,7 +78,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace("#", "");
-      if (hash && navItems.map((i) => i.toLowerCase()).includes(hash)) {
+      if (hash && allHashes.includes(hash)) {
         setActiveSection(hash);
       }
     };
@@ -51,10 +92,41 @@ export default function Navbar() {
     navigate("/auth");
   };
 
-  const handleNavClick = (item: string) => {
-    setActiveSection(item.toLowerCase());
-    setMenuOpen(false);
+ const handleNavClick = (item: NavItem, childHash?: string) => {
+   const hash = childHash ?? item.label.toLowerCase();
+
+   const element = document.getElementById(hash);
+
+   if (element) {
+     const y = element.getBoundingClientRect().top + window.pageYOffset - 140;
+
+     window.scrollTo({
+       top: y,
+       behavior: "smooth",
+     });
+   }
+
+   setActiveSection(hash);
+   setMenuOpen(false);
+ };
+
+  const handleDropdownEnter = (label: string) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
+    setOpenDropdown(label);
   };
+
+  const handleDropdownLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150);
+  };
+
+  const isActive = (item: NavItem) =>
+    item.label.toLowerCase() === activeSection ||
+    (item.children?.some((c) => c.hash === activeSection) ?? false);
 
   return (
     <>
@@ -69,12 +141,12 @@ export default function Navbar() {
         className={`sticky top-12 z-50 mx-auto max-w-5xl rounded-2xl border-[1.5px] transition-all duration-500 ${
           scrolled
             ? darkMode
-              ? "shadow-[0_8px_32px_-6px_rgba(236,72,153,0.25)] backdrop-blur-xl bg-black/80"
-              : "shadow-[0_8px_32px_-6px_rgba(99,102,241,0.2)] backdrop-blur-xl bg-white/80"
+              ? "shadow-[0_8px_32px_-6px_rgba(99,102,241,0.2)] backdrop-blur-xl bg-white/80"
+              : "shadow-[0_8px_32px_-6px_rgba(236,72,153,0.25)] backdrop-blur-xl bg-black/80"
             : darkMode
-              ? "shadow-[0_4px_20px_-4px_rgba(236,72,153,0.15)] backdrop-blur-lg bg-black/70"
-              : "shadow-[0_4px_20px_-4px_rgba(99,102,241,0.12)] backdrop-blur-lg bg-white/70"
-        } ${darkMode ? "border-white/15" : "border-slate-300/60"}`}
+              ? "shadow-[0_4px_20px_-4px_rgba(99,102,241,0.12)] backdrop-blur-lg bg-white/70"
+              : "shadow-[0_4px_20px_-4px_rgba(236,72,153,0.15)] backdrop-blur-lg bg-black/70"
+        } ${darkMode ? "border-slate-300/60 " : "border-white/15"}`}
       >
         {/* Decorative top gradient line */}
         <div
@@ -82,8 +154,8 @@ export default function Navbar() {
             scrolled ? "opacity-100" : "opacity-0"
           } ${
             darkMode
-              ? "bg-linear-to-r from-transparent via-pink-400/60 to-transparent"
-              : "bg-linear-to-r from-transparent via-indigo-400/60 to-transparent"
+              ? "bg-linear-to-r from-transparent via-red-600 to-transparent"
+              : "bg-linear-to-r from-transparent via-blue-600 to-transparent"
           }`}
         />
 
@@ -99,7 +171,7 @@ export default function Navbar() {
               {/* Logo glow effect */}
               <div
                 className={`absolute inset-0 rounded-full blur-md -z-10 transition-opacity duration-300 opacity-0 hover:opacity-100 ${
-                  darkMode ? "bg-pink-500/30" : "bg-indigo-500/30"
+                  darkMode ? "bg-blue-700" : "bg-red-600"
                 }`}
               />
             </div>
@@ -121,51 +193,48 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <LayoutGroup>
-            <ul className="mx-auto hidden  md:flex">
+            <ul className="mx-auto hidden md:flex">
               {navItems.map((item) => {
-                const isActive = activeSection === item.toLowerCase();
+                const isItemActive = isActive(item);
+                const hasChildren = !!item.children && item.children.length > 0;
+                const isDropdownOpen = openDropdown === item.label;
 
                 return (
                   <li
-                    key={item}
-                    className="relative mx-5
-                  "
+                    key={item.label}
+                    className="relative mx-1"
+                    onMouseEnter={() => handleDropdownEnter(item.label)}
+                    onMouseLeave={handleDropdownLeave}
                   >
+                    {/* Parent link / trigger */}
                     <a
-                      href={`#${item.toLowerCase()}`}
-                      onClick={() => handleNavClick(item)}
-                      className={`group relative inline-flex items-center rounded-full px-8 py-2 text-sm font-semibold transition-colors duration-300 ${
-                        isActive
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        if (hasChildren) {
+                          setOpenDropdown(isDropdownOpen ? null : item.label);
+                        } else {
+                          handleNavClick(item);
+                        }
+                      }}
+                      className={`group relative inline-flex items-center gap-1 rounded-full px-6 py-2 text-sm font-semibold transition-colors duration-300 cursor-pointer ${
+                        isItemActive
                           ? darkMode
-                            ? "text-white"
-                            : "text-indigo-700"
+                            ? "text-blue-700"
+                            : "text-red-700"
                           : darkMode
-                            ? "text-white/70 hover:text-white"
-                            : "text-slate-600 hover:text-slate-900"
+                            ? "text-black hover:text-slate-900"
+                            : "text-white hover:text-white"
                       }`}
                     >
-                      {/* Smooth Moving Pill */}
-                      {isActive && (
-                        <motion.div
-                          layoutId="navbar-pill"
-                          className={`absolute inset-0 rounded-full 
-                          }`}
-                          transition={{
-                            type: "spring",
-                            stiffness: 450,
-                            damping: 35,
-                          }}
-                        />
-                      )}
-
-                      {/* Smooth Moving Underline */}
-                      {isActive && (
+                      {/* Active indicator underline */}
+                      {isItemActive && (
                         <motion.div
                           layoutId="navbar-underline"
                           className={`absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full ${
                             darkMode
-                              ? "bg-linear-to-r from-red-700 to-red-600"
-                              : "bg-linear-to-r from-blue-700 to-blue-600"
+                              ? "bg-linear-to-r from-blue-700 to-blue-600"
+                              : "bg-linear-to-r from-red-700 to-red-600"
                           }`}
                           transition={{
                             type: "spring",
@@ -176,11 +245,11 @@ export default function Navbar() {
                       )}
 
                       {/* Active Dot */}
-                      {isActive && (
+                      {isItemActive && (
                         <motion.span
                           layoutId="navbar-dot"
                           className={`absolute top-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${
-                            darkMode ? "bg-red-700" : "bg-blue-700"
+                            darkMode ? "bg-blue-700" : "bg-red-700"
                           }`}
                           transition={{
                             type: "spring",
@@ -192,18 +261,79 @@ export default function Navbar() {
                       )}
 
                       {/* Hover Effect */}
-                      {!isActive && (
+                      {!isItemActive && (
                         <span
                           className={`absolute inset-0 rounded-full opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${
                             darkMode
-                              ? "group-hover:bg-white/8"
-                              : "group-hover:bg-slate-100"
+                              ? "group-hover:bg-slate-300"
+                              : "group-hover:bg-white/20"
                           }`}
                         />
                       )}
 
-                      <span className="relative z-10">{item}</span>
+                      <span className="relative z-10 flex items-center gap-1">
+                        {item.label}
+                        {hasChildren && (
+                          <ChevronDown
+                            className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                              isDropdownOpen ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </span>
                     </a>
+
+                    {/* Dropdown Submenu */}
+                    <AnimatePresence>
+                      {hasChildren && isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          className={`absolute left-1/2 -translate-x-1/2 top-full mt-2 min-w-50 rounded-xl border-[1.5px] p-1.5 shadow-xl ${
+                            darkMode
+                              ? "bg-white/95 backdrop-blur-xl border-slate-200 shadow-black/10"
+                              : "bg-black/90 backdrop-blur-xl border-white/15 shadow-black/30"
+                          }`}
+                          onMouseEnter={() => handleDropdownEnter(item.label)}
+                          onMouseLeave={handleDropdownLeave}
+                        >
+                          {item.children!.map((child) => {
+                            const isChildActive = activeSection === child.hash;
+                            return (
+                              <a
+                                key={child.hash}
+                                href={`#${child.hash}`}
+                                onClick={() => handleNavClick(item, child.hash)}
+                                className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+                                  isChildActive
+                                    ? darkMode
+                                      ? "bg-blue-50 text-blue-700"
+                                      : "bg-white/10 text-red-400"
+                                    : darkMode
+                                      ? "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                                }`}
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                                    isChildActive
+                                      ? darkMode
+                                        ? "bg-blue-500 scale-125"
+                                        : "bg-red-500 scale-125"
+                                      : darkMode
+                                        ? "bg-slate-300"
+                                        : "bg-white/30"
+                                  }`}
+                                />
+                                {child.label}
+                              </a>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </li>
                 );
               })}
@@ -220,8 +350,8 @@ export default function Navbar() {
               onClick={handleLoginClick}
               className={`relative h-9 w-9 cursor-pointer rounded-full border-[1.5px] p-1.5 transition-all duration-300 hover:scale-110 group ${
                 darkMode
-                  ? "bg-white/5 text-white/80 border-white/15 hover:bg-white/10 hover:text-white hover:border-white/30"
-                  : "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
+                  ? "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
+                  : "bg-white/5 text-white/80 border-white/15 hover:bg-white/10 hover:text-white hover:border-white/30"
               }`}
               aria-label="User account"
             >
@@ -230,8 +360,8 @@ export default function Navbar() {
               <span
                 className={`pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2.5 py-1 text-[10px] font-semibold opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-0.5 ${
                   darkMode
-                    ? "bg-white/15 text-white backdrop-blur-md"
-                    : "bg-slate-800 text-white"
+                    ? "bg-slate-800 text-white "
+                    : "bg-white/15 text-white  backdrop-blur-md"
                 }`}
               >
                 Login
@@ -304,7 +434,7 @@ export default function Navbar() {
         {/* Mobile Menu Dropdown */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${
-            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            menuOpen ? "max-h-150 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div
@@ -316,10 +446,13 @@ export default function Navbar() {
           >
             <ul className="space-y-0.5">
               {navItems.map((item, index) => {
-                const isActive = activeSection === item.toLowerCase();
+                const isItemActive = isActive(item);
+                const hasChildren = !!item.children && item.children.length > 0;
+                const isMobileOpen = mobileExpanded === item.label;
+
                 return (
                   <li
-                    key={item}
+                    key={item.label}
                     style={{
                       transitionDelay: menuOpen ? `${index * 60}ms` : "0ms",
                     }}
@@ -329,33 +462,106 @@ export default function Navbar() {
                         : "opacity-0 -translate-x-4"
                     }`}
                   >
-                    <a
-                      href={`#${item.toLowerCase()}`}
-                      onClick={() => handleNavClick(item)}
-                      className={`flex items-center gap-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                        isActive
-                          ? darkMode
-                            ? "bg-white/10 text-white"
-                            : "bg-indigo-50 text-indigo-700"
-                          : darkMode
-                            ? "text-white/70 hover:bg-white/5 hover:text-white"
-                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                      }`}
-                    >
-                      {/* Dot indicator */}
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                          isActive
+                    <div>
+                      <button
+                        onClick={() => {
+                          if (hasChildren) {
+                            setMobileExpanded(isMobileOpen ? null : item.label);
+                          } else {
+                            handleNavClick(item);
+                          }
+                        }}
+                        className={`flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+                          isItemActive
                             ? darkMode
-                              ? "bg-pink-400 scale-125"
-                              : "bg-indigo-500 scale-125"
+                              ? "bg-white/10 text-white"
+                              : "bg-indigo-50 text-indigo-700"
                             : darkMode
-                              ? "bg-white/20"
-                              : "bg-slate-300"
+                              ? "text-white/70 hover:bg-white/5 hover:text-white"
+                              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                         }`}
-                      />
-                      {item}
-                    </a>
+                      >
+                        <span className="flex items-center gap-2">
+                          {/* Dot indicator */}
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                              isItemActive
+                                ? darkMode
+                                  ? "bg-pink-400 scale-125"
+                                  : "bg-indigo-500 scale-125"
+                                : darkMode
+                                  ? "bg-white/20"
+                                  : "bg-slate-300"
+                            }`}
+                          />
+                          {item.label}
+                        </span>
+                        {hasChildren && (
+                          <ChevronDown
+                            className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                              isMobileOpen ? "rotate-180" : ""
+                            }`}
+                          />
+                        )}
+                      </button>
+
+                      {/* Mobile Submenu */}
+                      <AnimatePresence>
+                        {hasChildren && isMobileOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3"
+                              style={{
+                                borderColor: darkMode
+                                  ? "rgba(255,255,255,0.1)"
+                                  : "rgba(0,0,0,0.1)",
+                              }}
+                            >
+                              {item.children!.map((child) => {
+                                const isChildActive =
+                                  activeSection === child.hash;
+                                return (
+                                  <a
+                                    key={child.hash}
+                                    href={`#${child.hash}`}
+                                    onClick={() =>
+                                      handleNavClick(item, child.hash)
+                                    }
+                                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                                      isChildActive
+                                        ? darkMode
+                                          ? "bg-white/10 text-pink-300"
+                                          : "bg-indigo-50 text-indigo-600"
+                                        : darkMode
+                                          ? "text-white/60 hover:bg-white/5 hover:text-white"
+                                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                                    }`}
+                                  >
+                                    <span
+                                      className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                                        isChildActive
+                                          ? darkMode
+                                            ? "bg-pink-400"
+                                            : "bg-indigo-500"
+                                          : darkMode
+                                            ? "bg-white/20"
+                                            : "bg-slate-300"
+                                      }`}
+                                    />
+                                    {child.label}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </li>
                 );
               })}

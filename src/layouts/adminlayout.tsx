@@ -12,6 +12,25 @@ export default function AdminLayout() {
       className="min-h-screen overflow-hidden text-white"
       style={gradientStyle}
     >
+      {/* Fixed Background decorations dengan blur gradient effects */}
+      <div className="fixed inset-0 overflow-hidden z-10 pointer-events-none">
+        {/* Cyan gradient blob - top left */}
+        <div className="absolute left-0 top-0 h-100 w-100 rounded-full bg-cyan-500/10 blur-[160px]" />
+
+        {/* Blue gradient blob - bottom right */}
+        <div className="absolute right-0 bottom-0 h-125 w-125 rounded-full bg-blue-500/10 blur-[170px]" />
+
+        {/* Grid pattern overlay - subtle background texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.35) 1px,transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+      </div>
+
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)]">
         <NavbarAdmin />
 

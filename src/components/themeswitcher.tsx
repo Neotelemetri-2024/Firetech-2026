@@ -5,9 +5,9 @@ export default function ThemeSwitcher() {
 
   return (
     <button
-      className={`ml-4 h-10 w-10 rounded-full border cursor-pointer p-2 shadow-md transition md:ml-6 ${
+      className={`ml-4 h-10 w-10 rounded-full border cursor-pointer p-2 shadow-md transition hover:-translate-y-0.5 md:ml-6 ${
         darkMode
-          ? "bg-white border-hover:bg-slate-800 text-black "
+          ? "bg-white border-hover:bg-slate-800 text-black"
           : "bg-black border-white/80 text-white"
       }`}
       aria-label="Toggle theme"
@@ -24,7 +24,7 @@ export default function ThemeSwitcher() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M12 3v1m0 16v1m8.66-8.66h-1M4.34 12h-1m15.36 4.95l-.7-.7M6.34 6.34l-.7-.7m12.02 12.02l-.7-.7M6.34 17.66l-.7-.7M12 5a7 7 0 100 14 7 7 0 000-14z"
+            d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
           />
         </svg>
       ) : (
@@ -38,7 +38,7 @@ export default function ThemeSwitcher() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+            d="M12 3v1m0 16v1m8.66-8.66h-1M4.34 12h-1m15.36 4.95l-.7-.7M6.34 6.34l-.7-.7m12.02 12.02l-.7-.7M6.34 17.66l-.7-.7M12 5a7 7 0 100 14 7 7 0 000-14z"
           />
         </svg>
       )}
