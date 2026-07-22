@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "../../../context/themecontext";
 
-import { headingVariants } from "../../animations/headingvariants";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -34,7 +33,6 @@ const mediaPartners: MediaPartner[] = [
 export default function MediaPartner() {
   // Reference ke section element untuk scroll trigger
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const { darkMode } = useTheme();
 
