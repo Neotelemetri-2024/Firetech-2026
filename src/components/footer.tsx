@@ -1,5 +1,5 @@
 import { useTheme } from "../context/themecontext";
-import Neotelemetri from "../assets/neotelemetri.webp";
+import Neotelemetri from "../assets/NeoTelemetri.webp"
 import OurTeam from "./footer/ourteam";
 import Connect from "./footer/connect";
 import QuickLinks from "./footer/quicklink";
