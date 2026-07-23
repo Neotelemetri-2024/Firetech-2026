@@ -23,7 +23,8 @@ const navItems: NavItem[] = [
     children: [
       { label: "Firetech", hash: "firetech" },
       { label: "Sponsor", hash: "sponsor" },
-      { label: "Partner", hash: "partner" },
+      { label: "Partner", hash: "mediapartner" },
+      { label: "Countdown", hash: "countdown" },
     ],
   },
   {
@@ -305,7 +306,10 @@ export default function Navbar() {
                               <a
                                 key={child.hash}
                                 href={`#${child.hash}`}
-                                onClick={() => handleNavClick(item, child.hash)}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleNavClick(item, child.hash);
+                                }}
                                 className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
                                   isChildActive
                                     ? darkMode
@@ -529,9 +533,10 @@ export default function Navbar() {
                                   <a
                                     key={child.hash}
                                     href={`#${child.hash}`}
-                                    onClick={() =>
-                                      handleNavClick(item, child.hash)
-                                    }
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleNavClick(item, child.hash);
+                                    }}
                                     className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                                       isChildActive
                                         ? darkMode
