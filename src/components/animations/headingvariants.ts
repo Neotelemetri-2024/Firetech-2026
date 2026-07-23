@@ -52,7 +52,7 @@ export const headingVariants = {
     },
   } satisfies Variants,
 
-  // ⭐ Untuk track marquee
+  // Container untuk Media Partner & Sponsor
   marqueeContainer: {
     hidden: {},
     visible: {
@@ -63,21 +63,21 @@ export const headingVariants = {
     },
   } satisfies Variants,
 
-  // ⭐ Untuk setiap logo
+  // Item logo Media Partner & Sponsor
   marqueeItem: {
     hidden: {
       opacity: 0,
-      y: 30,
-      scale: 0.9,
-      filter: "blur(8px)",
+      scale: 0.85,
+      filter: "blur(10px)",
+      rotate: -6,
     },
     visible: {
       opacity: 1,
-      y: 0,
       scale: 1,
       filter: "blur(0px)",
+      rotate: 0,
       transition: {
-        duration: 0.55,
+        duration: 0.6,
         ease: [0.22, 1, 0.36, 1],
       },
     },
