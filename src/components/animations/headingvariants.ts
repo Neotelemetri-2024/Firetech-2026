@@ -51,4 +51,35 @@ export const headingVariants = {
       },
     },
   } satisfies Variants,
+
+  // ⭐ Untuk track marquee
+  marqueeContainer: {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.2,
+      },
+    },
+  } satisfies Variants,
+
+  // ⭐ Untuk setiap logo
+  marqueeItem: {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.9,
+      filter: "blur(8px)",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  } satisfies Variants,
 };

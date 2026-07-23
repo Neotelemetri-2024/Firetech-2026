@@ -1,7 +1,8 @@
 // Import React hooks untuk lifecycle management dan DOM manipulation
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useTheme } from "../../../context/themecontext";
-
+import { motion } from "framer-motion";
+import { headingVariants } from "../../animations/headingvariants";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -33,175 +34,91 @@ const mediaPartners: MediaPartner[] = [
 export default function MediaPartner() {
   // Reference ke section element untuk scroll trigger
   const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
   const { darkMode } = useTheme();
-
-  // Hook untuk menjalankan animasi ketika component di-mount
-  useEffect(() => {
-    // Intersection Observer untuk mendeteksi ketika section masuk ke viewport
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      {
-        threshold: 0.1,
-      },
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden py-18">
-      {/* Background decorations sudah di-handle oleh mainlayout.tsx */}
-
-      {/* CSS Keyframes untuk floating animation */}
-      <style>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes marquee {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
-        }
-
-        @keyframes logoSpin {
-          from {
-            transform: rotateY(0deg) scale(1.1);
-          }
-          to {
-            transform: rotateY(360deg) scale(1.1);
-          }
-        }
-
-        .mp-card:hover .mp-logo {
-          animation: logoSpin 0.6s ease-in-out;
-        }
-
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .mp-marquee-track {
-          animation: marquee 25s linear infinite;
-        }
-
-        .mp-marquee-wrapper:hover .mp-marquee-track {
-          animation-play-state: paused;
-        }
-      `}</style>
-
       {/* Main content container */}
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Section header dengan title dan description */}
-        <div
-          className={`mp-header mx-auto mb-24 max-w-3xl text-center ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, margin: "-80px" }}
+          className="mx-auto mb-24 max-w-3xl text-center"
         >
           {/* Heading */}
-          <h2
-            className={`group text-5xl md:text-6xl font-black font-syncopate ${
+          <motion.h2
+            variants={headingVariants.title}
+            className={`text-5xl font-black font-syncopate md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            {"OUR MEDIA PARTNERS".split("").map((char, index) => (
-              <span
-                key={index}
-                className="wave-letter"
-                style={{
-                  animationDelay: `${index * 40}ms`,
-                }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
-          </h2>
+            OUR MEDIA PARTNER
+          </motion.h2>
 
           {/* Deskripsi section */}
-          <p className="mx-auto mt-7 font-space max-w-3xl text-lg leading-8 text-slate-400">
-            Firetech bekerja sama dengan media partner yang mendukung penyebaran
-            informasi tentang inovasi, teknologi, dan kewirausahaan.
-          </p>
-        </div>
+          <motion.p
+            variants={headingVariants.subtitle}
+            className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8  ${
+              darkMode ? "text-black" : "text-white"
+            }`}
+          >
+            Together with our media partners, Firetech expands the reach of
+            innovation, technology, and entrepreneurship to a wider audience.
+          </motion.p>
+        </motion.div>
 
         {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
-        <div
-          className={`mp-marquee-wrapper relative mb-24 overflow-hidden ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
+        <motion.div
+          variants={headingVariants.marqueeContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }}
+          className="mp-marquee-wrapper relative mb-24 overflow-hidden"
         >
-          {/* Track yang bergerak horizontal secara terus-menerus (infinite marquee) */}
+          {/* Track marquee */}
           <div className="mp-marquee-track flex w-max gap-12">
-            {/* Media partner di-duplikasi 2x supaya looping terlihat seamless */}
             {[...mediaPartners, ...mediaPartners].map((item, index) => (
-              <div
+              <motion.div
                 key={`${item.name}-${index}`}
+                variants={headingVariants.marqueeItem}
+                whileHover={{
+                  y: -8,
+                  scale: 1.05,
+                }}
                 className="
-                mp-card
-                group
-                relative
-                w-64
-                shrink-0
-                overflow-hidden
-                p-12
-                transition-all
-                duration-500
-                hover:-translate-y-3
-                cursor-pointer
-                perspective-1000
-                "
+          mp-card
+          group
+          relative
+          w-64
+          shrink-0
+          overflow-hidden
+          p-12
+          cursor-pointer
+          perspective-1000
+        "
               >
-                {/* Media Partner Logo */}
                 <img
                   src={item.logo}
                   alt={item.name}
                   className="
-                  mp-logo
-                  relative
-                  z-20
-                  mx-auto
-                  h-24
-                  object-contain
-                  transition-all
-                  duration-500
-                  transform-3d
-                  group-hover:scale-110
-                  "
+            mp-logo
+            relative
+            z-20
+            mx-auto
+            h-24
+            object-contain
+            transition-all
+            duration-500
+            transform-3d
+            group-hover:scale-110
+          "
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
