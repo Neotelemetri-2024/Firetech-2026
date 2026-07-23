@@ -38,7 +38,7 @@ export default function Home() {
 
       <SectionDivider />
 
-      <section id="mediapartner" className="scroll-mt-40">
+      <section id="mediapartner" className="scroll-mt-42">
         <MediaPartner />
       </section>
 
