@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTheme } from "../../context/themecontext";
 
 interface Props {
   value: number;
 }
 
 export default function AnimatedDigit({ value }: Props) {
+  const { darkMode } = useTheme();
   const [display, setDisplay] = useState(value);
 
   if (display !== value) {
@@ -28,7 +30,11 @@ export default function AnimatedDigit({ value }: Props) {
           }}
           className="absolute inset-0 flex items-center justify-center"
         >
-          <span className="font-syncopate text-6xl md:text-7xl font-black text-white">
+          <span
+            className={`font-syncopate text-6xl md:text-7xl font-black  transition-colors duration-300  ${
+              darkMode ? "text-black" : "text-white"
+            }`}
+          >
             {display.toString().padStart(2, "0")}
           </span>
         </motion.div>

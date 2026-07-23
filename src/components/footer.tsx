@@ -1,5 +1,5 @@
 import { useTheme } from "../context/themecontext";
-import Neotelemetri from "../assets/NeoTelemetri.webp"
+import Neotelemetri from "../assets/NeoTelemetri.webp";
 import OurTeam from "./footer/ourteam";
 import Connect from "./footer/connect";
 import QuickLinks from "./footer/quicklink";
@@ -32,8 +32,8 @@ export default function Footer() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
           {/* Brand Section */}
-          <div className="flex flex-col items-start gap-5">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
+            <div className="flex flex-col items-center gap-2 lg:flex-row lg:items-center lg:justify-start lg:gap-3">
               <img
                 src={Firetech}
                 alt="Firetech Logo"
@@ -66,7 +66,7 @@ export default function Footer() {
               </span>
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col items-center lg:items-start gap-1">
               <p
                 className={`text-sm leading-relaxed font-medium transition-colors duration-500 ${accentColor}`}
               >
@@ -114,7 +114,7 @@ export default function Footer() {
           } flex flex-col sm:flex-row items-center justify-between gap-4`}
         >
           <p
-            className={`text-xs font-medium ${
+            className={`text-xs font-medium text-center sm:text-left ${
               darkMode ? "text-slate-500" : "text-slate-400"
             }`}
           >

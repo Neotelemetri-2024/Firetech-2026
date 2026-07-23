@@ -63,14 +63,28 @@ export default function Countdown() {
             }`}
           >
             WE ARE
-            <span
-              className={`block mt-2 bg-clip-text text-transparent ${
-                darkMode
-                  ? "bg-linear-to-r from-blue-600 to-red-600"
-                  : "bg-linear-to-r from-red-500 to-blue-600"
-              }`}
-            >
-              COMING SOON
+            <span className="block mt-2">
+              <span
+                className={`bg-clip-text text-transparent ${
+                  darkMode
+                    ? "bg-blue-600"
+                    : "bg-red-600"
+                }`}
+              >
+                COMING
+              </span>
+
+              <span className="mx-2"></span>
+
+              <span
+                className={`bg-clip-text text-transparent ${
+                  darkMode
+                    ? "bg-red-600"
+                    : "bg-blue-600"
+                }`}
+              >
+                SOON
+              </span>
             </span>
           </motion.h1>
           <motion.p

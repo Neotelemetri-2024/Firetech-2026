@@ -30,7 +30,7 @@ export default function QuickLinks() {
   const { darkMode } = useTheme();
 
   return (
-    <div className="flex flex-col items-start gap-5">
+    <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
       <span
         className={`text-sm font-bold uppercase tracking-widest ${
           darkMode ? "text-slate-600" : "text-slate-300"
@@ -39,7 +39,7 @@ export default function QuickLinks() {
         Quick Links
       </span>
 
-      <ul className="flex flex-wrap gap-2.5">
+      <ul className="flex flex-wrap justify-center lg:justify-start gap-2.5">
         {navItems.map((item) => (
           <li key={item}>
             <a
@@ -65,14 +65,14 @@ export default function QuickLinks() {
           Events
         </h4>
 
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col items-center lg:items-start gap-2.5">
           {eventItems.map((event) => {
             const Icon = event.icon;
 
             return (
               <div
                 key={event.name}
-                className={`flex items-center gap-3 transition-all duration-300 hover:translate-x-1 ${
+                className={`flex items-center justify-center lg:justify-start gap-3 transition-all duration-300 hover:translate-x-1 ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-900"
                     : "text-slate-400 hover:text-white"

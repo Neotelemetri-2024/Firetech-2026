@@ -28,7 +28,7 @@ export default function OurTeam() {
   const { darkMode } = useTheme();
 
   return (
-    <div className="flex flex-col items-start gap-5">
+    <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
       <span
         className={`text-sm font-bold uppercase tracking-widest ${
           darkMode ? "text-slate-600" : "text-slate-300"
@@ -37,14 +37,14 @@ export default function OurTeam() {
         Our Team
       </span>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col items-center lg:items-start gap-2.5">
         {teamMembers.map((member) => (
           <a
             key={member.role}
             href={member.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className={`group flex items-center gap-3 rounded-xl border px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 ${
+            className={`group flex w-full lg:w-auto items-center justify-center lg:justify-start gap-3 rounded-xl border px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 ${
               darkMode
                 ? "border-slate-200/80 bg-slate-50/80 hover:border-blue-600 hover:bg-blue-50"
                 : "border-slate-700/60 bg-slate-900/50 hover:border-red-600 hover:bg-red-700/10"

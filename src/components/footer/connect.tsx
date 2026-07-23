@@ -54,7 +54,7 @@ export default function Connect() {
   const accentColor = darkMode ? "text-blue-700" : "text-red-700";
 
   return (
-    <div className="flex flex-col items-start gap-5">
+    <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
       <span
         className={`text-sm font-bold uppercase tracking-widest ${
           darkMode ? "text-slate-600" : "text-slate-300"
@@ -63,7 +63,7 @@ export default function Connect() {
         Connect With Us
       </span>
 
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
         {socialLinks.map(({ src, alt, href, label }) => (
           <a
             key={alt}
@@ -88,19 +88,18 @@ export default function Connect() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 text-sm w-full">
+      <div className="flex flex-col gap-3 text-sm w-full items-center lg:items-start">
         <div
-          className={`flex items-start gap-2.5 ${
+          className={`flex items-start justify-center lg:justify-start gap-2.5 ${
             darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
           <Mail size={15} className={`${accentColor} mt-0.5 shrink-0`} />
-
           <span className="break-all">{contactInfo.email}</span>
         </div>
 
         <div
-          className={`flex items-start gap-2.5 ${
+          className={`flex items-start justify-center lg:justify-start gap-2.5 ${
             darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
@@ -113,7 +112,7 @@ export default function Connect() {
         </div>
 
         <div
-          className={`flex items-start gap-2.5 ${
+          className={`flex items-start justify-center lg:justify-start gap-2.5 ${
             darkMode ? "text-slate-500" : "text-slate-400"
           }`}
         >
