@@ -57,6 +57,14 @@ export default function MediaPartner() {
             OUR MEDIA PARTNER
           </motion.h2>
 
+          <motion.div
+            custom={2}
+            variants={headingVariants}
+            className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
+              darkMode ? "bg-blue-700" : "bg-red-700"
+            }`}
+          />
+
           {/* Deskripsi section */}
           <motion.p
             variants={headingVariants.subtitle}

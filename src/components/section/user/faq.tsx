@@ -275,7 +275,7 @@ export default function FAQ() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            Frequently Asked Questions
+            FREQUENTLY ASKED QUESTIONS
           </motion.h2>
 
           <motion.div

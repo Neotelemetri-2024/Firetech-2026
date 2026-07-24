@@ -66,9 +66,7 @@ export default function Countdown() {
             <span className="block mt-2">
               <span
                 className={`bg-clip-text text-transparent ${
-                  darkMode
-                    ? "bg-blue-600"
-                    : "bg-red-600"
+                  darkMode ? "bg-blue-600" : "bg-red-600"
                 }`}
               >
                 COMING
@@ -78,15 +76,20 @@ export default function Countdown() {
 
               <span
                 className={`bg-clip-text text-transparent ${
-                  darkMode
-                    ? "bg-red-600"
-                    : "bg-blue-600"
+                  darkMode ? "bg-red-600" : "bg-blue-600"
                 }`}
               >
                 SOON
               </span>
             </span>
           </motion.h1>
+          <motion.div
+            custom={2}
+            variants={headingVariants}
+            className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
+              darkMode ? "bg-blue-700" : "bg-red-700"
+            }`}
+          />
           <motion.p
             variants={headingVariants.subtitle}
             className={`mx-auto mt-6 max-w-3xl font-space text-lg ${
