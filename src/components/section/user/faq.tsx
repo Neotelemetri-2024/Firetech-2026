@@ -6,38 +6,39 @@ import { useTheme } from "../../../context/themecontext";
 const faqData = [
   {
     id: "01",
-    question: "Apa saja syarat pendaftaran Firetech 2026?",
+    question: "What are the registration requirements for Firetech 2026?",
     answer:
-      "Peserta merupakan mahasiswa aktif dan memenuhi ketentuan yang telah ditetapkan oleh panitia Firetech 2026.",
+      "Participants must be active university students and meet the eligibility requirements established by the Firetech 2026 organizing committee.",
   },
   {
     id: "02",
-    question: "Kapan jadwal pendaftaran dibuka?",
-    answer: "Pendaftaran dibuka mulai 1 Agustus 2026 sesuai timeline kegiatan.",
+    question: "When does the registration period begin?",
+    answer:
+      "Registration opens on August 1, 2026, according to the official event timeline.",
   },
   {
     id: "03",
-    question: "Apa saja benefit yang didapatkan?",
+    question: "What benefits will participants receive?",
     answer:
-      "Peserta akan memperoleh sertifikat, pengalaman kompetisi, networking, dan hadiah menarik.",
+      "Participants will receive a certificate, valuable competition experience, networking opportunities, and the chance to win exciting prizes.",
   },
   {
     id: "04",
-    question: "Dimana lokasi kegiatan Firetech 2026?",
+    question: "Where will Firetech 2026 be held?",
     answer:
-      "Kegiatan akan dilaksanakan di Fakultas Teknologi Informasi Universitas Andalas.",
+      "The event will take place at the Faculty of Information Technology, Universitas Andalas.",
   },
   {
     id: "05",
-    question: "Bagaimana cara mendaftar?",
+    question: "How can I register for Firetech 2026?",
     answer:
-      "Peserta dapat melakukan registrasi melalui website resmi Firetech 2026.",
+      "Participants can register through the official Firetech 2026 website during the registration period.",
   },
   {
     id: "06",
-    question: "Siapa yang dapat dihubungi?",
+    question: "Who can I contact for more information?",
     answer:
-      "Silakan menghubungi Contact Person yang tersedia pada halaman Contact.",
+      "For further assistance, please contact the official Contact Person listed on the Contact page.",
   },
 ];
 
@@ -277,6 +278,15 @@ export default function FAQ() {
           >
             FREQUENTLY ASKED QUESTIONS
           </motion.h2>
+          <motion.p
+            custom={3}
+            variants={headingVariants}
+            className={`mx-auto mt-6 max-w-2xl text-lg leading-8 ${
+              darkMode ? "text-black" : "text-white"
+            }`}
+          >
+            Everything you need to know about Firetech 2026 in one place.
+          </motion.p>
 
           <motion.div
             custom={2}

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../../context/themecontext";
 
 type EventSlideProps = {
   id: string;
@@ -18,6 +19,29 @@ export default function EventSlide({
   color,
 }: EventSlideProps) {
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
+
+  const theme = {
+    label: darkMode ? "text-slate-500" : "text-white/40",
+    title: darkMode ? "text-black" : "text-white",
+    description: darkMode ? "text-slate-700" : "text-white/70",
+
+    button: darkMode
+      ? "bg-white border border-slate-200 text-black hover:bg-black hover:text-white"
+      : "bg-linear-to-br from-red-400/20 to-blue-500/20 text-white hover:bg-white hover:text-black",
+
+    card: darkMode
+      ? "border border-slate-200 bg-white shadow-xl"
+      : "border border-white/10",
+
+    topLine: darkMode ? "bg-slate-700" : "bg-white",
+
+    verticalTitle: darkMode ? "text-black" : "text-white",
+
+    stroke: darkMode
+      ? "[-webkit-text-stroke:1.5px_black]"
+      : "[-webkit-text-stroke:1.5px_white]",
+  };
 
   const handleExploreChallenge = () => {
     navigate("/dashboard/apply");
@@ -82,14 +106,7 @@ export default function EventSlide({
   "
         >
           <span
-            className="
-              mb-4
-              text-sm
-              font-semibold
-              uppercase
-              tracking-[0.35em]
-              text-white/40
-            "
+            className={`mb-4 text-sm font-semibold uppercase tracking-[0.35em] ${theme.label}`}
           >
             Competition
           </span>
@@ -108,13 +125,7 @@ export default function EventSlide({
           </span>
 
           <h2
-            className="
-              mt-5
-              text-7xl
-              font-black
-              leading-tight
-              text-white
-            "
+            className={`mt-5 text-7xl font-black leading-tight ${theme.title}`}
           >
             {title}
           </h2>
@@ -133,43 +144,30 @@ export default function EventSlide({
           </p>
 
           <p
-            className="
-              mt-8
-              max-w-130
-              text-lg
-              leading-9
-              text-white/70
-            "
+            className={`mt-8 max-w-130 text-lg leading-9 ${theme.description}`}
           >
             {description}
           </p>
 
           <button
             onClick={handleExploreChallenge}
-            className="
-              mt-12
-              inline-flex
-              w-fit
-              items-center
-              gap-3
-              rounded-full
-              bg-linear-to-br
-              from-red-400/20
-              to-blue-500/20
-              cursor-pointer
-              px-8
-              py-4
-              font-medium
-              text-white
-              backdrop-blur-md
-              transition-all
-              duration-500
-
-              hover:scale-105
-              hover:border-white/40
-              hover:bg-white
-              hover:text-black
-            "
+            className={`
+  mt-12
+  inline-flex
+  w-fit
+  items-center
+  gap-3
+  rounded-full
+  px-8
+  py-4
+  font-medium
+  backdrop-blur-md
+  transition-all
+  duration-500
+  cursor-pointer
+  hover:scale-105
+  ${theme.button}
+`}
           >
             Explore Challenge
             <span className="text-xl">→</span>
@@ -209,20 +207,19 @@ export default function EventSlide({
           {/* Event Card */}
 
           <div
-            className="
-      event-image
-      group
-      relative
-      h-135
-      w-82.5
-      overflow-hidden
-      rounded-4xl
-      border
-      border-white/10
-      transition-all
-      duration-700
-      hover:-translate-y-3
-    "
+            className={`
+event-image
+group
+relative
+h-135
+w-82.5
+overflow-hidden
+rounded-4xl
+transition-all
+duration-700
+hover:-translate-y-3
+${theme.card}
+`}
           >
             {/* Image */}
 

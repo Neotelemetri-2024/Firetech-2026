@@ -36,16 +36,9 @@ const navItems: NavItem[] = [
       { label: "E-Football", hash: "ef" },
     ],
   },
-  { label : "Timeline"},
-  { label : "FAQ"},
-  { label: "Contact" }
+  { label: "Timeline" },
+  { label: "FAQ" },
 ];
-
-// Flat list of all possible hashes for active detection
-const allHashes = navItems.flatMap((item) => [
-  item.label.toLowerCase(),
-  ...(item.children?.map((c) => c.hash) ?? []),
-]);
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -75,41 +68,30 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Deteksi active section dari URL hash
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash && allHashes.includes(hash)) {
-        setActiveSection(hash);
-      }
-    };
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
   const handleLoginClick = () => {
     setMenuOpen(false);
     navigate("/auth");
   };
 
- const handleNavClick = (item: NavItem, childHash?: string) => {
-   const hash = childHash ?? item.label.toLowerCase();
+  const handleNavClick = (item: NavItem, childHash?: string) => {
+    const hash = childHash ?? item.label.toLowerCase();
 
-   const element = document.getElementById(hash);
+    const element = document.getElementById(hash);
 
-   if (element) {
-     const y = element.getBoundingClientRect().top + window.pageYOffset - 140;
+    if (element) {
+      // Section exists in DOM — scroll directly (we're already on /dashboard/Home)
+      const y = element.getBoundingClientRect().top + window.pageYOffset - 140;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    } else {
+      // Save target in sessionStorage, then navigate to /dashboard
+      // Home.tsx will read sessionStorage and scroll after rendering sections
+      sessionStorage.setItem("scrollTo", hash);
+      navigate("/dashboard");
+    }
 
-     window.scrollTo({
-       top: y,
-       behavior: "smooth",
-     });
-   }
-
-   setActiveSection(hash);
-   setMenuOpen(false);
- };
+    setActiveSection(hash);
+    setMenuOpen(false);
+  };
 
   const handleDropdownEnter = (label: string) => {
     if (dropdownTimeoutRef.current) {
@@ -519,7 +501,8 @@ export default function Navbar() {
                             transition={{ duration: 0.2 }}
                             className="overflow-hidden"
                           >
-                            <div className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3"
+                            <div
+                              className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3"
                               style={{
                                 borderColor: darkMode
                                   ? "rgba(255,255,255,0.1)"

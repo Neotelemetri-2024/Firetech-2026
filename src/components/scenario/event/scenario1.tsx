@@ -2,6 +2,8 @@ import hackathonImg from "../../../assets/event/hackathon.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
+import { motion } from "framer-motion";
+import { headingVariants } from "../../animations/headingvariants";
 
 const events = [
   {
@@ -32,38 +34,45 @@ const events = [
 
 export default function Scenario1() {
   return (
-    <div
+    <motion.div
+      variants={headingVariants.container}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.2 }}
       className="
-        flex
-        items-center
-        justify-center
-        gap-10
-        px-10
-        pb-6
-      "
+    flex
+    items-center
+    justify-center
+    gap-10
+    px-10
+    pb-6
+  "
     >
-      {events.map((event) => (
-        <div
+      {events.map((event, index) => (
+        <motion.div
           key={event.id}
+          variants={headingVariants.card}
+          viewport={{ once: false, amount: 0.3 }}
+          custom={index}
           className="
-            overview-card
-            group
-            relative
-            h-110
-            w-53.75
-            shrink-0
-            overflow-hidden
-            rounded-4xl
-            border
-            border-white/10
-            transition-all
-            duration-700
-            ease-out
-
-            hover:-translate-y-4
-            hover:scale-[1.04]
-            hover:border-white/30
-          "
+    overview-card
+    group
+    relative
+    h-100
+    w-53.75
+    shrink-0
+    overflow-hidden
+    rounded-4xl
+    border
+    border-white/10
+    transition-all
+    duration-700
+    ease-out
+    hover:-translate-y-4
+    hover:scale-[1.04]
+    hover:border-white/30
+    cursor-pointer
+  "
         >
           {/* Image */}
 
@@ -189,8 +198,8 @@ export default function Scenario1() {
           >
             {event.id}
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

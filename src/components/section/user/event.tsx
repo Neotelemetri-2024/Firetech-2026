@@ -10,6 +10,7 @@ import hackathonImg from "../../../assets/event/hackathon.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
+import { headingVariants } from "../../animations/headingvariants";
 
 const events = [
   {
@@ -17,16 +18,16 @@ const events = [
     title: "Hackathon",
     tagline: "Build. Innovate. Compete.",
     description:
-      "Hackathon Firetech 2026 adalah kompetisi teknologi yang menantang peserta menciptakan solusi inovatif dalam waktu terbatas.",
+      "The Firetech 2026 Hackathon challenges participants to develop innovative technology solutions within a limited timeframe.",
     image: hackathonImg,
     color: "#ef4444",
   },
   {
     id: "02",
     title: "UI/UX",
-    tagline: "Design The Future.",
+    tagline: "Design the Future.",
     description:
-      "Kompetisi desain antarmuka dan pengalaman pengguna yang berfokus pada kreativitas dan problem solving.",
+      "A user interface and user experience design competition that emphasizes creativity, innovation, and problem-solving skills.",
     image: uiuxImg,
     color: "#06b6d4",
   },
@@ -35,7 +36,7 @@ const events = [
     title: "E-Football",
     tagline: "Play Beyond Limits.",
     description:
-      "Kompetisi e-sports sepak bola untuk menunjukkan kemampuan strategi dan permainan terbaik.",
+      "An exciting e-football tournament where participants showcase their strategy, teamwork, and gaming skills.",
     image: efootballImg,
     color: "#22c55e",
   },
@@ -44,7 +45,7 @@ const events = [
     title: "Fast Typing",
     tagline: "Speed Meets Precision.",
     description:
-      "Uji kecepatan dan akurasi mengetik untuk menjadi yang tercepat di Firetech 2026.",
+      "Test your typing speed and accuracy to compete for the title of the fastest typist at Firetech 2026.",
     image: fasttypingImg,
     color: "#8b5cf6",
   },
@@ -140,42 +141,50 @@ export default function Event() {
           "
         >
           {/* Header */}
-
           <div
             className="
-              flex
-              shrink-0
-              justify-center
-              pt-32
-              pb-10
-            "
+    flex
+    shrink-0
+    flex-col
+    items-center
+    justify-center
+    pt-32
+    pb-10
+  "
           >
             <motion.p
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: false,
-              }}
-              transition={{
-                duration: 0.8,
-              }}
-              className={`
-                text-5xl
-                font-bold
-                font-orbitron
-                ${darkMode ? "text-black" : "text-white"}
-              `}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ duration: 0.8 }}
+              className={`text-5xl font-bold font-orbitron ${
+                darkMode ? "text-black" : "text-white"
+              }`}
             >
-              Our Events
+              OUR EVENT
+            </motion.p>
+
+            <motion.div
+              custom={2}
+              variants={headingVariants}
+              className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
+                darkMode ? "bg-blue-700" : "bg-red-700"
+              }`}
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className={`mx-auto mt-6 max-w-3xl text-center text-lg font-space leading-relaxed ${
+                darkMode ? "text-slate-600" : "text-slate-400"
+              }`}
+            >
+              Discover a series of exciting competitions designed to challenge
+              your creativity, technical skills, and innovative thinking.
             </motion.p>
           </div>
-
           {/* Overview */}
 
           <div

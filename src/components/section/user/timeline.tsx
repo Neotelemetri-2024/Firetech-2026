@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../../../utils/gsap";
 import { useTheme } from "../../../context/themecontext";
+import { motion } from "framer-motion";
+import { headingVariants } from "../../animations/headingvariants";
 import {
   Calendar,
   Trophy,
@@ -188,30 +190,50 @@ export default function Timeline() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-24">
+    <section ref={sectionRef} className="relative overflow-hidden py-12">
       {/* Content */}
       <div className="relative mx-auto max-w-6xl px-6">
         {/* Heading */}
-        <div ref={headingRef} className="mb-20 text-center">
-          <h2
-            className={`group text-5xl md:text-6xl font-black font-syncopate leading-tight transition-all duration-500 ${
+        <div className="mb-24 text-center">
+          <motion.h2
+            variants={headingVariants.title}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: false,
+              amount: 0.3,
+            }}
+            className={`text-5xl md:text-6xl font-black font-syncopate ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            <span className="inline-block transition-all duration-500 group-hover:scale-105 group-hover:drop-shadow-[0_0_18px_rgba(59,130,246,0.35)]">
-              OUR TIMELINE
-            </span>
-          </h2>
+            OUR TIMELINE
+          </motion.h2>
 
-          <p
-            className={`mx-auto mt-6 max-w-2xl font-space text-lg leading-relaxed transition-colors duration-500 ${
+          <motion.div
+            custom={2}
+            variants={headingVariants}
+            className={`mx-auto mt-4 h-1 w-32 rounded-full ${
+              darkMode ? "bg-blue-700" : "bg-red-700"
+            }`}
+          />
+
+          <motion.p
+            variants={headingVariants.subtitle}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: false,
+              amount: 0.3,
+            }}
+            className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${
               darkMode ? "text-slate-600" : "text-slate-400"
             }`}
           >
             Follow every important milestone, from registration to the grand
             finale, and stay prepared for each exciting stage of the
             competition.
-          </p>
+          </motion.p>
         </div>
 
         {/* Timeline */}

@@ -1,15 +1,28 @@
 import type { Variants } from "framer-motion";
 
 export const headingVariants = {
+  // Container untuk section
+  container: {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  } satisfies Variants,
+
+  // Main Heading
   title: {
     hidden: {
       opacity: 0,
       y: 60,
+      scale: 0.96,
       filter: "blur(10px)",
     },
     visible: {
       opacity: 1,
       y: 0,
+      scale: 1,
       filter: "blur(0px)",
       transition: {
         duration: 0.9,
@@ -18,41 +31,44 @@ export const headingVariants = {
     },
   } satisfies Variants,
 
+  // Subtitle
   subtitle: {
     hidden: {
       opacity: 0,
       y: 25,
+      filter: "blur(6px)",
     },
     visible: {
       opacity: 1,
       y: 0,
+      filter: "blur(0px)",
       transition: {
-        delay: 0.15,
         duration: 0.7,
         ease: "easeOut",
       },
     },
   } satisfies Variants,
 
+  // General Card
   card: {
     hidden: {
       opacity: 0,
       y: 40,
       scale: 0.95,
     },
-    visible: {
+    visible: (index: number = 0) => ({
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        delay: 0.3,
+        delay: index * 0.12,
         duration: 0.8,
         ease: [0.22, 1, 0.36, 1],
       },
-    },
+    }),
   } satisfies Variants,
 
-  // Container untuk Media Partner & Sponsor
+  // Marquee Wrapper
   marqueeContainer: {
     hidden: {},
     visible: {
@@ -63,7 +79,7 @@ export const headingVariants = {
     },
   } satisfies Variants,
 
-  // Item logo Media Partner & Sponsor
+  // Marquee Item
   marqueeItem: {
     hidden: {
       opacity: 0,

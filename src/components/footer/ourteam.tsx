@@ -13,12 +13,12 @@ const teamMembers = [
     instagram: "https://www.instagram.com/fahirazlin/",
   },
   {
-    role: "Front End Developer",
+    role: "FrontEnd Developer",
     name: "Rizki Dafa Naldi",
     instagram: "https://www.instagram.com/daf_nal/",
   },
   {
-    role: "Back End Developer",
+    role: "BackEnd Developer",
     name: "Aufan Taufiqurrahman",
     instagram: "https://www.instagram.com/aufant_/",
   },
