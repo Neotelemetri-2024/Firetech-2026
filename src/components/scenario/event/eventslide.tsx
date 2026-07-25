@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "../../../context/themecontext";
 
 type EventSlideProps = {
   id: string;
@@ -19,29 +18,6 @@ export default function EventSlide({
   color,
 }: EventSlideProps) {
   const navigate = useNavigate();
-  const { darkMode } = useTheme();
-
-  const theme = {
-    label: darkMode ? "text-slate-500" : "text-white/40",
-    title: darkMode ? "text-black" : "text-white",
-    description: darkMode ? "text-slate-700" : "text-white/70",
-
-    button: darkMode
-      ? "bg-white border border-slate-200 text-black hover:bg-black hover:text-white"
-      : "bg-linear-to-br from-red-400/20 to-blue-500/20 text-white hover:bg-white hover:text-black",
-
-    card: darkMode
-      ? "border border-slate-200 bg-white shadow-xl"
-      : "border border-white/10",
-
-    topLine: darkMode ? "bg-slate-700" : "bg-white",
-
-    verticalTitle: darkMode ? "text-black" : "text-white",
-
-    stroke: darkMode
-      ? "[-webkit-text-stroke:1.5px_black]"
-      : "[-webkit-text-stroke:1.5px_white]",
-  };
 
   const handleExploreChallenge = () => {
     navigate("/dashboard/apply");
@@ -50,15 +26,20 @@ export default function EventSlide({
   return (
     <section
       className="
-        relative
-        flex
-        h-screen
-        w-screen
-        shrink-0
-        items-center
-        justify-center
-        px-24
-      "
+    relative
+    flex
+    min-h-screen
+    w-full
+    items-center
+    justify-center
+
+    px-6
+    py-16
+
+    lg:h-screen
+    lg:w-screen
+    lg:px-24
+  "
     >
       {/* Background Glow */}
 
@@ -71,7 +52,9 @@ export default function EventSlide({
           w-130
           -translate-y-1/2
           rounded-full
-          blur-[180px]
+          blur-[80px]
+
+lg:blur-[180px]
           opacity-20
         "
         style={{
@@ -83,14 +66,19 @@ export default function EventSlide({
         className="
     relative
     z-10
-    flex
     w-full
     max-w-7xl
-    items-center
-    justify-between
-    gap-24
+    flex
+flex-col
 
-    translate-y-12
+gap-12
+
+lg:flex-row
+lg:items-center
+lg:justify-between
+lg:gap-24
+
+lg:translate-y-12
   "
       >
         {/* ================= LEFT ================= */}
@@ -98,7 +86,10 @@ export default function EventSlide({
         <div
           className="
     flex
-    w-[42%]
+w-full
+max-w-xl
+
+lg:w-[42%]
     flex-col
     justify-center
 
@@ -106,14 +97,22 @@ export default function EventSlide({
   "
         >
           <span
-            className={`mb-4 text-sm font-semibold uppercase tracking-[0.35em] ${theme.label}`}
+            className="
+              mb-4
+              text-sm
+              font-semibold
+              uppercase
+              tracking-[0.35em]
+              text-white/40
+            "
           >
             Competition
           </span>
 
           <span
             className="
-              text-[130px]
+              text-6xl
+lg:text-[130px]
               font-black
               leading-none
             "
@@ -125,7 +124,14 @@ export default function EventSlide({
           </span>
 
           <h2
-            className={`mt-5 text-7xl font-black leading-tight ${theme.title}`}
+            className="
+              mt-5
+              text-4xl
+lg:text-7xl
+              font-black
+              leading-tight
+              text-white
+            "
           >
             {title}
           </h2>
@@ -133,7 +139,8 @@ export default function EventSlide({
           <p
             className="
               mt-4
-              text-2xl
+              text-lg
+lg:text-2xl
               font-semibold
             "
             style={{
@@ -144,30 +151,49 @@ export default function EventSlide({
           </p>
 
           <p
-            className={`mt-8 max-w-130 text-lg leading-9 ${theme.description}`}
+            className="
+              mt-8
+              max-w-130
+              text-base
+leading-8
+
+lg:text-lg
+lg:leading-9
+              text-white/70
+            "
           >
             {description}
           </p>
 
           <button
             onClick={handleExploreChallenge}
-            className={`
-  mt-12
-  inline-flex
-  w-fit
-  items-center
-  gap-3
-  rounded-full
-  px-8
-  py-4
-  font-medium
-  backdrop-blur-md
-  transition-all
-  duration-500
-  cursor-pointer
-  hover:scale-105
-  ${theme.button}
-`}
+            className="
+              mt-12
+              inline-flex
+              w-full
+justify-center
+
+lg:w-fit
+              items-center
+              gap-3
+              rounded-full
+              bg-linear-to-br
+              from-red-400/20
+              to-blue-500/20
+              cursor-pointer
+              px-8
+              py-4
+              font-medium
+              text-white
+              backdrop-blur-md
+              transition-all
+              duration-500
+
+              hover:scale-105
+              hover:border-white/40
+              hover:bg-white
+              hover:text-black
+            "
           >
             Explore Challenge
             <span className="text-xl">→</span>
@@ -179,7 +205,9 @@ export default function EventSlide({
           className="
     relative
     flex
-    w-[58%]
+    w-full
+
+lg:w-[58%]
     items-center
     justify-center
   "
@@ -207,20 +235,24 @@ export default function EventSlide({
           {/* Event Card */}
 
           <div
-            className={`
-event-image
-group
-relative
-h-135
-w-82.5
-overflow-hidden
-rounded-4xl
-transition-all
-duration-700
-hover:-translate-y-3
-cursor-pointer
-${theme.card}
-`}
+            className="
+      event-image
+      group
+      relative
+      h-[460px]
+w-full
+max-w-sm
+
+lg:h-135
+lg:w-82.5
+      overflow-hidden
+      rounded-4xl
+      border
+      border-white/10
+      transition-all
+      duration-700
+      hover:-translate-y-3
+    "
           >
             {/* Image */}
 
@@ -276,6 +308,8 @@ ${theme.card}
 
             <div
               className="
+              hidden
+lg:block
         absolute
         left-1/2
         top-24

@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "../../../utils/gsap";
 import { useTheme } from "../../../context/themecontext";
 
 import Scenario1 from "../../scenario/event/scenario1";
 import EventSlide from "../../scenario/event/eventslide";
+import MobileEventCard from "../../scenario/event/eventcardmobile";
+import MobileEventModal from "../../scenario/event/eventmodalmobile";
 
 import hackathonImg from "../../../assets/event/hackathon.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
@@ -55,9 +57,15 @@ export default function Event() {
   const { darkMode } = useTheme();
 
   const sectionRef = useRef<HTMLElement>(null);
+
+  const [selectedEvent, setSelectedEvent] = useState<
+    (typeof events)[number] | null
+  >(null);
   const TRACK_OFFSET = -10;
 
   useEffect(() => {
+    if (window.innerWidth < 1024) return;
+
     const ctx = gsap.context(() => {
       const panels = gsap.utils.toArray<HTMLElement>(".panel");
 
@@ -91,7 +99,8 @@ export default function Event() {
       ref={sectionRef}
       className="
         relative
-        h-screen
+        min-h-screen
+        lg:h-screen
       "
     >
       {/* Background */}
@@ -121,7 +130,7 @@ export default function Event() {
       {/* Horizontal Track */}
 
       <div
-        className="event-track flex h-screen"
+        className="event-track hidden h-screen lg:flex"
         style={{
           width: `${events.length + 1}00vw`,
         }}
@@ -189,12 +198,13 @@ export default function Event() {
 
           <div
             className="
-              flex
-              flex-1
-              items-start
-              justify-center
-              px-10
-            "
+    hidden
+    lg:flex
+    flex-1
+    items-start
+    justify-center
+    px-10
+  "
           >
             <Scenario1 />
           </div>
@@ -208,12 +218,12 @@ export default function Event() {
           <div
             key={event.id}
             className="
-              panel
-              flex
-              h-screen
-              w-screen
-              shrink-0
-            "
+            panel
+            flex
+            h-screen
+            w-screen
+            shrink-0
+          "
           >
             <EventSlide
               id={event.id}
@@ -226,6 +236,84 @@ export default function Event() {
           </div>
         ))}
       </div>
+
+      {/* ===================================================== */}
+      {/* Mobile Layout */}
+      {/* ===================================================== */}
+
+      <div
+        className="
+        lg:hidden
+        flex
+        flex-col
+        px-6
+        pt-28
+        pb-16
+      "
+      >
+        {/* Header */}
+
+        <div className="text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.8 }}
+            className={`text-4xl font-bold font-orbitron ${
+              darkMode ? "text-black" : "text-white"
+            }`}
+          >
+            OUR EVENT
+          </motion.p>
+
+          <motion.div
+            custom={2}
+            variants={headingVariants}
+            className={`mx-auto mt-4 h-1 w-24 rounded-full ${
+              darkMode ? "bg-blue-700" : "bg-red-700"
+            }`}
+          />
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className={`mx-auto mt-5 max-w-md text-sm leading-7 ${
+              darkMode ? "text-slate-600" : "text-slate-400"
+            }`}
+          >
+            Discover a series of exciting competitions designed to challenge
+            your creativity, technical skills, and innovative thinking.
+          </motion.p>
+        </div>
+
+        {/* Event List */}
+
+        <div className="mt-14 space-y-16">
+          {events.map((event) => (
+            <MobileEventCard
+              key={event.id}
+              id={event.id}
+              title={event.title}
+              tagline={event.tagline}
+              image={event.image}
+              color={event.color}
+              onClick={() => setSelectedEvent(event)}
+            />
+          ))}
+        </div>
+      </div>
+      <MobileEventModal
+        open={selectedEvent !== null}
+        onClose={() => setSelectedEvent(null)}
+        id={selectedEvent?.id ?? ""}
+        title={selectedEvent?.title ?? ""}
+        tagline={selectedEvent?.tagline ?? ""}
+        description={selectedEvent?.description ?? ""}
+        image={selectedEvent?.image ?? ""}
+        color={selectedEvent?.color ?? "#ffffff"}
+      />
     </section>
   );
 }
