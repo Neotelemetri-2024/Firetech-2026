@@ -159,18 +159,18 @@ export default function Card({ days, hours, minutes, seconds }: Props) {
                       {/* 
                         PERBAIKAN 3: Ukuran kotak (w dan h) dibuat responsive mengikuti ukuran layar.
                       */}
-                      <div className="relative flex h-30 w-20 sm:h-40 sm:w-30 md:h-45 md:w-35 lg:h-55 lg:w-47.5 flex-col items-center justify-center">
+                      <div className="relative flex h-16 w-12 sm:h-28 sm:w-24 md:h-45 md:w-35 lg:h-55 lg:w-47.5 flex-col items-center justify-center">
                         <AnimatedDigit value={values[item.key]} />
 
                         <div
-                          className={`mt-3 md:mt-5 h-px w-12 md:w-20 bg-linear-to-r from-transparent 
-                            to-transparent transition-all duration-500 group-hover:w-16 md:group-hover:w-28 ${
+                          className={`mt-2 sm:mt-3 md:mt-5 h-px w-10 sm:w-12 md:w-20 bg-linear-to-r from-transparent 
+                            to-transparent transition-all duration-500 group-hover:w-14 sm:group-hover:w-16 md:group-hover:w-28 ${
                               darkMode ? "via-blue-600" : "via-red-600"
                             }`}
                         />
 
                         <span
-                          className={`mt-3 md:mt-5 text-[9px] md:text-xs font-semibold uppercase tracking-[0.25em] md:tracking-[0.45em] transition-colors duration-300 ${
+                          className={`mt-2 sm:mt-3 md:mt-5 text-[8px] sm:text-[9px] md:text-xs font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] md:tracking-[0.45em] transition-colors duration-300 ${
                             darkMode ? "text-black" : "text-white"
                           }`}
                         >
