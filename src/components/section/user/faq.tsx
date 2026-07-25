@@ -88,7 +88,7 @@ export default function FAQ() {
         variants={itemVariants}
         className={`
           group relative
-          mb-5 rounded-2xl border p-5 pb-5
+          mb-2 rounded-2xl border p-5 pb-5
           transition-all duration-500 ease-out
           ${
             isOpen

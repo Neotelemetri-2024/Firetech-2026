@@ -256,7 +256,7 @@ const Dashboard = () => {
                   className="
                     h-auto
                     w-full
-                    max-w-[650px]
+                    max-w-162.5
                     object-contain
                     select-none
                   "

@@ -55,10 +55,16 @@ export default function Event() {
   const { darkMode } = useTheme();
 
   const sectionRef = useRef<HTMLElement>(null);
+  const TRACK_OFFSET = -10;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const panels = gsap.utils.toArray<HTMLElement>(".panel");
+
+      // 👇 Geser seluruh track ke atas
+      gsap.set(".event-track", {
+        y: TRACK_OFFSET,
+      });
 
       gsap.to(panels, {
         xPercent: -100 * (panels.length - 1),
@@ -67,17 +73,11 @@ export default function Event() {
 
         scrollTrigger: {
           trigger: sectionRef.current,
-
           pin: true,
-
           scrub: 1,
-
           snap: 1 / (panels.length - 1),
-
           anticipatePin: 1,
-
           invalidateOnRefresh: true,
-
           end: () => "+=" + window.innerWidth * (panels.length - 1),
         },
       });
@@ -121,7 +121,7 @@ export default function Event() {
       {/* Horizontal Track */}
 
       <div
-        className="flex h-screen"
+        className="event-track flex h-screen"
         style={{
           width: `${events.length + 1}00vw`,
         }}

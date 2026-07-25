@@ -1,6 +1,6 @@
 import type { EfootballFormData } from "../../types/typesevent";
 import FormField from "./formfield";
-import PlaceholderStep from "./placeholderstep";
+import Payment from "./payment";
 
 type EfootballFormProps = {
   step: number;
@@ -48,11 +48,5 @@ export default function EfootballForm({
     );
   }
 
-  if (step === 2) {
-    return (
-      <PlaceholderStep message="Form untuk menambahkan partner akan ditampilkan di sini" />
-    );
-  }
-
-  return <PlaceholderStep message="Form pembayaran akan ditampilkan di sini" />;
+  return <Payment />;
 }

@@ -1,6 +1,7 @@
 import type { HackathonFormData } from "../../types/typesevent";
 import FormField from "./formfield";
-import PlaceholderStep from "./placeholderstep";
+import Payment from "./payment";
+import AddMember from "./addmember";
 
 type HackathonFormProps = {
   step: number;
@@ -49,10 +50,8 @@ export default function HackathonForm({
   }
 
   if (step === 2) {
-    return (
-      <PlaceholderStep message="Form untuk menambahkan anggota tim akan ditampilkan di sini" />
-    );
+    return <AddMember formData={formData} onChange={onChange} />;
   }
 
-  return <PlaceholderStep message="Form pembayaran akan ditampilkan di sini" />;
+  return <Payment />;
 }

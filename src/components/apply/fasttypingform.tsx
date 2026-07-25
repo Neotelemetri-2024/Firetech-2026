@@ -1,6 +1,6 @@
 import type { FastTypingFormData } from "../../types/typesevent";
 import FormField from "./formfield";
-import PlaceholderStep from "./placeholderstep";
+import Payment from "./payment";
 
 type FastTypingFormProps = {
   step: number;
@@ -39,5 +39,5 @@ export default function FastTypingForm({
     );
   }
 
-  return <PlaceholderStep message="Form pembayaran akan ditampilkan di sini" />;
+  return <Payment />;
 }

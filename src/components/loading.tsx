@@ -6,7 +6,7 @@ export default function Loading() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 1.2}}
       className="fixed inset-0 z-9999 overflow-hidden"
       style={{
         background: `

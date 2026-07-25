@@ -60,14 +60,14 @@ export default function Home() {
 
       <SectionDivider />
 
-      <section id="timeline" className="scroll-mt-40">
-        <Timeline />
+      <section id="countdown" className="scroll-mt-40">
+        <Countdown />
       </section>
 
       <SectionDivider />
 
-      <section id="countdown" className="scroll-mt-40">
-        <Countdown />
+      <section id="timeline" className="scroll-mt-40">
+        <Timeline />
       </section>
 
       <SectionDivider />

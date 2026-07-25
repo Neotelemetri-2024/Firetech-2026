@@ -218,6 +218,7 @@ rounded-4xl
 transition-all
 duration-700
 hover:-translate-y-3
+cursor-pointer
 ${theme.card}
 `}
           >

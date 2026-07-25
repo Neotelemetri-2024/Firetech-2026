@@ -2,6 +2,7 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserRound, ChevronDown } from "lucide-react";
 import ThemeSwitcher from "./themeswitcher";
+import LoginButton from "./button/login";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
@@ -394,26 +395,7 @@ export default function Navbar() {
             </button>
 
             {/* Login Button - Desktop */}
-            <button
-              type="button"
-              onClick={handleLoginClick}
-              className="hidden md:inline-flex items-center gap-1.5 ml-1 rounded-full cursor-pointer bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-pink-500/25 transition-all duration-300 hover:scale-[1.04] hover:shadow-xl hover:shadow-pink-500/30 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400/50 active:scale-[0.98]"
-            >
-              <svg
-                className="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25V9m-4.5 1.5h13.5l-1.5 10.5H4.5L3 10.5z"
-                />
-              </svg>
-              Login
-            </button>
+            <LoginButton onClick={handleLoginClick} />
           </div>
         </nav>
 

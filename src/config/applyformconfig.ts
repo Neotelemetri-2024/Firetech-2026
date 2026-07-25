@@ -7,10 +7,49 @@ import FastTypingForm from "../components/apply/fasttypingform";
 
 // Nilai awal form data untuk masing-masing kategori event
 export const initialApplyFormData: ApplyFormDataMap = {
-  Hackathon: { namaTeam: "", namaKetua: "", asalSekolah: "" },
-  "UI/UX": { namaPeserta: "", asalSekolah: "", portofolioUrl: "" },
-  efootball: { namaPemain: "", idGame: "", asalSekolah: "" },
-  "Fast Typing": { namaPeserta: "", asalSekolah: "" },
+  Hackathon: {
+    // Step 1
+    namaTeam: "",
+    namaKetua: "",
+    asalSekolah: "",
+
+    // Step 2
+    anggota1: "",
+    anggota2: "",
+    anggota3: "",
+    anggota4: "",
+
+    // Upload
+    ktm: null,
+  },
+
+  "UI/UX": {
+    // Step 1
+    namaTeam: "",
+    namaKetua: "",
+    asalSekolah: "",
+    portofolioUrl: "",
+
+    // Step 2
+    anggota1: "",
+    anggota2: "",
+    anggota3: "",
+    anggota4: "",
+
+    // Upload
+    ktm: null,
+  },
+
+  "E-Football": {
+    namaPemain: "",
+    idGame: "",
+    asalSekolah: "",
+  },
+
+  "Fast Typing": {
+    namaPeserta: "",
+    asalSekolah: "",
+  },
 };
 
 type ApplyFormProps<C extends Category> = {
@@ -31,11 +70,11 @@ export const applyFormConfig: {
     Component: HackathonForm,
   },
   "UI/UX": {
-    steps: ["Personal Information", "Upload Portfolio", "Payment"],
+    steps: ["Personal Information", "Add Member", "Payment"],
     Component: UiUxForm,
   },
-  efootball: {
-    steps: ["Personal Information", "Add Partner", "Payment"],
+  "E-Football": {
+    steps: ["Personal Information", "Payment"],
     Component: EfootballForm,
   },
   "Fast Typing": {

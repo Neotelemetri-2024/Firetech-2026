@@ -1,6 +1,7 @@
 import type { UiUxFormData } from "../../types/typesevent";
 import FormField from "./formfield";
-import PlaceholderStep from "./placeholderstep";
+import Payment from "./payment";
+import AddMember from "./addmember";
 
 type UiUxFormProps = {
   step: number;
@@ -12,12 +13,12 @@ type UiUxFormProps = {
 export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
   if (step === 1) {
     return (
-      <div className="space-y-8 animate-fadeIn">
+      <div className="space-y-8 animate-fadeIn"> 
         <FormField
-          label="Nama Peserta"
-          name="namaPeserta"
-          placeholder="Nama Lengkap"
-          value={formData.namaPeserta}
+          label="Nama Tim"
+          name="namaTeam"
+          placeholder="Nama Tim"
+          value={formData.namaTeam}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
@@ -45,10 +46,8 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
   }
 
   if (step === 2) {
-    return (
-      <PlaceholderStep message="Form upload desain/portofolio akan ditampilkan di sini" />
-    );
+    return <AddMember formData={formData} onChange={onChange} />;
   }
 
-  return <PlaceholderStep message="Form pembayaran akan ditampilkan di sini" />;
+  return <Payment />;
 }
