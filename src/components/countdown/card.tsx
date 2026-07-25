@@ -71,7 +71,7 @@ export default function Card({ days, hours, minutes, seconds }: Props) {
                 },
               },
             }}
-            className="mx-auto flex w-full flex-nowrap items-center justify-center gap-2 md:gap-4 lg:gap-0"
+            className="mx-auto flex w-full flex-col items-center justify-center gap-6 md:flex-row md:gap-4 lg:gap-0"
           >
             {countdownItems.map((item, index) => (
               <motion.div
@@ -159,7 +159,7 @@ export default function Card({ days, hours, minutes, seconds }: Props) {
                       {/* 
                         PERBAIKAN 3: Ukuran kotak (w dan h) dibuat responsive mengikuti ukuran layar.
                       */}
-                      <div className="relative flex h-16 w-12 sm:h-28 sm:w-24 md:h-45 md:w-35 lg:h-55 lg:w-47.5 flex-col items-center justify-center">
+                      <div className="relative flex h-32 w-28 sm:h-28 sm:w-24 md:h-45 md:w-35 lg:h-55 lg:w-47.5 flex-col items-center justify-center">
                         <AnimatedDigit value={values[item.key]} />
 
                         <div

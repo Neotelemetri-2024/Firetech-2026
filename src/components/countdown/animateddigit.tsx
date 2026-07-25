@@ -17,7 +17,7 @@ export default function AnimatedDigit({ value }: Props) {
   }
 
   return (
-    <div className="relative h-10 w-full overflow-hidden sm:h-14 md:h-20">
+    <div className="relative h-16 w-full overflow-hidden sm:h-14 md:h-20">
       <AnimatePresence mode="wait">
         <motion.div
           key={display}
@@ -31,7 +31,7 @@ export default function AnimatedDigit({ value }: Props) {
           className="absolute inset-0 flex items-center justify-center"
         >
           <span
-            className={`font-syncopate text-2xl sm:text-3xl md:text-7xl font-black  transition-colors duration-300  ${
+            className={`font-syncopate text-5xl sm:text-3xl md:text-7xl font-black  transition-colors duration-300  ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
