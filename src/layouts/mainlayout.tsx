@@ -25,14 +25,40 @@ export default function MainLayout() {
       />
 
       {/* Fixed Background decorations dengan blur gradient effects */}
-      <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
-        {/* Cyan gradient blob - top left */}
-        <div className="absolute left-0 top-0 h-100 w-100 rounded-full bg-cyan-500/10 blur-[160px]" />
+      <div className="fixed inset-0 overflow-hidden isolate -z-10 pointer-events-none">
+        {/* Cyan gradient blob - desktop only */}
+        <div
+          className="
+      hidden
+      lg:block
+      absolute
+      left-0
+      top-0
+      h-100
+      w-100
+      rounded-full
+      bg-cyan-500/10
+      blur-[160px]
+    "
+        />
 
-        {/* Blue gradient blob - bottom right */}
-        <div className="absolute right-0 bottom-0 h-125 w-125 rounded-full bg-blue-500/10 blur-[170px]" />
+        {/* Blue gradient blob - desktop only */}
+        <div
+          className="
+      hidden
+      lg:block
+      absolute
+      right-0
+      bottom-0
+      h-125
+      w-125
+      rounded-full
+      bg-blue-500/10
+      blur-[170px]
+    "
+        />
 
-        {/* Grid pattern overlay - subtle background texture */}
+        {/* Grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{

@@ -89,7 +89,9 @@ export default function Sponsor() {
           </div>
         </div>
         {/* ===== SPONSOR CARDS SECTION ===== */}
-        <div className="sp-marquee-wrapper relative mb-24 overflow-hidden">
+        {/* ===== Desktop Sponsor ===== */}
+
+        <div className="hidden lg:block sp-marquee-wrapper relative mb-24 overflow-hidden">
           <motion.div
             variants={headingVariants.marqueeContainer}
             initial="hidden"
@@ -151,7 +153,31 @@ export default function Sponsor() {
               </motion.div>
             ))}
           </motion.div>
-        </div>{" "}
+        </div>
+        {/* ===== Mobile Sponsor ===== */}
+
+        <div className="grid grid-cols-2 gap-6 lg:hidden">
+          {sponsors.map((item) => (
+            <div
+              key={item.name}
+              className="
+        flex
+        items-center
+        justify-center
+        rounded-2xl
+        border
+        border-white/10
+        p-6
+      "
+            >
+              <img
+                src={item.logo}
+                alt={item.name}
+                className="h-16 object-contain"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

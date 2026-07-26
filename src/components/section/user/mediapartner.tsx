@@ -76,16 +76,14 @@ export default function MediaPartner() {
             innovation, technology, and entrepreneurship to a wider audience.
           </motion.p>
         </motion.div>
-
         {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
         <motion.div
           variants={headingVariants.marqueeContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.2 }}
-          className="mp-marquee-wrapper relative mb-24 overflow-hidden"
+          className="hidden lg:block mp-marquee-wrapper relative mb-24 overflow-hidden"
         >
-          {/* Track marquee */}
           <div className="mp-marquee-track flex w-max gap-12">
             {[...mediaPartners, ...mediaPartners].map((item, index) => (
               <motion.div
@@ -127,6 +125,30 @@ export default function MediaPartner() {
             ))}
           </div>
         </motion.div>
+        {/* ===== Mobile Media Partner ===== */}
+
+        <div className="grid grid-cols-2 gap-6 lg:hidden">
+          {mediaPartners.map((item) => (
+            <div
+              key={item.name}
+              className="
+        flex
+        items-center
+        justify-center
+        rounded-2xl
+        border
+        border-white/10
+        p-6
+      "
+            >
+              <img
+                src={item.logo}
+                alt={item.name}
+                className="h-16 object-contain"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

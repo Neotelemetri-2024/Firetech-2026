@@ -3,6 +3,8 @@
 /* Import Google Fonts di baris paling atas */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@400;600&family=Syncopate:wght@400;700&display=swap");
 
+
+
 /* Daftarkan font ke dalam tema Tailwind */
 @theme {
   --font-syncopate: "Syncopate", sans-serif;

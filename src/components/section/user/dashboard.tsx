@@ -54,7 +54,10 @@ const Dashboard = () => {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
+        className="
+        hidden
+lg:block
+absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
       />
 
       <motion.div
@@ -68,7 +71,18 @@ const Dashboard = () => {
           ease: "easeInOut",
           delay: 1,
         }}
-        className="absolute bottom-20 right-0 h-125 w-125 rounded-full bg-cyan-500/20 blur-[200px]"
+        className="
+    hidden
+    lg:block
+    absolute
+    bottom-20
+    right-0
+    h-125
+    w-125
+    rounded-full
+    bg-cyan-500/20
+    blur-[200px]
+  "
       />
 
       <main className="mx-auto w-full max-w-[1700px] px-6 py-12 lg:px-10">
@@ -78,15 +92,40 @@ const Dashboard = () => {
           animate="visible"
           className="relative"
         >
-          <div className="grid items-center gap-16 lg:grid-cols-2">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
             {/* ================= LEFT ================= */}
             <div
               className="
               relative
               z-10
+              flex
+              flex-col
+              items-center
+              text-center
+              lg:block
+              lg:text-left
               lg:translate-x-20
             "
             >
+              {/* Logo hanya tampil di mobile */}
+              <motion.div
+                variants={itemVariants}
+                className="mb-8 flex justify-center lg:hidden"
+              >
+                <motion.div animate={floatAnimation}>
+                  <img
+                    src={FiretechHero}
+                    alt="Firetech Hero"
+                    className="
+                    w-72
+                    max-w-full
+                    object-contain
+                    select-none
+                  "
+                  />
+                </motion.div>
+              </motion.div>
+
               <motion.div variants={itemVariants}>
                 <h1
                   className="
@@ -109,7 +148,10 @@ const Dashboard = () => {
               </motion.div>
 
               {/* Accent Line */}
-              <motion.div variants={itemVariants} className="relative mt-5">
+              <motion.div
+                variants={itemVariants}
+                className="relative mt-5 flex flex-col items-center lg:items-start"
+              >
                 <div
                   className={`
                     h-2
@@ -163,7 +205,8 @@ const Dashboard = () => {
                 className={`
                   mt-6
                   max-w-xl
-                  text-justify
+                  text-center
+                  lg:text-justify
                   text-base
                   leading-relaxed
                   lg:text-lg
@@ -191,7 +234,14 @@ const Dashboard = () => {
               {/* Buttons */}
               <motion.div
                 variants={itemVariants}
-                className="mt-10 flex flex-wrap gap-5"
+                className="
+                mt-10
+                flex
+                flex-wrap
+                justify-center
+                gap-5
+                lg:justify-start
+              "
               >
                 <motion.button
                   whileHover={{
@@ -242,12 +292,13 @@ const Dashboard = () => {
             <motion.div
               variants={itemVariants}
               className="
-                relative
-                flex
-                justify-center
-                lg:justify-end
-                lg:-translate-x-24
-              "
+              relative
+              hidden
+              lg:flex
+              justify-center
+              lg:justify-end
+              lg:-translate-x-24
+            "
             >
               <motion.div animate={floatAnimation} className="relative p-3">
                 <img

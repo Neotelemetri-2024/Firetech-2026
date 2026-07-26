@@ -63,7 +63,7 @@ export default function Countdown() {
             }`}
           >
             WE ARE
-            <span className="block mt-2">
+            <span className="mt-2 flex flex-col items-center md:block">
               <span
                 className={`bg-clip-text text-transparent ${
                   darkMode ? "bg-blue-600" : "bg-red-600"
