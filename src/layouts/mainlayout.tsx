@@ -1,5 +1,6 @@
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
+import ArrowButton from "../components/button/arrow";
 import { Outlet } from "react-router-dom";
 import { useTheme } from "../context/themecontext";
 
@@ -82,6 +83,8 @@ export default function MainLayout() {
 
         <Footer />
       </div>
+
+      <ArrowButton />
     </>
   );
 }

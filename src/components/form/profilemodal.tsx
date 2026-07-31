@@ -186,7 +186,7 @@ export default function ProfileModal({
           </div>
 
           {/* Modal */}
-          <div className="relative max-h-[calc(92vh-80px)] overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
+          <div className="profile-scroll relative max-h-[calc(92vh-80px)] overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
             <div className="flex flex-col items-center ">
               <div className="relative">
                 <motion.button
@@ -229,7 +229,7 @@ export default function ProfileModal({
             </div>
 
             {/* Grid Card */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2 cursor-pointer">
               <ProfileItem
                 icon={<BadgeCheck size={18} />}
                 title="Participant ID"

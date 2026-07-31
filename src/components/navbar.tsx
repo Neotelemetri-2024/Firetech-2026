@@ -2,6 +2,7 @@ import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserRound, ChevronDown } from "lucide-react";
 import ThemeSwitcher from "./themeswitcher";
+import LanguageSwitcher from "./languageswitcher";
 import LoginButton from "./button/login";
 import ProfileModal from "./form/profilemodal";
 import { useTheme } from "../context/themecontext";
@@ -33,9 +34,10 @@ const navItems: NavItem[] = [
     label: "Event",
     children: [
       { label: "Hackathon", hash: "hackathon" },
-      { label: "UI/UX", hash: "uiux" },
+      { label: "Informatics Olympiad", hash: "informaticsolympiad" },
       { label: "Fast Typing", hash: "ft" },
       { label: "E-Football", hash: "ef" },
+      { label: "UI/UX", hash: "uiux" },
     ],
   },
   { label: "Timeline" },
@@ -348,9 +350,12 @@ export default function Navbar() {
           </LayoutGroup>
 
           {/* Right side actions */}
-          <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <div className="ml-auto flex items-center gap-1 sm:gap-2 overflow-visible">
             {/* Theme Switcher */}
             <ThemeSwitcher />
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {/* User Icon */}
             <button
@@ -583,22 +588,14 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={handleLoginClick}
-                className="w-full flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-pink-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/30 active:scale-[0.98]"
+                className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-red-600 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-red-500/20 active:scale-[0.98]"
               >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25V9m-4.5 1.5h13.5l-1.5 10.5H4.5L3 10.5z"
-                  />
-                </svg>
-                Login
+                <UserRound
+                  size={18}
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+
+                <span>Login</span>
               </button>
             </div>
           </div>

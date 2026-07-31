@@ -5,7 +5,7 @@ export default function ThemeSwitcher() {
 
   return (
     <button
-      className={`ml-4 h-10 w-10 rounded-full border cursor-pointer p-2 shadow-md transition hover:-translate-y-0.5 md:ml-6 ${
+      className={`group relative ml-4 h-10 w-10 rounded-full border cursor-pointer p-2 shadow-md transition-all duration-300 hover:-translate-y-0.5 md:ml-6 ${
         darkMode
           ? "bg-white border-hover:bg-slate-800 text-black"
           : "bg-black border-white/80 text-white"
@@ -42,6 +42,16 @@ export default function ThemeSwitcher() {
           />
         </svg>
       )}
+      {/* Tooltip */}
+      <span
+        className={`pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2.5 py-1 text-[10px] font-semibold opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-0.5 ${
+          darkMode
+            ? "bg-slate-800 text-white"
+            : "bg-white/15 text-white backdrop-blur-md"
+        }`}
+      >
+        {darkMode ? "Dark Mode" : "Light Mode"}
+      </span>
     </button>
   );
 }

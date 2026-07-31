@@ -2,13 +2,15 @@ import hackathonImg from "../../../assets/event/hackathon.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
+import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
 const events = [
   { id: "01", title: "Hackathon", image: hackathonImg, color: "#ef4444" },
-  { id: "02", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
-  { id: "03", title: "E-Football", image: efootballImg, color: "#22c55e" },
-  { id: "04", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },
+  {id: "02", title: "Informatics Olympiad", image: informaticsImg, color: "#06b6d4" },
+  { id: "03", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
+  { id: "04", title: "E-Football", image: efootballImg, color: "#22c55e" },
+  { id: "05", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },
 ];
 export default function Scenario1() {
   return (

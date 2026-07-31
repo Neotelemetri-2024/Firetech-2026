@@ -1,7 +1,13 @@
 import { useTheme } from "../../context/themecontext";
 import { Laptop, Palette, Gamepad2, Bot, Keyboard } from "lucide-react";
 
-const navItems = ["Home", "About", "Event", "Contact"];
+const navItems = [
+  { label: "Home", id: "home" },
+  { label: "About", id: "about" },
+  { label: "Event", id: "event" },
+  { label: "FAQ", id: "faq" },
+  { label: "Timeline", id: "timeline" },
+];
 
 const eventItems = [
   {
@@ -29,6 +35,17 @@ const eventItems = [
 export default function QuickLinks() {
   const { darkMode } = useTheme();
 
+  const handleScroll = (id: string) => {
+    const section = document.getElementById(id);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
       <span
@@ -41,17 +58,18 @@ export default function QuickLinks() {
 
       <ul className="flex flex-wrap justify-center lg:justify-start gap-2.5">
         {navItems.map((item) => (
-          <li key={item}>
-            <a
-              href={`#${item.toLowerCase()}`}
-              className={`inline-block px-4 py-2 text-xs font-bold rounded-full border-2 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${
+          <li key={item.id}>
+            <button
+              type="button"
+              onClick={() => handleScroll(item.id)}
+              className={`inline-block px-4 py-2 text-xs font-bold cursor-pointer rounded-full border-2 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${
                 darkMode
                   ? "border-slate-300 text-slate-700 bg-slate-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_20px_rgba(37,99,235,0.25)]"
                   : "border-slate-600 text-slate-300 bg-slate-900 hover:bg-red-700 hover:text-white hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_20px_rgba(185,28,28,0.25)]"
               }`}
             >
-              {item}
-            </a>
+              {item.label}
+            </button>
           </li>
         ))}
       </ul>

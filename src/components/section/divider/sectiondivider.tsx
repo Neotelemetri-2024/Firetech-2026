@@ -1,13 +1,17 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTheme } from "../../../context/themecontext";
 
-import leftDivider from "../../../assets/divider/jaringan.svg";
-import rightDivider from "../../../assets/divider/jaringan1.svg";
+import leftDivider from "../../../assets/divider/jaringan.webp";
+import rightDivider from "../../../assets/divider/jaringan1.webp";
+import leftDividerDark from "../../../assets/divider/jaringan_hitam.webp";
+import rightDividerDark from "../../../assets/divider/jaringan1_hitam.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SectionDivider() {
+  const { darkMode } = useTheme();
   const dividerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,7 +67,7 @@ export default function SectionDivider() {
     <div ref={dividerRef} className="relative h-32 overflow-hidden">
       {/* Kiri */}
       <img
-        src={leftDivider}
+        src={darkMode ? leftDividerDark : leftDivider}
         alt=""
         className="
           divider-left
@@ -78,7 +82,7 @@ export default function SectionDivider() {
 
       {/* Kanan */}
       <img
-        src={rightDivider}
+        src={darkMode ? rightDividerDark : rightDivider}
         alt=""
         className="
           divider-right

@@ -342,7 +342,7 @@ export default function UserDetailModal({
                   }}
                 >
                   {/* Glass reflection overlay */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/5 to-transparent" />
 
                   <img
                     src={selectedProof}
@@ -352,7 +352,7 @@ export default function UserDetailModal({
                   />
 
                   {/* Bottom gradient fade */}
-                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-linear-to-t from-black/40 to-transparent" />
                 </div>
 
                 {/* Bottom caption bar */}

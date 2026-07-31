@@ -10,6 +10,7 @@ import hackathonImg from "../../../assets/event/hackathon.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
+import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { headingVariants } from "../../animations/headingvariants";
 const events = [
   {
@@ -23,6 +24,15 @@ const events = [
   },
   {
     id: "02",
+    title: "Informatics Olympiad",
+    tagline: "Think Fast. Solve Smart.",
+    description:
+      "An informatics olympiad that tests participants' algorithmic thinking, problem-solving skills, and programming knowledge.",
+    image: informaticsImg,
+    color: "#06b6d4",
+  },
+  {
+    id: "03",
     title: "UI/UX",
     tagline: "Design the Future.",
     description:
@@ -31,7 +41,7 @@ const events = [
     color: "#06b6d4",
   },
   {
-    id: "03",
+    id: "04",
     title: "E-Football",
     tagline: "Play Beyond Limits.",
     description:
@@ -40,7 +50,7 @@ const events = [
     color: "#22c55e",
   },
   {
-    id: "04",
+    id: "05",
     title: "Fast Typing",
     tagline: "Speed Meets Precision.",
     description:
@@ -187,13 +197,13 @@ export default function Event() {
 
             <div
               className="
-          hidden
-          lg:flex
-          flex-1
-          items-start
-          justify-center
-          px-10
-        "
+              hidden
+              lg:flex
+              flex-1
+              items-start
+              justify-center
+              px-10
+            "
             >
               <Scenario1 />
             </div>
@@ -231,13 +241,13 @@ export default function Event() {
       {/* ===================================================== */}
       <div
         className="
-    flex
-    flex-col
-    px-6
-    pt-28
-    pb-16
-    lg:hidden
-  "
+        flex
+        flex-col
+        px-6
+        pt-28
+        pb-16
+        lg:hidden
+      "
       >
         {/* Header */}
 

@@ -35,10 +35,13 @@ export default function EventSlide({
         {/* ================= LEFT ================= */}{" "}
         <div className=" flex w-full max-w-xl lg:w-[42%] flex-col justify-center pl-16 ">
           {" "}
-          <span className=" mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-white/40 ">
-            {" "}
-            Competition{" "}
-          </span>{" "}
+          <span
+            className={`mb-4 text-sm font-semibold uppercase tracking-[0.35em] ${
+              darkMode ? "text-black" : "text-white"
+            }`}
+          >
+            Competition
+          </span>
           <span
             className=" text-6xl lg:text-[130px] font-black leading-none "
             style={{ color }}
@@ -47,7 +50,7 @@ export default function EventSlide({
             {id}{" "}
           </span>{" "}
           <h2
-            className={`mt-5 text-4xl font-black leading-tight transition-colors duration-300 lg:text-7xl ${
+            className={`mt-5 text-4xl font-black leading-tight transition-colors duration-300 lg:text-4xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
