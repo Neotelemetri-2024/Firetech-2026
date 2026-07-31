@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserRound, ChevronDown } from "lucide-react";
 import ThemeSwitcher from "./themeswitcher";
 import LoginButton from "./button/login";
+import ProfileModal from "./form/profilemodal";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
@@ -41,6 +42,18 @@ const navItems: NavItem[] = [
   { label: "FAQ" },
 ];
 
+const user = {
+  photo: "https://i.pravatar.cc/300",
+  name: "Dafnal",
+  email: "dafnal@gmail.com",
+  participantId: "FT26-00127",
+  competition: "Hackathon",
+  team: "Syntax Error",
+  payment: "Paid",
+  submission: "Uploaded",
+  timeline: "Technical Meeting • 2 August 2026",
+};
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { darkMode } = useTheme();
@@ -49,8 +62,15 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+  const handleLogout = () => {
+    setProfileOpen(false);
+
+    // nanti tambahkan logout Google
+    console.log("Logout");
+  };
 
   // Hilangkan data-aos setelah render pertama
   useLayoutEffect(() => {
@@ -334,7 +354,7 @@ export default function Navbar() {
 
             {/* User Icon */}
             <button
-              onClick={handleLoginClick}
+              onClick={() => setProfileOpen(true)}
               className={`relative h-9 w-9 cursor-pointer rounded-full border-[1.5px] p-1.5 transition-all duration-300 hover:scale-110 group ${
                 darkMode
                   ? "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
@@ -351,7 +371,7 @@ export default function Navbar() {
                     : "bg-white/15 text-white  backdrop-blur-md"
                 }`}
               >
-                Login
+                My Profile
               </span>
             </button>
 
@@ -584,6 +604,12 @@ export default function Navbar() {
           </div>
         </div>
       </header>
+      <ProfileModal
+        open={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        onLogout={handleLogout}
+        user={user}
+      />
     </>
   );
 }
