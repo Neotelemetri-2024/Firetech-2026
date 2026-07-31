@@ -399,172 +399,188 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${
-            menuOpen ? "max-h-150 opacity-100" : "max-h-0 opacity-0"
+          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${
+            menuOpen
+              ? "max-h-225 opacity-100 translate-y-0"
+              : "max-h-0 opacity-0 -translate-y-3"
           }`}
         >
           <div
-            className={`mx-4 mb-4 rounded-xl border-[1.5px] p-3 ${
+            className={`relative mx-4 mb-5 overflow-hidden rounded-3xl border transition-all duration-500 ${
               darkMode
-                ? "bg-white/3 border-white/10 backdrop-blur-xl"
-                : "bg-white border-slate-200/80"
+                ? "border-slate-200 bg-white/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(15,23,42,.12)]"
+                : " bg-transparent"
             }`}
           >
-            <ul className="space-y-0.5">
-              {navItems.map((item, index) => {
-                const isItemActive = isActive(item);
-                const hasChildren = !!item.children && item.children.length > 0;
-                const isMobileOpen = mobileExpanded === item.label;
-
-                return (
-                  <li
-                    key={item.label}
-                    style={{
-                      transitionDelay: menuOpen ? `${index * 60}ms` : "0ms",
-                    }}
-                    className={`transition-all duration-300 ${
-                      menuOpen
-                        ? "opacity-100 translate-x-0"
-                        : "opacity-0 -translate-x-4"
-                    }`}
-                  >
-                    <div>
-                      <button
-                        onClick={() => {
-                          if (hasChildren) {
-                            setMobileExpanded(isMobileOpen ? null : item.label);
-                          } else {
-                            handleNavClick(item);
-                          }
-                        }}
-                        className={`flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                          isItemActive
-                            ? darkMode
-                              ? "bg-white/10 text-white"
-                              : "bg-indigo-50 text-indigo-700"
-                            : darkMode
-                              ? "text-white/70 hover:bg-white/5 hover:text-white"
-                              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          {/* Dot indicator */}
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                              isItemActive
-                                ? darkMode
-                                  ? "bg-pink-400 scale-125"
-                                  : "bg-indigo-500 scale-125"
-                                : darkMode
-                                  ? "bg-white/20"
-                                  : "bg-slate-300"
-                            }`}
-                          />
-                          {item.label}
-                        </span>
-                        {hasChildren && (
-                          <ChevronDown
-                            className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                              isMobileOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        )}
-                      </button>
-
-                      {/* Mobile Submenu */}
-                      <AnimatePresence>
-                        {hasChildren && isMobileOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden"
-                          >
-                            <div
-                              className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3"
-                              style={{
-                                borderColor: darkMode
-                                  ? "rgba(255,255,255,0.1)"
-                                  : "rgba(0,0,0,0.1)",
-                              }}
-                            >
-                              {item.children!.map((child) => {
-                                const isChildActive =
-                                  activeSection === child.hash;
-                                return (
-                                  <a
-                                    key={child.hash}
-                                    href={`#${child.hash}`}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      handleNavClick(item, child.hash);
-                                    }}
-                                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                                      isChildActive
-                                        ? darkMode
-                                          ? "bg-white/10 text-pink-300"
-                                          : "bg-indigo-50 text-indigo-600"
-                                        : darkMode
-                                          ? "text-white/60 hover:bg-white/5 hover:text-white"
-                                          : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-                                    }`}
-                                  >
-                                    <span
-                                      className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                                        isChildActive
-                                          ? darkMode
-                                            ? "bg-pink-400"
-                                            : "bg-indigo-500"
-                                          : darkMode
-                                            ? "bg-white/20"
-                                            : "bg-slate-300"
-                                      }`}
-                                    />
-                                    {child.label}
-                                  </a>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* Divider */}
+            {/* Background Glow */}
             <div
-              className={`my-2 h-px w-full ${
-                darkMode ? "bg-white/10" : "bg-slate-200"
+              className={`pointer-events-none absolute inset-0 ${
+                darkMode
+                  ? "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.16),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.18),transparent_45%)]"
+                  : "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.08),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.10),transparent_45%)]"
               }`}
             />
 
-            {/* Login Button - Mobile */}
-            <button
-              type="button"
-              onClick={handleLoginClick}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-pink-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/30 active:scale-[0.98]"
-            >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                viewBox="0 0 24 24"
+            <div className="relative p-4">
+              <ul className="space-y-0.5">
+                {navItems.map((item, index) => {
+                  const isItemActive = isActive(item);
+                  const hasChildren =
+                    !!item.children && item.children.length > 0;
+                  const isMobileOpen = mobileExpanded === item.label;
+
+                  return (
+                    <li
+                      key={item.label}
+                      style={{
+                        transitionDelay: menuOpen ? `${index * 60}ms` : "0ms",
+                      }}
+                      className={`transition-all duration-300 ${
+                        menuOpen
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4"
+                      }`}
+                    >
+                      <div>
+                        <button
+                          onClick={() => {
+                            if (hasChildren) {
+                              setMobileExpanded(
+                                isMobileOpen ? null : item.label,
+                              );
+                            } else {
+                              handleNavClick(item);
+                            }
+                          }}
+                          className={`flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+                            isItemActive
+                              ? darkMode
+                                ? "bg-white/10 text-blue-600"
+                                : "bg-indigo-50 text-red-600"
+                              : darkMode
+                                ? "text-black hover:bg-white/5 hover:text-white"
+                                : "text-white hover:bg-slate-50 hover:text-slate-900"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            {/* Dot indicator */}
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                                isItemActive
+                                  ? darkMode
+                                    ? "bg-blue-600 scale-125"
+                                    : "bg-red-600 scale-125"
+                                  : darkMode
+                                    ? "bg-white/20"
+                                    : "bg-slate-300"
+                              }`}
+                            />
+                            {item.label}
+                          </span>
+                          {hasChildren && (
+                            <ChevronDown
+                              className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                                isMobileOpen ? "rotate-180" : ""
+                              }`}
+                            />
+                          )}
+                        </button>
+
+                        {/* Mobile Submenu */}
+                        <AnimatePresence>
+                          {hasChildren && isMobileOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden"
+                            >
+                              <div
+                                className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3"
+                                style={{
+                                  borderColor: darkMode
+                                    ? "rgba(255,255,255,0.1)"
+                                    : "rgba(0,0,0,0.1)",
+                                }}
+                              >
+                                {item.children!.map((child) => {
+                                  const isChildActive =
+                                    activeSection === child.hash;
+                                  return (
+                                    <a
+                                      key={child.hash}
+                                      href={`#${child.hash}`}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleNavClick(item, child.hash);
+                                      }}
+                                      className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                                        isChildActive
+                                          ? darkMode
+                                            ? "bg-black text-blue-600"
+                                            : "bg-white text-red-600"
+                                          : darkMode
+                                            ? "text-black hover:bg-white/5 hover:text-white"
+                                            : "text-white hover:bg-slate-50 hover:text-slate-700"
+                                      }`}
+                                    >
+                                      <span
+                                        className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                                          isChildActive
+                                            ? darkMode
+                                              ? "bg-blue-600"
+                                              : "bg-red-600"
+                                            : darkMode
+                                              ? "bg-white/20"
+                                              : "bg-slate-300"
+                                        }`}
+                                      />
+                                      {child.label}
+                                    </a>
+                                  );
+                                })}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {/* Divider */}
+              <div
+                className={`my-2 h-px w-full ${
+                  darkMode ? "bg-white/10" : "bg-slate-200"
+                }`}
+              />
+
+              {/* Login Button - Mobile */}
+              <button
+                type="button"
+                onClick={handleLoginClick}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-pink-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/30 active:scale-[0.98]"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25V9m-4.5 1.5h13.5l-1.5 10.5H4.5L3 10.5z"
-                />
-              </svg>
-              Login
-            </button>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25V9m-4.5 1.5h13.5l-1.5 10.5H4.5L3 10.5z"
+                  />
+                </svg>
+                Login
+              </button>
+            </div>
           </div>
         </div>
       </header>

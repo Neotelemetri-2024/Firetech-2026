@@ -56,17 +56,35 @@ export default function Auth() {
       >
         <ThemeSwitcher />
       </div>
+      <div
+        className="
+    relative
+    z-10
+    mx-auto
+    flex
+    min-h-screen
+    max-w-7xl
+    flex-col-reverse
+    items-center
+    justify-center
+    gap-12
+    px-6
+    py-10
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center justify-between px-8">
+    lg:flex-row
+    lg:justify-between
+    lg:px-8
+  "
+      >
         {/* Left Side */}
-        <div className="max-w-xl">
+        <div className="max-w-xl text-center lg:text-left">
           <motion.p
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             data-aos="fade-up"
             data-aos-delay="300"
-            className={`mb-3 text-5xl font-semibold ${
+            className={`mb-2 text-3xl font-semibold sm:text-4xl lg:text-5xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -80,7 +98,14 @@ export default function Auth() {
             data-aos="fade-right"
             data-aos-delay="500"
             data-aos-duration="1000"
-            className="mb-10 text-3xl font-black tracking-tight"
+            className="
+            mb-8
+            text-4xl
+            font-black
+            tracking-tight
+            sm:text-5xl
+            lg:text-6xl
+            "
           >
             <span className={`${darkMode ? "text-red-700" : "text-blue-700"}`}>
               FIRE
@@ -92,13 +117,13 @@ export default function Auth() {
 
             <span
               className="
-      ml-3
-      bg-linear-to-r
-      from-red-700
-      to-blue-700
-      bg-clip-text
-      text-transparent
-    "
+              ml-3
+              bg-linear-to-r
+              from-red-700
+              to-blue-700
+              bg-clip-text
+              text-transparent
+            "
             >
               2026
             </span>
@@ -115,22 +140,28 @@ export default function Auth() {
           >
             <button
               className={`
-    group
-    flex
-    items-center
-    justify-center
-    gap-3
-    rounded-xl
-    border
-    px-8
-    py-2
-    text-xl
-    font-bold
-    transition-all
-    duration-300
-    cursor-pointer
-    hover:-translate-y-0.5
-
+              group
+              mx-auto
+              flex
+              w-full
+              max-w-sm
+              items-center
+              justify-center
+              gap-3
+              rounded-xl
+              border
+              px-6
+              py-3
+              text-base
+              font-bold
+              sm:w-auto
+              sm:px-8
+              sm:text-lg
+              lg:mx-0
+              transition-all
+              duration-300
+              cursor-pointer
+              hover:-translate-y-0.5
     ${
       darkMode
         ? `
@@ -181,7 +212,15 @@ export default function Auth() {
         </div>
 
         {/* Right Side */}
-        <div className="relative flex justify-center right-12">
+        <div
+          className="
+          relative
+          flex
+          justify-center
+
+          lg:right-12
+        "
+        >
           <motion.img
             initial={{ opacity: 0, x: 60, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1, y: [0, -8, 0] }}
@@ -198,9 +237,11 @@ export default function Auth() {
             alt="Firetech"
             className="
             cursor-pointer
-              w-100
-              object-contain
-              drop-shadow-[0_0_50px_rgba(59,130,246,0.35)]
+            w-52
+            sm:w-72
+            lg:w-105
+            object-contain
+            drop-shadow-[0_0_50px_rgba(59,130,246,0.35)]
             "
           />
         </div>
