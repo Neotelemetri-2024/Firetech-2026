@@ -7,7 +7,12 @@ import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
 const events = [
   { id: "01", title: "Hackathon", image: hackathonImg, color: "#ef4444" },
-  {id: "02", title: "Informatics Olympiad", image: informaticsImg, color: "#06b6d4" },
+  {
+    id: "02",
+    title: "Informatics Olympiad",
+    image: informaticsImg,
+    color: "#f59e0b",
+  },
   { id: "03", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
   { id: "04", title: "E-Football", image: efootballImg, color: "#22c55e" },
   { id: "05", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },

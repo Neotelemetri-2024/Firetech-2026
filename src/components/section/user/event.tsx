@@ -29,7 +29,7 @@ const events = [
     description:
       "An informatics olympiad that tests participants' algorithmic thinking, problem-solving skills, and programming knowledge.",
     image: informaticsImg,
-    color: "#06b6d4",
+    color: "#f59e0b",
   },
   {
     id: "03",
@@ -93,7 +93,7 @@ export default function Event() {
       });
     }, section);
     return () => ctx.revert();
-  }, []);
+  }, [TRACK_OFFSET, totalPanels]);
   return (
     <section ref={sectionRef} className=" relative min-h-screen lg:h-screen ">
       {/* Background */}

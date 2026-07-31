@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Code2, Keyboard, Palette, Gamepad2 } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { Code2, Keyboard, Palette, Gamepad2, BrainCircuit } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/typesevent";
@@ -11,6 +12,7 @@ import HackathonForm from "../../components/apply/hackathonform";
 import UiUxForm from "../../components/apply/uiuxform";
 import EfootballForm from "../../components/apply/efootballform";
 import FastTypingForm from "../../components/apply/fasttypingform";
+import InformaticsOlympiadForm from "../../components/apply/informaticsolympiadform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import { useTheme } from "../../context/themecontext";
 
@@ -19,6 +21,7 @@ const categoryIcons: Record<Category, LucideIcon> = {
   "UI/UX": Palette,
   "E-Football": Gamepad2,
   "Fast Typing": Keyboard,
+  "Informatics Olympiad": BrainCircuit,
 };
 
 const categories: Category[] = [
@@ -26,12 +29,17 @@ const categories: Category[] = [
   "UI/UX",
   "E-Football",
   "Fast Typing",
+  "Informatics Olympiad",
 ];
 
 export default function Apply() {
   const { darkMode } = useTheme();
+  const location = useLocation();
+  const initialCategory =
+    (location.state?.category as Category | undefined) ?? "Hackathon";
   const [selectedCategory, setSelectedCategory] =
-    useState<Category>("Hackathon");
+    useState<Category>(initialCategory);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState(initialApplyFormData);
 
@@ -123,6 +131,14 @@ export default function Apply() {
             onChange={handleInputChange}
           />
         );
+      case "Informatics Olympiad":
+        return (
+          <InformaticsOlympiadForm
+            step={currentStep}
+            formData={formData["Informatics Olympiad"]}
+            onChange={handleInputChange}
+          />
+        );
     }
   };
 
@@ -130,23 +146,61 @@ export default function Apply() {
     <main className="min-h-screen py-24">
       <div className="mx-auto max-w-7xl px-6">
         {/* Category Tabs */}
-        <div className="mb-12 flex flex-wrap gap-4 animate-slideInDown">
+        <div
+          className="
+          mb-12
+          grid
+          grid-cols-2
+          justify-items-center
+          gap-4
+          animate-slideInDown
+
+          lg:flex
+          lg:flex-wrap
+        "
+        >
           {categories.map((category) => {
+            const isOlympiad = category === "Informatics Olympiad";
             const Icon = categoryIcons[category];
 
             return (
               <button
                 key={category}
                 onClick={() => handleSelectCategory(category)}
-                className={`group flex items-center gap-3 rounded-2xl px-6 py-3 cursor-pointer font-semibold transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  selectedCategory === category
-                    ? darkMode
-                      ? "border-2 border-blue-600 text-black"
-                      : "border-2 border-red-600 text-white"
-                    : darkMode
-                      ? "border-2 border-slate-300 bg-white/70 text-slate-700 hover:border-blue-600"
-                      : "border-2 border-slate-700 bg-slate-900/50 text-slate-300 hover:border-red-600"
-                }`}
+                className={`
+                ${
+                  isOlympiad
+                    ? "col-span-2 justify-self-center lg:col-auto lg:justify-self-auto"
+                    : ""
+                }
+
+                  group
+                  flex
+                  w-full
+                  max-w-42.5
+                  items-center
+                  justify-center
+                  gap-3
+                  rounded-2xl
+                  px-5
+                  py-3
+                  cursor-pointer
+                  font-semibold
+                  transition-all
+                  duration-300
+                  hover:scale-105
+                  active:scale-95
+
+                  ${
+                    selectedCategory === category
+                      ? darkMode
+                        ? "border-2 border-blue-600 text-black"
+                        : "border-2 border-red-600 text-white"
+                      : darkMode
+                        ? "border-2 border-slate-300 bg-white/70 text-slate-700 hover:border-blue-600"
+                        : "border-2 border-slate-700 bg-slate-900/50 text-slate-300 hover:border-red-600"
+                  }
+                `}
               >
                 <Icon
                   size={22}
@@ -193,18 +247,22 @@ export default function Apply() {
             >
               {/* Step Indicator */}
               <div
-                className={`mb-8 flex items-center ${totalSteps <= 2 ? "w-full" : "justify-between"}`}
+                className={`mb-8 flex items-center overflow-x-auto sm:overflow-visible ${
+                  totalSteps <= 2 ? "w-full" : "justify-between"
+                }`}
               >
                 {stepLabels.map((label, index) => {
                   const step = index + 1;
                   return (
                     <div
                       key={label}
-                      className={`flex items-center ${totalSteps <= 2 && index === 0 ? "flex-1" : ""}`}
+                      className={`flex shrink-0 items-center ${
+                        totalSteps <= 2 && index === 0 ? "flex-1" : ""
+                      }`}
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4">
                         <div
-                          className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-lg font-bold transition-all duration-300 transform hover:scale-110 ${getStepColor(step)}`}
+                          className={`flex h-10 w-10 sm:h-12 sm:w-12 cursor-pointer items-center justify-center rounded-full text-base sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${getStepColor(step)}`}
                         >
                           {step}
                         </div>
@@ -218,8 +276,8 @@ export default function Apply() {
                       </div>
                       {step < totalSteps && (
                         <div
-                          className={`relative mx-4 h-1 overflow-hidden rounded-full transition-all duration-500 ${
-                            totalSteps <= 2 ? "flex-1" : "w-16 lg:w-24"
+                          className={`relative mx-2 sm:mx-4 h-1 flex-1 overflow-hidden rounded-full transition-all duration-500 ${
+                            totalSteps <= 2 ? "flex-1" : "w-15 sm:w-18 lg:w-28"
                           } ${
                             getStepStatus(step) === "completed"
                               ? darkMode

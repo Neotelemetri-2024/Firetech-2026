@@ -20,21 +20,22 @@ export default function EventSlide({
   const { darkMode } = useTheme();
 
   const handleExploreChallenge = () => {
-    navigate("/dashboard/apply");
+    navigate("/dashboard/apply", {
+      state: {
+        category: title,
+      },
+    });
   };
   return (
     <section className=" relative flex min-h-screen w-full items-center justify-center px-6 py-16 lg:h-screen lg:w-screen lg:px-24 ">
-      {" "}
-      {/* Background Glow */}{" "}
+      {/* Background Glow */}
       <div
         className=" absolute right-24 top-1/2 h-130 w-130 -translate-y-1/2 rounded-full blur-[80px] lg:blur-[180px] opacity-20 "
         style={{ background: color }}
-      />{" "}
+      />
       <div className=" relative z-10 w-full max-w-7xl flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-24 lg:translate-y-12 ">
-        {" "}
-        {/* ================= LEFT ================= */}{" "}
+        {/* ================= LEFT ================= */}
         <div className=" flex w-full max-w-xl lg:w-[42%] flex-col justify-center pl-16 ">
-          {" "}
           <span
             className={`mb-4 text-sm font-semibold uppercase tracking-[0.35em] ${
               darkMode ? "text-black" : "text-white"
@@ -46,9 +47,8 @@ export default function EventSlide({
             className=" text-6xl lg:text-[130px] font-black leading-none "
             style={{ color }}
           >
-            {" "}
-            {id}{" "}
-          </span>{" "}
+            {id}
+          </span>
           <h2
             className={`mt-5 text-4xl font-black leading-tight transition-colors duration-300 lg:text-4xl ${
               darkMode ? "text-black" : "text-white"
@@ -79,57 +79,52 @@ export default function EventSlide({
           >
             Explore Challenge <span className="text-xl">→</span>
           </button>
-        </div>{" "}
-        {/* ================= RIGHT ================= */}{" "}
+        </div>
+        {/* ================= RIGHT ================= */}
         <div className=" relative flex w-full lg:w-[58%] items-center justify-center ">
-          {" "}
-          {/* Floating Glow */}{" "}
+          {/* Floating Glow */}
           <div
             className=" absolute left-1/2 top-1/2 h-120 w-120 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[150px] opacity-20 "
             style={{ background: color }}
-          />{" "}
-          {/* Event Card */}{" "}
+          />
+          {/* Event Card */}
           <div className=" event-image group relative h-115 w-full max-w-sm lg:h-135 lg:w-82.5 overflow-hidden rounded-4xl border border-white/10 transition-all duration-700 hover:-translate-y-3 ">
-            {" "}
-            {/* Image */}{" "}
+            {/* Image */}
             <img
               src={image}
               alt={title}
               className=" absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1 "
-            />{" "}
-            {/* Overlay */}{" "}
+            />
+            {/* Overlay */}
             <div
               className="absolute inset-0"
               style={{
                 background: ` linear-gradient( 180deg, transparent 0%, rgba(0,0,0,.15) 35%, ${color}ee 100% ) `,
               }}
-            />{" "}
-            {/* Top Line */}{" "}
-            <div className=" absolute left-1/2 top-0 h-20 w-0.5 -translate-x-1/2 bg-white " />{" "}
-            {/* Vertical Title */}{" "}
+            />
+            {/* Top Line */}
+            <div className=" absolute left-1/2 top-0 h-20 w-0.5 -translate-x-1/2 bg-white " />
+            {/* Vertical Title */}
             <div
               className=" hidden lg:block absolute left-1/2 top-24 -translate-x-1/2 text-[18px] font-semibold uppercase tracking-[0.25em] text-white "
               style={{ writingMode: "vertical-rl" }}
             >
-              {" "}
-              {title}{" "}
-            </div>{" "}
-            {/* Number */}{" "}
+              {title}
+            </div>
+            {/* Number */}
             <div className=" absolute bottom-5 left-1/2 -translate-x-1/2 ">
-              {" "}
               <span className=" text-[120px] font-black leading-none text-transparent [-webkit-text-stroke:1.5px_white] ">
-                {" "}
-                {id}{" "}
-              </span>{" "}
-            </div>{" "}
-            {/* Hover Glow */}{" "}
+                {id}
+              </span>
+            </div>
+            {/* Hover Glow */}
             <div
               className=" absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 "
               style={{ boxShadow: `inset 0 0 100px ${color}` }}
-            />{" "}
-          </div>{" "}
-        </div>{" "}
-      </div>{" "}
+            />
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

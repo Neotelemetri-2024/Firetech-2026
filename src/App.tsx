@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loading from "./components/loading";
+import ScrollToTop from "./components/scrolltotop";
 
 //Layouts (Navbar dan Footer)//
 import MainLayout from "./layouts/mainlayout";
@@ -58,6 +59,8 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        {/* Scroll ke atas setiap pindah halaman */}
+        <ScrollToTop />
         <Routes>
           {/* Auth */}
           <Route path="/auth" element={<Auth />} />

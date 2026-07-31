@@ -43,7 +43,7 @@ export default function MobileEventModal({
             exit={{ y: 500, opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className={` relative h-[72vh] w-full overflow-hidden rounded-[30px] shadow-2xl ${darkMode ? "bg-white text-black" : "bg-[#09090b] text-white"} `}
+            className={`relative flex h-[72vh] w-full flex-col overflow-hidden rounded-[30px] shadow-2xl ${darkMode ? "bg-white text-black" : "bg-[#09090b] text-white"} `}
           >
             {" "}
             <div className="flex justify-center py-3">
@@ -79,7 +79,7 @@ export default function MobileEventModal({
               />{" "}
             </div>{" "}
             {/* Content */}{" "}
-            <div className=" h-[calc(72vh-224px)] overflow-y-auto px-6 py-6 ">
+            <div className="flex-1 overflow-y-auto px-6 py-6">
               {" "}
               <p className=" text-5xl font-black " style={{ color }}>
                 {" "}
@@ -97,7 +97,13 @@ export default function MobileEventModal({
                 {description}{" "}
               </p>{" "}
               <button
-                onClick={() => navigate("/dashboard/apply")}
+                onClick={() =>
+                  navigate("/dashboard/apply", {
+                    state: {
+                      category: title,
+                    },
+                  })
+                }
                 className=" mt-8 w-full rounded-full bg-linear-to-r from-red-500 to-blue-500 px-6 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] "
               >
                 {" "}

@@ -4,6 +4,7 @@ import HackathonForm from "../components/apply/hackathonform";
 import UiUxForm from "../components/apply/uiuxform";
 import EfootballForm from "../components/apply/efootballform";
 import FastTypingForm from "../components/apply/fasttypingform";
+import InformaticsOlympiadForm from "../components/apply/informaticsolympiadform";
 
 // Nilai awal form data untuk masing-masing kategori event
 export const initialApplyFormData: ApplyFormDataMap = {
@@ -50,6 +51,14 @@ export const initialApplyFormData: ApplyFormDataMap = {
     namaPeserta: "",
     asalSekolah: "",
   },
+  "Informatics Olympiad": {
+    //Step 1
+    namaKetua: "",
+    asalSekolah: "",
+
+    //Step 2
+    namaAnggota: "",
+  },
 };
 
 type ApplyFormProps<C extends Category> = {
@@ -80,5 +89,10 @@ export const applyFormConfig: {
   "Fast Typing": {
     steps: ["Personal Information", "Payment"],
     Component: FastTypingForm,
+  },
+
+  "Informatics Olympiad": {
+    steps: ["Personal Information", "Add Member", "Payment"],
+    Component: InformaticsOlympiadForm,
   },
 };

@@ -1,70 +1,41 @@
+import { UploadCloud } from "lucide-react";
 import FormField from "./formfield";
 import { useTheme } from "../../context/themecontext";
-import { UploadCloud } from "lucide-react";
 
-type AddMemberProps = {
+type AddOlympiadMemberProps = {
   formData: {
-    anggota1: string;
-    anggota2: string;
-    anggota3: string;
-    anggota4: string;
+    namaAnggota: string;
     ktm?: File | null;
   };
+
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function AddMember({ formData, onChange }: AddMemberProps) {
+export default function AddOlympiadMember({
+  formData,
+  onChange,
+}: AddOlympiadMemberProps) {
   const { darkMode } = useTheme();
   return (
     <div className="space-y-8 animate-fadeIn">
       <FormField
-        label="Nama Anggota 1"
-        name="anggota1"
-        placeholder="Nama Lengkap"
-        value={formData.anggota1}
+        label="Member Name"
+        name="namaAnggota"
+        placeholder="Full Name"
+        value={formData.namaAnggota}
         onChange={onChange}
         animationClass="animate-slideInLeft"
         animationDelay="0.1s"
       />
 
-      <FormField
-        label="Nama Anggota 2"
-        name="anggota2"
-        placeholder="Nama Lengkap"
-        value={formData.anggota2}
-        onChange={onChange}
-        animationClass="animate-slideInRight"
-        animationDelay="0.2s"
-      />
-
-      <FormField
-        label="Nama Anggota 3"
-        name="anggota3"
-        placeholder="Nama Lengkap"
-        value={formData.anggota3}
-        onChange={onChange}
-        animationClass="animate-slideInLeft"
-        animationDelay="0.3s"
-      />
-
-      <FormField
-        label="Nama Anggota 4"
-        name="anggota4"
-        placeholder="Nama Lengkap"
-        value={formData.anggota4}
-        onChange={onChange}
-        animationClass="animate-slideInRight"
-        animationDelay="0.4s"
-      />
-
       {/* Upload KTM */}
-      <div className="animate-scaleIn" style={{ animationDelay: "0.5s" }}>
+      <div className="animate-scaleIn" style={{ animationDelay: "0.2s" }}>
         <label
           className={`mb-3 block font-semibold ${
             darkMode ? "text-slate-800" : "text-white"
           }`}
         >
-          Upload KTM / Kartu Pelajar
+          Upload KTM / Student Card
         </label>
 
         <label
