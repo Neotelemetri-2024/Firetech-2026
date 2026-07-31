@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../context/themecontext";
+import { useEffect, useRef } from "react";
 type MobileEventModalProps = {
   open: boolean;
   onClose: () => void;
@@ -24,6 +25,29 @@ export default function MobileEventModal({
 }: MobileEventModalProps) {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      // Kunci scroll background
+      document.body.style.overflow = "hidden";
+
+      // Selalu mulai dari atas
+      requestAnimationFrame(() => {
+        contentRef.current?.scrollTo({
+          top: 0,
+          behavior: "auto",
+        });
+      });
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
   return (
     <AnimatePresence>
       {" "}
@@ -34,16 +58,21 @@ export default function MobileEventModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
           onClick={onClose}
-          className=" fixed inset-0 z-999 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 "
+          className="fixed inset-0 z-9999 flex items-end justify-center bg-black/70 backdrop-blur-md px-3 pb-3"
         >
           {" "}
           <motion.div
-            initial={{ y: 500, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 500, opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             onClick={(e) => e.stopPropagation()}
-            className={`relative flex h-[72vh] w-full flex-col overflow-hidden rounded-[30px] shadow-2xl ${darkMode ? "bg-white text-black" : "bg-[#09090b] text-white"} `}
+            className={`relative mb-4 flex h-[88vh] w-[calc(100%-24px)] max-w-sm flex-col overflow-hidden rounded-[30px] shadow-2xl ${
+              darkMode ? "bg-white text-black" : "bg-[#09090b] text-white"
+            }`}
           >
             {" "}
             <div className="flex justify-center py-3">
@@ -79,7 +108,10 @@ export default function MobileEventModal({
               />{" "}
             </div>{" "}
             {/* Content */}{" "}
-            <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div
+              ref={contentRef}
+              className="flex-1 overflow-y-auto overscroll-contain px-6 py-6"
+            >
               {" "}
               <p className=" text-5xl font-black " style={{ color }}>
                 {" "}
