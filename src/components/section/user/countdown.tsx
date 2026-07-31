@@ -58,12 +58,15 @@ export default function Countdown() {
         >
           <motion.h1
             variants={headingVariants.title}
-            className={`mt-8 text-5xl font-black font-syncopate leading-tight md:text-6xl ${
-              darkMode ? "text-black" : "text-white"
-            }`}
+            className={`-mt-20 sm:-mt-28 md:-mt-40
+    text-3xl sm:text-4xl md:text-6xl
+    font-black font-syncopate
+    leading-[1.15] md:leading-tight
+    text-center
+    ${darkMode ? "text-black" : "text-white"}`}
           >
             WE ARE
-            <span className="mt-2 flex flex-col items-center md:block">
+            <span className="mt-3 flex flex-col items-center gap-1 md:mt-2 md:block">
               <span
                 className={`bg-clip-text text-transparent ${
                   darkMode ? "bg-blue-600" : "bg-red-600"
@@ -71,8 +74,7 @@ export default function Countdown() {
               >
                 COMING
               </span>
-
-              <span className="mx-2"></span>
+              <span className="hidden md:inline mx-2"></span>
 
               <span
                 className={`bg-clip-text text-transparent ${
@@ -107,7 +109,7 @@ export default function Countdown() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, margin: "-80px" }}
-          className="relative mt-2 flex justify-center"
+          className="relative mt-12 flex justify-center"
         >
           <CountdownCard
             days={timeLeft.days}

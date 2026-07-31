@@ -17,7 +17,7 @@ export default function AnimatedDigit({ value }: Props) {
   }
 
   return (
-    <div className="relative h-16 w-full overflow-hidden sm:h-14 md:h-20">
+    <div className="relative flex h-16 w-20 items-center justify-center overflow-hidden sm:h-20 sm:w-24 md:h-24 md:w-30">
       <AnimatePresence mode="wait">
         <motion.div
           key={display}
@@ -31,9 +31,18 @@ export default function AnimatedDigit({ value }: Props) {
           className="absolute inset-0 flex items-center justify-center"
         >
           <span
-            className={`font-syncopate text-5xl sm:text-3xl md:text-7xl font-black  transition-colors duration-300  ${
-              darkMode ? "text-black" : "text-white"
-            }`}
+            className={`
+            font-mono
+            font-black
+            tracking-normal 
+            md:tracking-wide
+            text-[42px]
+            sm:text-[54px]
+            md:text-7xl
+            lg:text-8xl
+            leading-none
+            ${darkMode ? "text-black" : "text-white"}
+          `}
           >
             {display.toString().padStart(2, "0")}
           </span>
