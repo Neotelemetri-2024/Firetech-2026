@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Pagination from "../pagination";
 import Filter from "../../components/filter/filter";
-import Reset from "../../components/button/reset"
+import Reset from "../../components/button/reset";
 
 /* ─────────── Types ─────────── */
 
@@ -36,6 +36,7 @@ export type EventRow = {
 
 type EventsTableProps = {
   events: EventRow[];
+  resetPage?: boolean;
   /** Called when the user clicks "Edit" */
   onEdit?: (event: EventRow) => void;
   /** Called when the user clicks "Delete" */
@@ -118,6 +119,7 @@ function SortTh({
 
 export default function EventsTable({
   events,
+  resetPage,
   onEdit,
   onDelete,
   onView,
@@ -195,7 +197,7 @@ export default function EventsTable({
             placeholder="Status"
             onSelect={(value) => setStatusFilter(value)}
           />
-          {(statusFilter) && (
+          {statusFilter && (
             <Reset
               onClick={() => {
                 setStatusFilter(null);
@@ -391,7 +393,7 @@ export default function EventsTable({
           {/* Pagination */}
           {totalPages > 1 && (
             <Pagination
-              currentPage={currentPage}
+              currentPage={resetPage ? 1 : currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
             />

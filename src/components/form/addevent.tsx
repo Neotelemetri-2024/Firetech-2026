@@ -11,6 +11,8 @@ import {
   Tag,
   Type as TypeIcon,
   Users,
+  ChevronUp,
+  ChevronDown as ChevronDownIcon,
 } from "lucide-react";
 import {
   Listbox,
@@ -20,7 +22,8 @@ import {
   Transition,
 } from "@headlessui/react";
 import { Fragment } from "react";
-import type { EventRow, EventStatus } from "../events/tableevent";
+import type { EventRow } from "../events/tableevent";
+import DatePicker from "../ui/datepicker";
 
 /* ─────────── Types & Props ─────────── */
 
@@ -38,7 +41,6 @@ type FormState = {
   category: string;
   date: string;
   registrationDeadline: string;
-  status: EventStatus | "";
   maxParticipants: string;
   description: string;
 };
@@ -50,7 +52,6 @@ const INITIAL_FORM: FormState = {
   category: "",
   date: "",
   registrationDeadline: "",
-  status: "",
   maxParticipants: "",
   description: "",
 };
@@ -75,17 +76,6 @@ function formatIndonesianDate(isoDate: string, fallback: string) {
   });
 }
 
-function getStatusTone(status: EventStatus) {
-  switch (status) {
-    case "Active":
-      return "bg-[#57d11f] text-white shadow-[0_0_12px_rgba(87,209,31,0.35)]";
-    case "Finished":
-      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
-    case "Upcoming":
-      return "bg-[#f6bf14] text-[#231500] shadow-[0_0_12px_rgba(246,191,20,0.35)]";
-  }
-}
-
 function validateForm(form: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
 
@@ -93,7 +83,8 @@ function validateForm(form: FormState) {
   if (!form.category) errors.category = "Select event category";
   if (!form.date) errors.date = "The event date field is mandatory.";
   if (!form.registrationDeadline) {
-    errors.registrationDeadline = "The registration deadline field is mandatory.";
+    errors.registrationDeadline =
+      "The registration deadline field is mandatory.";
   } else if (form.date && form.registrationDeadline > form.date) {
     errors.registrationDeadline =
       "The registration deadline must be before the event date";
@@ -161,19 +152,9 @@ function EventPreview({ form }: { form: FormState }) {
               Name
             </p>
             <p className="mt-1 -wrap-break-word text-lg font-black leading-tight text-white">
-              {form.name.trim() || "Nama Event"}
+              {form.name.trim() || "Event Name"}
             </p>
           </div>
-
-          <span
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${
-              form.status
-                ? getStatusTone(form.status)
-                : "bg-white/10 text-white/50"
-            }`}
-          >
-            {form.status || "Status"}
-          </span>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -248,6 +229,17 @@ export default function AddEvent({ onSubmit, onCancel }: AddEventProps) {
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
+  const updateQuota = (type: "increase" | "decrease") => {
+    const current = Number(form.maxParticipants) || 0;
+
+    const next =
+      type === "increase"
+        ? Math.min(current + 1, MAX_QUOTA)
+        : Math.max(current - 1, 1);
+
+    updateField("maxParticipants", String(next));
+  };
+
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const nextErrors = validateForm(form);
@@ -258,7 +250,7 @@ export default function AddEvent({ onSubmit, onCancel }: AddEventProps) {
       name: form.name.trim(),
       category: form.category,
       date: formatIndonesianDate(form.date, form.date),
-      status: form.status as EventStatus,
+      status: "Upcoming",
       participants: 0,
       maxParticipants: Number(form.maxParticipants),
       registrationDeadline: formatIndonesianDate(
@@ -402,13 +394,10 @@ export default function AddEvent({ onSubmit, onCancel }: AddEventProps) {
               icon={<CalendarDays className="h-4 w-4" />}
               error={errors.date}
             >
-              <input
-                type="date"
+              <DatePicker
                 value={form.date}
-                onChange={(e) => updateField("date", e.target.value)}
-                className={`${INPUT_CLASS} scheme:dark ${
-                  errors.date ? "border-red-400/60" : ""
-                }`}
+                onChange={(value) => updateField("date", value)}
+                error={Boolean(errors.date)}
               />
             </Field>
 
@@ -417,15 +406,10 @@ export default function AddEvent({ onSubmit, onCancel }: AddEventProps) {
               icon={<CalendarClock className="h-4 w-4" />}
               error={errors.registrationDeadline}
             >
-              <input
-                type="date"
+              <DatePicker
                 value={form.registrationDeadline}
-                onChange={(e) =>
-                  updateField("registrationDeadline", e.target.value)
-                }
-                className={`${INPUT_CLASS} scheme:dark ${
-                  errors.registrationDeadline ? "border-red-400/60" : ""
-                }`}
+                onChange={(value) => updateField("registrationDeadline", value)}
+                error={Boolean(errors.registrationDeadline)}
               />
             </Field>
 
@@ -435,19 +419,39 @@ export default function AddEvent({ onSubmit, onCancel }: AddEventProps) {
                 icon={<Users className="h-4 w-4" />}
                 error={errors.maxParticipants}
               >
-                <input
-                  type="number"
-                  min={1}
-                  max={MAX_QUOTA}
-                  value={form.maxParticipants}
-                  onChange={(e) =>
-                    updateField("maxParticipants", e.target.value)
-                  }
-                  placeholder="e.g., 100"
-                  className={`${INPUT_CLASS} [appearance:textfield] ${
-                    errors.maxParticipants ? "border-red-400/60" : ""
-                  }`}
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    min={1}
+                    max={MAX_QUOTA}
+                    value={form.maxParticipants}
+                    onChange={(e) =>
+                      updateField("maxParticipants", e.target.value)
+                    }
+                    placeholder="e.g., 100"
+                    className={`${INPUT_CLASS} pr-14 [appearance:textfield] ${
+                      errors.maxParticipants ? "border-red-400/60" : ""
+                    }`}
+                  />
+
+                  <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-1">
+                    <button
+                      type="button"
+                      onClick={() => updateQuota("increase")}
+                      className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md text-white/60 transition hover:bg-white/10 hover:text-white"
+                    >
+                      <ChevronUp className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => updateQuota("decrease")}
+                      className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md text-white/60 transition hover:bg-white/10 hover:text-white"
+                    >
+                      <ChevronDownIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
               </Field>
             </div>
 

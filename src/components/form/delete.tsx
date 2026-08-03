@@ -110,6 +110,7 @@ export default function DeleteModal({
         <div className="px-5 py-7 sm:px-7">
           {/* Danger badge */}
           <div
+            className="flex justify-center sm:justify-start"
             style={{
               animation: "proof-slide-down 0.3s 0.08s ease-out both",
             }}
@@ -184,7 +185,7 @@ export default function DeleteModal({
               type="button"
               onClick={onConfirm}
               disabled={isDeleting}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-red-600 to-red-500 px-4 py-3 text-sm font-black text-white shadow-[0_10px_24px_rgba(220,38,38,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(220,38,38,0.45)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              className="inline-flex items-center justify-center cursor-pointer gap-2 rounded-2xl bg-linear-to-r from-red-600 to-red-500 px-4 py-3 text-sm font-black text-white shadow-[0_10px_24px_rgba(220,38,38,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(220,38,38,0.45)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
               {isDeleting ? (
                 <>

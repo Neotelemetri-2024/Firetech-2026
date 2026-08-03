@@ -10,14 +10,6 @@ import EventDetailModal from "../../components/form/eventdetailmodal";
 import DeleteModal from "../../components/form/delete";
 import Toast from "../../components/ui/toast";
 
-const EVENTS = [
-  "Hackathon",
-  "Fast Typing",
-  "E-Football",
-  "UI/UX Competition",
-  "Informatics Olympiad",
-];
-
 /* ── Dummy participant data ── */
 const allParticipants: ParticipantRow[] = [
   {
@@ -168,8 +160,10 @@ const DUMMY_EVENTS: EventRow[] = [
 export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [eventRefresh, setEventRefresh] = useState(0);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
   const [events, setEvents] = useState<EventRow[]>(DUMMY_EVENTS);
+  const eventCards = [...new Set(events.map((event) => event.name))];
   const [viewedEvent, setViewedEvent] = useState<EventRow | null>(null);
   const [eventToDelete, setEventToDelete] = useState<EventRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -182,8 +176,15 @@ export default function AdminEvent() {
       id: String(Date.now()),
     };
 
-    setEvents((prev) => [...prev, newEvent]);
+    setEvents((prev) => [newEvent, ...prev]);
+
+    setEventRefresh((prev) => prev + 1);
+
+    setSelectedEvent(null);
     setIsAdding(false);
+
+    setToastMessage(`Event "${newEvent.name}" was successfully added.`);
+    setShowToast(true);
   };
 
   const handleEditEvent = (data: EventFormData) => {
@@ -253,15 +254,25 @@ export default function AdminEvent() {
             <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               {/* EVENT FILTER */}
               <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {EVENTS.map((event) => {
+                {eventCards.map((event) => {
                   const isActive = selectedEvent === event;
 
                   return (
                     <button
                       key={event}
                       type="button"
-                      onClick={() => setSelectedEvent(isActive ? null : event)}
-                      className={`rounded-2xl border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] bg-transparent px-4 py-4 text-left text-sm font-bold transition-all hover:-translate-y-0.5 duration-200 cursor-pointer
+                      disabled={isAdding || editingEvent !== null}
+                      onClick={() => {
+                        if (isAdding || editingEvent) return;
+
+                        setSelectedEvent(isActive ? null : event);
+                      }}
+                      className={`rounded-2xl border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] bg-transparent px-4 py-4 text-left text-sm font-bold transition-all duration-200
+                      ${
+                        isAdding || editingEvent
+                          ? "cursor-not-allowed opacity-50"
+                          : "cursor-pointer hover:-translate-y-0.5"
+                      }
                       ${
                         isActive
                           ? "border-emerald-400 bg-linear-to-r from-emerald-500/40 to-emerald-400/30 text-white ring-2 ring-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.5)]"
@@ -351,6 +362,7 @@ export default function AdminEvent() {
             {!isAdding && !editingEvent && (
               <div className="mt-8">
                 <EventsTable
+                  key={eventRefresh}
                   events={filteredEvents}
                   pageSize={5}
                   onView={(event) => {
