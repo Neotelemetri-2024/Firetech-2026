@@ -19,7 +19,7 @@ import Reset from "../../components/button/reset"
 
 /* ─────────── Types ─────────── */
 
-export type EventStatus = "Aktif" | "Selesai" | "Akan Datang";
+export type EventStatus = "Active" | "Finished" | "Upcoming";
 
 export type EventRow = {
   id: string;
@@ -55,23 +55,25 @@ type SortDir = "asc" | "desc";
 
 function getStatusIcon(status: EventStatus) {
   switch (status) {
-    case "Aktif":
+    case "Active":
       return Timer;
-    case "Selesai":
+    case "Finished":
       return CalendarCheck;
-    case "Akan Datang":
+    case "Upcoming":
       return CalendarX;
   }
 }
 
 function getStatusTone(status: EventStatus) {
   switch (status) {
-    case "Aktif":
+    case "Active":
       return "bg-[#57d11f] text-white shadow-[0_0_12px_rgba(87,209,31,0.35)]";
-    case "Selesai":
-      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
-    case "Akan Datang":
+
+    case "Upcoming":
       return "bg-[#f6bf14] text-[#231500] shadow-[0_0_12px_rgba(246,191,20,0.35)]";
+
+    case "Finished":
+      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(239,68,68,0.35)]";
   }
 }
 
@@ -188,7 +190,7 @@ export default function EventsTable({
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
           <Filter
-            options={["Aktif", "Selesai", "Akan Datang"]}
+            options={["Active", "Finished", "Upcoming"]}
             selected={statusFilter}
             placeholder="Status"
             onSelect={(value) => setStatusFilter(value)}
@@ -212,7 +214,7 @@ export default function EventsTable({
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Cari event..."
+            placeholder="Find event..."
             className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-2.5 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
           />
 
@@ -240,21 +242,21 @@ export default function EventsTable({
                 <thead>
                   <tr className="border-b border-white/15 bg-black/20">
                     <SortTh
-                      label="Nama Event"
+                      label="Name"
                       sortKey="name"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Kategori"
+                      label="Category"
                       sortKey="category"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Tanggal"
+                      label="Date"
                       sortKey="date"
                       currentKey={sortKey}
                       direction={sortDir}
@@ -268,14 +270,14 @@ export default function EventsTable({
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Peserta"
+                      label="Participants"
                       sortKey="participants"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-[0.2em] text-white/70">
-                      Aksi
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -401,10 +403,10 @@ export default function EventsTable({
           <CalendarX className="mb-4 h-12 w-12 text-white/40" />
           <p className="max-w-md text-sm text-white/60">
             {search
-              ? `Tidak ditemukan event dengan kata kunci "${search}".`
-              : statusFilter && statusFilter !== "Semua Status"
-                ? `Tidak ada event dengan status "${statusFilter}".`
-                : "Belum ada event yang tersedia."}
+              ? `No events found with the keyword "${search}".`
+              : statusFilter && statusFilter !== "All Statuses"
+                ? `No events with the status "${statusFilter}".`
+                : "No events available."}
           </p>
         </div>
       )}

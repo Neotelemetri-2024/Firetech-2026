@@ -7,22 +7,22 @@ const events = [
     stats: [
       {
         value: "300",
-        label: "Partisipan",
+        label: "Participants",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "60",
-        label: "Tim",
+        label: "Teams",
         icon: "/src/assets/admin/dashboard/team.webp",
       },
       {
         value: "56",
-        label: "Pembayaran",
+        label: "Payments",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "34",
-        label: ["Verifikasi", "Pembayaran"],
+        label: ["Verified", "Payments"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -32,17 +32,17 @@ const events = [
     stats: [
       {
         value: "500",
-        label: "Partisipan",
+        label: "Participants",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "85",
-        label: "Pembayaran",
+        label: "Payments",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "45",
-        label: ["Verifikasi", "Pembayaran"],
+        label: ["Verified", "Payments"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -52,17 +52,17 @@ const events = [
     stats: [
       {
         value: "150",
-        label: "Partisipan",
+        label: "Participants",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "42",
-        label: "Pembayaran",
+        label: "Payments",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "38",
-        label: ["Verifikasi", "Pembayaran"],
+        label: ["Verified", "Payments"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -72,17 +72,37 @@ const events = [
     stats: [
       {
         value: "200",
-        label: "Partisipan",
+        label: "Participants",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "78",
-        label: "Pembayaran",
+        label: "Payments",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "72",
-        label: ["Verifikasi", "Pembayaran"],
+        label: ["Verified", "Payments"],
+        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+      },
+    ],
+  },
+  {
+    name: "Informatics Olympiad",
+    stats: [
+      {
+        value: "500",
+        label: "Participants",
+        icon: "/src/assets/admin/dashboard/participant.webp",
+      },
+      {
+        value: "85",
+        label: "Payments",
+        icon: "/src/assets/admin/dashboard/payment.webp",
+      },
+      {
+        value: "45",
+        label: ["Verified", "Payments"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],

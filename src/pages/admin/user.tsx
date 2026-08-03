@@ -1,18 +1,37 @@
-import { BadgeCheck, Mail, Search, Users, CalendarDays, X } from "lucide-react";
+import {
+  BadgeCheck,
+  Mail,
+  Search,
+  Users,
+  Eye,
+  CalendarDays,
+  X,
+  Trash2,
+  CreditCard,
+  FileCheck,
+} from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 import { useState } from "react";
 import UserDetail from "../../components/form/userdetailmodal";
+import DeleteModal from "../../components/form/delete";
+import Toast from "../../components/ui/toast";
 import Pagination from "../../components/pagination";
 import Filter from "../../components/filter/filter";
-import Reset from "../../components/button/reset"
+import Reset from "../../components/button/reset";
 import participantProof from "../../assets/firetech.webp";
 
 type UserItem = {
   name: string;
   email: string;
+  phone: string;
+  school: string;
+
   eventTags: string[];
-  paymentStatus: "Dibayar" | "Ditolak" | "Menunggu";
-  submissionStatus: "Dikumpulkan" | "Ditolak" | "Menunggu";
+
+  paymentStatus: "Paid" | "Declined" | "Pending";
+  submissionStatus: "Submitted" | "Rejected" | "Pending";
+
+  competitions: CompetitionCard[];
 };
 
 type CompetitionCard = NonNullable<
@@ -24,83 +43,194 @@ const ALL_EVENTS = [
   "Fast Typing",
   "E-Football",
   "UI/UX Competition",
+  "Informatics Olympiad",
 ];
 
 const users: UserItem[] = [
   {
     name: "Wonwoo",
     email: "jeonwonwoo@gmail.com",
+    phone: "628123456789",
+    school: "Universitas Andalas",
+
     eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Dibayar",
-    submissionStatus: "Menunggu"
+
+    paymentStatus: "Pending",
+    submissionStatus: "Pending",
+
+    competitions: [
+      {
+        title: "Hackathon",
+        team: "Neo Telemetri",
+        payment: "Pending",
+        paymentProof: participantProof,
+        role: "Ketua",
+        submission: "Pending",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+      {
+        title: "UI/UX Competition",
+        team: "Neo Telemetri",
+        payment: "Paid",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Submitted",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+    ],
   },
   {
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
+    phone: "628998887777",
+    school: "Institut Teknologi Bandung",
+
     eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Ditolak",
-    submissionStatus:"Dikumpulkan"
+
+    paymentStatus: "Declined",
+    submissionStatus: "Submitted",
+
+    competitions: [
+      {
+        title: "Hackathon",
+        team: "Alpha Team",
+        payment: "Declined",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Submitted",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+    ],
   },
   {
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
+    phone: "628998887777",
+    school: "Institut Teknologi Bandung",
     eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Dibayar",
-    submissionStatus: "Dikumpulkan"
+    paymentStatus: "Paid",
+    submissionStatus: "Submitted",
+
+    competitions: [
+      {
+        title: "UI/UX Competition",
+        team: "Beta Team",
+        payment: "Paid",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Submitted",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+    ],
   },
   {
     name: "Wonwoo",
     email: "jeonwonwoo@gmail.com",
+    phone: "628123456789",
+    school: "Universitas Andalas",
     eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Ditolak",
-    submissionStatus: "Dikumpulkan"
-  },
+    paymentStatus: "Declined",
+    submissionStatus: "Submitted",
 
+    competitions: [
+      {
+        title: "Hackathon",
+        team: "Gamma Team",
+        payment: "Declined",
+        paymentProof: participantProof,
+        role: "Ketua",
+        submission: "Submitted",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+    ],
+  },
   {
     name: "Mingyu",
     email: "kiming@gmail.com",
+    phone: "628112223334",
+    school: "Universitas Gadjah Mada",
     eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Menunggu",
-    submissionStatus: "Menunggu"
+    paymentStatus: "Pending",
+    submissionStatus: "Pending",
+
+    competitions: [
+      {
+        title: "Fast Typing",
+        team: "Delta Team",
+        payment: "Pending",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Pending",
+      },
+    ],
   },
   {
     name: "Abdul",
     email: "abdull@gmail.com",
+    phone: "628112223334",
+    school: "Universitas Gadjah Mada",
     eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Menunggu",
-    submissionStatus: "Menunggu"
+    paymentStatus: "Pending",
+    submissionStatus: "Pending",
+
+    competitions: [
+      {
+        title: "Fast Typing",
+        team: "Epsilon Team",
+        payment: "Pending",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Pending",
+      },
+    ],
   },
   {
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
+    phone: "628998887777",
+    school: "Institut Teknologi Sumatera",
     eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Ditolak",
-    submissionStatus: "Ditolak"
+    paymentStatus: "Declined",
+    submissionStatus: "Rejected",
+
+    competitions: [
+      {
+        title: "UI/UX Competition",
+        team: "Zeta Team",
+        payment: "Declined",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Rejected",
+        submissionLink: "https://github.com/firetech/hackathon-project",
+      },
+    ],
   },
   {
     name: "Abdul",
     email: "abdull@gmail.com",
+    phone: "628112223334",
+    school: "Universitas Gadjah Mada",
     eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Dibayar",
-    submissionStatus: "Dikumpulkan"
+    paymentStatus: "Paid",
+    submissionStatus: "Submitted",
+
+    competitions: [
+      {
+        title: "Fast Typing",
+        team: "Eta Team",
+        payment: "Paid",
+        paymentProof: participantProof,
+        role: "Member",
+        submission: "Submitted",
+      },
+    ],
   },
 ];
 
 const stats = [
   { label: "Total User", value: "128", icon: Users },
-  { label: "Verifikasi", value: "102", icon: BadgeCheck },
-  { label: "Event", value: "12", icon: CalendarDays },
-];
-
-const dummyCompetitions: CompetitionCard[] = [
-  {
-    title: "Hackathon",
-    team: "Neo Telemetri",
-    payment: "Dibayar",
-    paymentProof: participantProof,
-    role: "Ketua",
-    submission: "Dikumpulkan",
-  },
+  { label: "Verification", value: "102", icon: BadgeCheck },
+  { label: "Event", value: "5", icon: CalendarDays },
 ];
 
 function UserTag({ children }: { children: ReactNode }) {
@@ -136,7 +266,47 @@ function InfoChip({
   );
 }
 
-function UserCard({ user, onView }: { user: UserItem; onView: () => void }) {
+function StatusBadge({
+  icon: Icon,
+  label,
+  status,
+}: {
+  icon: typeof CreditCard;
+  label: string;
+  status: string;
+}) {
+  const color =
+    status === "Paid" || status === "Submitted"
+      ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
+      : status === "Pending"
+        ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
+        : "border-red-400/30 bg-red-500/15 text-red-300";
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.15em] text-white/55">
+        <Icon className="h-3.5 w-3.5" />
+        <span>{label}</span>
+      </div>
+
+      <span
+        className={`rounded-full border px-3 py-1 text-xs font-bold ${color}`}
+      >
+        {status}
+      </span>
+    </div>
+  );
+}
+
+function UserCard({
+  user,
+  onView,
+  onDelete,
+}: {
+  user: UserItem;
+  onView: () => void;
+  onDelete: () => void;
+}) {
   return (
     <article className="rounded-3xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] p-4 sm:p-5 transition cursor-pointer hover:-translate-y-0.5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -158,18 +328,42 @@ function UserCard({ user, onView }: { user: UserItem; onView: () => void }) {
               {user.email}
             </p>
           </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <StatusBadge
+              icon={CreditCard}
+              label="Payment"
+              status={user.paymentStatus}
+            />
+
+            <StatusBadge
+              icon={FileCheck}
+              label="Submission"
+              status={user.submissionStatus}
+            />
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 md:justify-end">
           {user.eventTags.map((tag) => (
             <UserTag key={tag}>{tag}</UserTag>
           ))}
+          <button
+            type="button"
+            onClick={onView}
+            aria-label={`View ${user.name}'s details`}
+            className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/85 transition hover:-translate-y-0.5 hover:text-white"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
 
           <button
-            onClick={onView}
-            className="rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-2 font-bold text-white/85 transition hover:-translate-y-0.5 cursor-pointer"
+            type="button"
+            onClick={onDelete}
+            aria-label={`Delete ${user.name}`}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200 cursor-pointer"
           >
-            Detail
+            <Trash2 className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -207,33 +401,55 @@ export default function AdminUser() {
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userList, setUserList] = useState<UserItem[]>(users);
+  const [userToDelete, setUserToDelete] = useState<UserItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [eventFilter, setEventFilter] = useState<string | null>(null);
   const [paymentFilter, setPaymentFilter] = useState<string | null>(null);
   const [submissionFilter, setSubmissionFilter] = useState<string | null>(null);
 
-  const filteredUsers = users.filter((user) => {
-    const matchesEvent =
-      !eventFilter || user.eventTags.includes(eventFilter);
+  const handleDeleteUser = () => {
+    if (!userToDelete) return;
+
+    const deletedName = userToDelete.name;
+    setIsDeleting(true);
+
+    /* Simulate an API delete request, then remove from local state */
+    window.setTimeout(() => {
+      setUserList((prev) =>
+        prev.filter(
+          (user) =>
+            !(
+              user.name === userToDelete.name &&
+              user.email === userToDelete.email
+            ),
+        ),
+      );
+      setIsDeleting(false);
+      setUserToDelete(null);
+      setToastMessage(`User "${deletedName}" berhasil dihapus`);
+      setShowToast(true);
+    }, 900);
+  };
+
+  const filteredUsers = userList.filter((user) => {
+    const matchesEvent = !eventFilter || user.eventTags.includes(eventFilter);
 
     const matchesPayment =
       !paymentFilter || user.paymentStatus === paymentFilter;
 
     const matchesSubmission =
-      !submissionFilter ||
-      user.submissionStatus === submissionFilter;
+      !submissionFilter || user.submissionStatus === submissionFilter;
 
     const matchesSearch =
       !search ||
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase());
 
-    return (
-      matchesEvent &&
-      matchesPayment &&
-      matchesSubmission &&
-      matchesSearch
-    );
+    return matchesEvent && matchesPayment && matchesSubmission && matchesSearch;
   });
 
   const totalPages = Math.ceil(filteredUsers.length / PAGE_SIZE);
@@ -254,8 +470,8 @@ export default function AdminUser() {
           <section className="min-h-screen rounded-4xl border border-white/15 bg-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-5 sm:px-6 sm:py-6">
             <div className="flex min-h-187.5 flex-col gap-5">
               <SectionTitle
-                title="Manajemen User"
-                subtitle="Tinjau peserta yang terdaftar, saring status mereka, dan pindai partisipasi acara."
+                title="User Management"
+                subtitle="Review registered participants, filter their status, and scan event participation."
               />
 
               <div className="grid gap-3 sm:grid-cols-3">
@@ -274,20 +490,20 @@ export default function AdminUser() {
                   <Filter
                     options={ALL_EVENTS}
                     selected={eventFilter}
-                    placeholder="Acara"
+                    placeholder="Event"
                     onSelect={(value) => setEventFilter(value)}
                   />
                   <Filter
-                    options={["Dibayar", "Ditolak", "Menunggu"]}
+                    options={["Paid", "Declined", "Pending"]}
                     selected={paymentFilter}
-                    placeholder="Pembayaran"
+                    placeholder="Payment"
                     onSelect={(value) => setPaymentFilter(value)}
                   />
 
                   <Filter
-                    options={["Dikumpulkan", "Ditolak", "Menunggu"]}
+                    options={["Submitted", "Rejected", "Pending"]}
                     selected={submissionFilter}
-                    placeholder="Pengumpulan"
+                    placeholder="Submission"
                     onSelect={(value) => setSubmissionFilter(value)}
                   />
                   {(eventFilter || paymentFilter || submissionFilter) && (
@@ -310,7 +526,7 @@ export default function AdminUser() {
                       setSearch(e.target.value);
                       setCurrentPage(1);
                     }}
-                    placeholder="Cari berdasarkan nama atau email"
+                    placeholder="Search by name or email"
                     className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-3 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
                   />
 
@@ -343,6 +559,9 @@ export default function AdminUser() {
                           setSelectedUser(user);
                           setIsModalOpen(true);
                         }}
+                        onDelete={() => {
+                          setUserToDelete(user);
+                        }}
                       />
                     ))}
                   </div>
@@ -352,8 +571,8 @@ export default function AdminUser() {
 
                     <p className="mt-2 max-w-md text-sm text-white/60">
                       {search
-                        ? `Tidak ditemukan peserta dengan kata kunci "${search}".`
-                        : "Tidak ada peserta yang sesuai dengan filter yang dipilih."}
+                        ? `No participants found with the keyword "${search}".`
+                        : "No participants match the selected filters."}
                     </p>
                   </div>
                 )}
@@ -373,9 +592,26 @@ export default function AdminUser() {
               onClose={() => setIsModalOpen(false)}
               name={selectedUser?.name ?? ""}
               email={selectedUser?.email ?? ""}
-              phone="08123456789"
-              school="Universitas Andalas"
-              competitions={dummyCompetitions}
+              phone={selectedUser?.phone ?? ""}
+              school={selectedUser?.school ?? ""}
+              competitions={selectedUser?.competitions ?? []}
+            />
+
+            {/* DELETE USER MODAL */}
+            <DeleteModal
+              open={userToDelete !== null}
+              itemName={userToDelete?.name}
+              itemLabel="user"
+              onClose={() => setUserToDelete(null)}
+              onConfirm={handleDeleteUser}
+              isDeleting={isDeleting}
+            />
+
+            {/* DELETE SUCCESS TOAST */}
+            <Toast
+              open={showToast}
+              message={toastMessage}
+              onClose={() => setShowToast(false)}
             />
           </section>
         </main>

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ChevronDown, Menu, UserRound, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import LogoutButton from "./button/logout";
+import Tooltip from "./ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
@@ -54,13 +56,20 @@ export default function NavbarAdmin() {
     navigate(item.href);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+
+    navigate("/dashboard", { replace: true });
+  };
+
   return (
     <header className="relative mx-auto w-full max-w-6xl px-5 pt-8 sm:px-8 lg:px-10">
       <div
         {...aosAttrs(0)}
-        className="relative overflow-hidden rounded-3xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.24)] ring-1 ring-white/10 backdrop-blur-md sm:px-5"
+        className="relative overflow-visible rounded-3xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.24)] ring-1 ring-white/10 backdrop-blur-md sm:px-5"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.12),transparent_30%)]" />
         <div className="relative z-10 flex items-center justify-between gap-3">
           <div {...aosAttrs(100)} className="flex min-w-0 items-center gap-3">
             <div className="grid h-14 w-14 shrink-0 place-items-center">
@@ -82,7 +91,11 @@ export default function NavbarAdmin() {
             </div>
           </div>
 
-          <nav {...aosAttrs(200)} className="hidden md:block" aria-label="Admin navigation">
+          <nav
+            {...aosAttrs(200)}
+            className="hidden md:block"
+            aria-label="Admin navigation"
+          >
             <LayoutGroup>
               <ul className="flex items-center gap-6 rounded-full lg:gap-12">
                 {navItems.map((item) => {
@@ -187,13 +200,21 @@ export default function NavbarAdmin() {
               )}
             </button>
 
-            <button
-              type="button"
-              aria-label="User profile"
-              className="grid h-12 w-12 cursor-pointer place-items-center rounded-full border border-white/35 bg-white/10 text-white shadow-[0_10px_24px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-[0_14px_28px_rgba(0,0,0,0.28)]"
-            >
-              <UserRound className="h-6 w-6" strokeWidth={2.4} />
-            </button>
+            <Tooltip text="Logout">
+              <LogoutButton
+                onClick={handleLogout}
+                className="
+              border-red-400/40
+              bg-red-500/10
+              text-red-300
+              shadow-[0_10px_24px_rgba(0,0,0,0.22)]
+              hover:-translate-y-0.5
+              hover:bg-red-500/20
+              hover:text-red-200
+              hover:shadow-[0_14px_28px_rgba(239,68,68,0.28)]
+            "
+              />
+            </Tooltip>
           </div>
         </div>
 

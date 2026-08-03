@@ -42,16 +42,6 @@ export default function ThemeSwitcher() {
           />
         </svg>
       )}
-      {/* Tooltip */}
-      <span
-        className={`pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2.5 py-1 text-[10px] font-semibold opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-0.5 ${
-          darkMode
-            ? "bg-slate-800 text-white"
-            : "bg-white/15 text-white backdrop-blur-md"
-        }`}
-      >
-        {darkMode ? "Dark Mode" : "Light Mode"}
-      </span>
     </button>
   );
 }

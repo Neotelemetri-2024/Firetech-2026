@@ -8,6 +8,7 @@ import ProfileModal from "./form/profilemodal";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
+import Tooltip from "./ui/tooltip";
 
 interface NavChild {
   label: string;
@@ -352,33 +353,29 @@ export default function Navbar() {
           {/* Right side actions */}
           <div className="ml-auto flex items-center gap-1 sm:gap-2 overflow-visible">
             {/* Theme Switcher */}
-            <ThemeSwitcher />
+            <Tooltip text="Change Theme">
+              <ThemeSwitcher />
+            </Tooltip>
 
             {/* Language Switcher */}
-            <LanguageSwitcher />
+            <Tooltip text="Change Language">
+              <LanguageSwitcher />
+            </Tooltip>
 
             {/* User Icon */}
-            <button
-              onClick={() => setProfileOpen(true)}
-              className={`relative h-9 w-9 cursor-pointer rounded-full border-[1.5px] p-1.5 transition-all duration-300 hover:scale-110 group ${
-                darkMode
-                  ? "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
-                  : "bg-white/5 text-white/80 border-white/15 hover:bg-white/10 hover:text-white hover:border-white/30"
-              }`}
-              aria-label="User account"
-            >
-              <UserRound className="h-full w-full" />
-              {/* Tooltip */}
-              <span
-                className={`pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2.5 py-1 text-[10px] font-semibold opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-0.5 ${
+            <Tooltip text="My Profile">
+              <button
+                onClick={() => setProfileOpen(true)}
+                className={`relative h-9 w-9 cursor-pointer rounded-full border-[1.5px] p-1.5 transition-all duration-300 hover:scale-110 ${
                   darkMode
-                    ? "bg-slate-800 text-white "
-                    : "bg-white/15 text-white  backdrop-blur-md"
+                    ? "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
+                    : "bg-white/5 text-white/80 border-white/15 hover:bg-white/10 hover:text-white hover:border-white/30"
                 }`}
+                aria-label="User account"
               >
-                My Profile
-              </span>
-            </button>
+                <UserRound className="h-full w-full" />
+              </button>
+            </Tooltip>
 
             {/* Mobile Hamburger */}
             <button

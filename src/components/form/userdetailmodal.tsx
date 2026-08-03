@@ -1,24 +1,27 @@
 import { X, Eye } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const gradientStyle = {
   backgroundImage:
     "radial-gradient(circle at 30% 20%, rgba(185, 28, 28, 0.6) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.6) 0%, transparent 50%), linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
 };
 
-type PaymentStatus = "Dibayar" | "Menunggu" | "Ditolak";
+type PaymentStatus = "Paid" | "Pending" | "Declined";
 
-type SubmissionStatus = "Dikumpulkan" | "Menunggu" | "Ditolak";
+type SubmissionStatus = "Submitted" | "Pending" | "Rejected";
 
 type CompetitionCard = {
   title: string;
   team: string;
   payment: PaymentStatus;
   paymentProof?: string;
+
   role: string;
+
   submission: SubmissionStatus;
+  submissionLink?: string;
 };
 
 export type UserDetailModalProps = {
@@ -31,19 +34,43 @@ export type UserDetailModalProps = {
   competitions: CompetitionCard[];
 };
 
-function getPaymentTone(
-  status: PaymentStatus,
-): "success" | "warning" | "danger" {
-  if (status === "Dibayar") return "success";
-  if (status === "Menunggu") return "warning";
-  return "danger";
-}
-
 type StatusTone = "success" | "warning" | "danger";
 
+const paymentToneMap: Record<PaymentStatus, StatusTone> = {
+  Paid: "success",
+  Pending: "warning",
+  Declined: "danger",
+};
+
+const submissionToneMap: Record<SubmissionStatus, StatusTone> = {
+  Submitted: "success",
+  Pending: "warning",
+  Rejected: "danger",
+};
+
+function getPaymentTone(status: PaymentStatus): StatusTone {
+  return paymentToneMap[status];
+}
+
 function getSubmissionTone(status: SubmissionStatus): StatusTone {
-  if (status === "Dikumpulkan") return "success";
-  return "warning";
+  return submissionToneMap[status];
+}
+
+function getSubmissionButton(competition: CompetitionCard) {
+  switch (competition.title) {
+    case "Hackathon":
+      return {
+        label: "View Repository",
+      };
+
+    case "UI/UX Competition":
+      return {
+        label: "View Design",
+      };
+
+    default:
+      return null;
+  }
 }
 
 function StatusPill({
@@ -107,6 +134,17 @@ export default function UserDetailModal({
 }: UserDetailModalProps) {
   const [selectedProof, setSelectedProof] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   const openPaymentProof = (image?: string) => {
     if (!image) return;
     setSelectedProof(image);
@@ -116,14 +154,14 @@ export default function UserDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3 py-4 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/70 px-3 py-4 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       aria-labelledby="user-detail-title"
       style={{ animation: "proof-fade-in 0.25s ease-out" }}
     >
       <div
-        className="relative w-full max-w-255 overflow-hidden rounded-[1.8rem] border border-white/35 bg-[linear-gradient(135deg,#0d4f86_0%,#14539f_42%,#2f1ea0_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
+        className="relative w-full max-w-255 max-h-[90vh] overflow-hidden rounded-[1.8rem] border border-white/35 bg-[linear-gradient(135deg,#0d4f86_0%,#14539f_42%,#2f1ea0_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
         style={{
           ...gradientStyle,
           animation: "proof-zoom-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -148,7 +186,7 @@ export default function UserDetailModal({
           </button>
         )}
 
-        <div className="px-5 py-5 sm:px-7 sm:py-7">
+        <div className="custom-scrollbar max-h-[90vh] overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
           <div
             className="mb-5 border-b border-white/80 pb-4"
             style={{ animation: "proof-slide-down 0.3s 0.08s ease-out both" }}
@@ -161,7 +199,7 @@ export default function UserDetailModal({
               id="user-detail-title"
               className="text-2xl font-black uppercase tracking-wide sm:text-[2.1rem]"
             >
-              Detail User
+              User Detail
             </h2>
           </div>
 
@@ -169,14 +207,14 @@ export default function UserDetailModal({
             <div
               style={{ animation: "proof-slide-up 0.35s 0.15s ease-out both" }}
             >
-              <SectionCard title="Informasi">
+              <SectionCard title="Information">
                 <div
                   className="space-y-3"
                   style={{
                     animation: "proof-fade-in 0.3s 0.22s ease-out both",
                   }}
                 >
-                  <InfoLine label="Nama :" value={name} />
+                  <InfoLine label="Name :" value={name} />
                   <InfoLine label="Email :" value={email} />
                   <div className="flex flex-wrap items-center gap-2 text-[1.04rem] leading-7 text-white/95 sm:text-[1.08rem]">
                     <span className="min-w-19 font-semibold text-white/90">
@@ -187,27 +225,27 @@ export default function UserDetailModal({
                       href={`https://wa.me/${phone.replace(/\D/g, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Hubungi melalui WhatsApp"
+                      aria-label="Contact via WhatsApp"
                       title="WhatsApp"
                       className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white"
                     >
                       <FaWhatsapp className="h-5 w-5" />
                     </a>
                   </div>
-                  <InfoLine label="Institusi :" value={school} />
+                  <InfoLine label="Institution :" value={school} />
                 </div>
 
                 <div
                   className="mt-6 flex flex-wrap items-center gap-3"
                   style={{ animation: "proof-fade-in 0.3s 0.3s ease-out both" }}
                 >
-                  <StatusPill tone="success">Finalis</StatusPill>
+                  <StatusPill tone="success">Finalist</StatusPill>
 
                   <button
                     type="button"
                     className="inline-flex min-h-11 items-center rounded-full border border-white/85 bg-white px-4 text-sm font-black text-[#111] shadow-[0_8px_18px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_22px_rgba(0,0,0,0.2)] cursor-pointer"
                   >
-                    Sertifikat
+                    Certificate
                   </button>
                 </div>
               </SectionCard>
@@ -216,7 +254,7 @@ export default function UserDetailModal({
             <div
               style={{ animation: "proof-slide-up 0.35s 0.2s ease-out both" }}
             >
-              <SectionCard title="Kompetisi">
+              <SectionCard title="Competition">
                 <div
                   className="space-y-4"
                   style={{
@@ -234,13 +272,13 @@ export default function UserDetailModal({
 
                       <div className="mt-4 space-y-3 text-[1rem] sm:text-[1.02rem]">
                         <p className="flex flex-wrap gap-2">
-                          <span className="font-bold">Tim</span>
+                          <span className="font-bold">Team</span>
                           <span>:</span>
                           <span>{competition.team}</span>
                         </p>
 
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Pembayaran</p>
+                          <p className="font-bold">Payment</p>
                           <span>:</span>
 
                           <StatusPill
@@ -258,11 +296,11 @@ export default function UserDetailModal({
                               className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition  hover:-translate-y-0.5 cursor-pointer"
                             >
                               <Eye size={16} />
-                              Bukti
+                              Proof
                             </button>
                           ) : (
                             <span className="text-sm text-white/50">
-                              Belum upload bukti
+                              Proof not yet uploaded
                             </span>
                           )}
                         </div>
@@ -274,7 +312,7 @@ export default function UserDetailModal({
                         </p>
 
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Pengumpulan</p>
+                          <p className="font-bold">Submission</p>
                           <span>:</span>
 
                           <StatusPill
@@ -282,6 +320,34 @@ export default function UserDetailModal({
                           >
                             {competition.submission}
                           </StatusPill>
+
+                          {(() => {
+                            const action = getSubmissionButton(competition);
+
+                            if (
+                              !action ||
+                              competition.submission !== "Submitted" ||
+                              !competition.submissionLink
+                            ) {
+                              return action ? (
+                                <span className="text-sm text-white/50">
+                                  Submission not available
+                                </span>
+                              ) : null;
+                            }
+
+                            return (
+                              <a
+                                href={competition.submissionLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-500/20 hover:text-cyan-200"
+                              >
+                                <Eye size={16} />
+                                {action.label}
+                              </a>
+                            );
+                          })()}
                         </div>
                       </div>
                     </article>
@@ -313,7 +379,7 @@ export default function UserDetailModal({
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                     <span className="text-sm font-semibold tracking-wide text-white/90">
-                      Bukti Pembayaran
+                      Proof of payment
                     </span>
                   </div>
                 </div>
@@ -321,7 +387,7 @@ export default function UserDetailModal({
                 {/* Close button */}
                 <button
                   type="button"
-                  aria-label="Tutup bukti pembayaran"
+                  aria-label="Close proof of payment"
                   title="Tutup"
                   onClick={() => setSelectedProof(null)}
                   className="absolute -right-4 -top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-2xl backdrop-blur-xl transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
@@ -346,7 +412,7 @@ export default function UserDetailModal({
 
                   <img
                     src={selectedProof}
-                    alt="Bukti Pembayaran"
+                    alt="Proof of payment"
                     loading="lazy"
                     className="max-h-[78vh] max-w-[90vw] object-contain sm:max-w-[85vw]"
                   />
@@ -364,7 +430,7 @@ export default function UserDetailModal({
                 >
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-medium text-white/60 backdrop-blur-xl">
                     <Eye size={14} className="text-white/40" />
-                    Klik di luar gambar untuk menutup
+                    Click outside the image to close
                   </span>
                 </div>
               </div>
