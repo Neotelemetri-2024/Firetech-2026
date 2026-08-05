@@ -1,4 +1,4 @@
-import type { FastTypingFormData } from "../../types/applysevent";
+/*import type { FastTypingFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 
@@ -40,4 +40,4 @@ export default function FastTypingForm({
   }
 
   return <Payment />;
-}
+}*/
