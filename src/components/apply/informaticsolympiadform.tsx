@@ -1,4 +1,4 @@
-import type { InformaticsOlympiadFormData } from "../../types/typesevent";
+import type { InformaticsOlympiadFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 import AddMemberOlyimpiad from "./addolympiadmember";

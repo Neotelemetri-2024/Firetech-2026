@@ -10,111 +10,49 @@ import {
   FileText,
   LogOut,
   ZoomIn,
-  CircleCheckBig,
-  CircleDashed,
-  CircleX,
+  Pencil,
+  Phone,
 } from "lucide-react";
 import { useTheme } from "../../context/themecontext";
+import {
+  getPaymentTone,
+  getSubmissionTone,
+  getEmailStatus,
+} from "../../utils/status";
 
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import ProfileItem from "../profile/profileitem";
+import type { PaymentStatus, SubmissionStatus } from "../../types/user";
+import ProfileAlert from "../profile/profilealert";
+import ProfilePreview from "../profile/profilepreview";
+
+interface TimelineData {
+  title: string;
+  date: string;
+}
 
 interface UserData {
   photo: string;
   name: string;
   email: string;
+
+  whatsapp?: string;
+
   participantId: string;
   competition: string;
   team: string;
-  payment: string;
-  submission: string;
-  timeline: string;
+  payment: PaymentStatus;
+  submission: SubmissionStatus;
+
+  timeline: TimelineData;
 }
 
 interface ProfileModalProps {
   open: boolean;
   onClose: () => void;
   onLogout: () => void;
+  onEdit: () => void;
   user: UserData;
-}
-
-interface ProfileItemProps {
-  icon: ReactNode;
-  title: string;
-  value: string;
-  statusColor?: "green" | "yellow" | "red";
-}
-
-function ProfileItem({ icon, title, value, statusColor }: ProfileItemProps) {
-  const { darkMode } = useTheme();
-  return (
-    <>
-      {/* Card Profile */}
-      <div
-        className={`flex items-center gap-3 rounded-xl border p-3 sm:gap-4 sm:p-4 transition-all duration-300 ${
-          darkMode
-            ? "border-slate-200 bg-slate-100 hover:bg-slate-200"
-            : "border-white/10 bg-white/5 hover:bg-white/10"
-        }`}
-      >
-        <div
-          className={`transition-colors duration-300 ${
-            darkMode ? "text-blue-600" : "text-red-500"
-          }`}
-        >
-          {icon}
-        </div>
-
-        <div className="flex-1">
-          <p
-            className={`text-xs ${darkMode ? "text-slate-500" : "text-slate-400"}`}
-          >
-            {title}
-          </p>
-
-          {statusColor ? (
-            <div
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold
-
-    ${
-      statusColor === "green"
-        ? darkMode
-          ? "bg-green-100 text-green-700"
-          : "bg-green-500/15 text-green-400"
-        : statusColor === "yellow"
-          ? darkMode
-            ? "bg-yellow-100 text-yellow-700"
-            : "bg-yellow-500/15 text-yellow-400"
-          : darkMode
-            ? "bg-red-100 text-red-700"
-            : "bg-red-500/15 text-red-400"
-    }
-
-    `}
-            >
-              {statusColor === "green" ? (
-                <CircleCheckBig size={16} />
-              ) : statusColor === "yellow" ? (
-                <CircleDashed size={16} />
-              ) : (
-                <CircleX size={16} />
-              )}
-
-              {value}
-            </div>
-          ) : (
-            <p
-              className={`font-semibold ${
-                darkMode ? "text-slate-800" : "text-white"
-              }`}
-            >
-              {value}
-            </p>
-          )}
-        </div>
-      </div>
-    </>
-  );
 }
 
 export default function ProfileModal({
@@ -122,9 +60,38 @@ export default function ProfileModal({
   onClose,
   user,
   onLogout,
+  onEdit,
 }: ProfileModalProps) {
   const { darkMode } = useTheme();
   const [previewPhoto, setPreviewPhoto] = useState(false);
+  const emailStatus = getEmailStatus(user.email);
+
+  const getTimelineReminder = () => {
+    const today = new Date();
+
+    const eventDate = new Date(user.timeline.date);
+
+    const diffTime = eventDate.getTime() - today.getTime();
+
+    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (daysLeft < 0) {
+      return null;
+    }
+
+    if (daysLeft <= 7) {
+      return `${user.timeline.title} starts in ${daysLeft} days`;
+    }
+
+    return null;
+  };
+  const profileAlerts = [
+    user.whatsapp === "" && "WhatsApp number has not been added",
+    user.payment !== "Paid" && "Payment has not been completed",
+    user.submission !== "Submitted" && "Submission has not been uploaded",
+    getTimelineReminder(),
+  ].filter((alert): alert is string => Boolean(alert));
+  
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -226,6 +193,7 @@ export default function ProfileModal({
               >
                 {user.email}
               </p>
+              <ProfileAlert alerts={profileAlerts} />
             </div>
 
             {/* Grid Card */}
@@ -249,31 +217,52 @@ export default function ProfileModal({
                 icon={<CreditCard size={18} />}
                 title="Payment"
                 value={user.payment}
-                statusColor="green"
+                statusColor={getPaymentTone(user.payment)}
               />
               <ProfileItem
                 icon={<FileText size={18} />}
                 title="Submission"
                 value={user.submission}
-                statusColor="yellow"
+                statusColor={getSubmissionTone(user.submission)}
               />
               <ProfileItem
                 icon={<CalendarDays size={18} />}
                 title="Next Timeline"
-                value={user.timeline}
+                value={`${user.timeline.title} • ${user.timeline.date}`}
               />
+              <ProfileItem
+                icon={<Phone size={18} />}
+                title="WhatsApp"
+                value={user.whatsapp || "Not set"}
+              />
+
               <ProfileItem
                 icon={<Mail size={18} />}
                 title="Email Status"
-                value="Verified"
-                statusColor="red"
+                value={emailStatus.label}
+                statusColor={emailStatus.tone}
               />
             </div>
+
+            {/* Edit Profile Button */}
+            <button
+              onClick={() => {
+                onEdit();
+              }}
+              className={`mt-8 cursor-pointer flex w-full items-center justify-center gap-3 rounded-xl border py-3 text-sm font-semibold transition hover:scale-[1.02] sm:gap-3 sm:text-base ${
+                darkMode
+                  ? "border-slate-300 text-slate-700 hover:bg-slate-100"
+                  : "border-white/20 bg-white/5 text-white hover:bg-white/10"
+              }`}
+            >
+              <Pencil size={18} />
+              Edit Profile
+            </button>
 
             {/* Logout Button */}
             <button
               onClick={onLogout}
-              className="mt-8 cursor-pointer flex w-full items-center justify-center gap-3 text-sm sm:mt-8 sm:gap-3 sm:text-base rounded-xl bg-linear-to-r from-red-600 to-blue-600 py-3 font-semibold text-white transition hover:scale-[1.02]"
+              className="mt-3 cursor-pointer flex w-full items-center justify-center gap-3 text-sm sm:mt-3 sm:gap-3 sm:text-base rounded-xl bg-linear-to-r from-red-600 to-blue-600 py-3 font-semibold text-white transition hover:scale-[1.02]"
             >
               <LogOut size={18} />
               Logout
@@ -283,38 +272,12 @@ export default function ProfileModal({
       </motion.div>
 
       {/* Preview Photo Modal */}
-      {previewPhoto && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setPreviewPhoto(false)}
-          className="fixed inset-0 z-10000 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.25 }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative"
-          >
-            <img
-              src={user.photo}
-              alt={`Foto ${user.name}`}
-              className="max-h-[60vh] sm:max-h-[70vh] w-auto max-w-full rounded-2xl border-4 border-white object-cover shadow-2xl"
-            />
-
-            <button
-              onClick={() => setPreviewPhoto(false)}
-              className="absolute right-2 top-2 rounded-full bg-white p-2 text-slate-800 shadow-lg transition hover:scale-110"
-              aria-label="Tutup preview foto"
-            >
-              <X className="h-5 w-5 cursor-pointer" />
-            </button>
-          </motion.div>
-        </motion.div>
-      )}
+      <ProfilePreview
+        open={previewPhoto}
+        photo={user.photo}
+        name={user.name}
+        onClose={() => setPreviewPhoto(false)}
+      />
     </AnimatePresence>
   );
 }

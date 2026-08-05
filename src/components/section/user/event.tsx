@@ -82,7 +82,7 @@ export default function Event() {
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top top",
+          start: "top+=50 top",
           pin: true,
           scrub: 1,
           anticipatePin: 1,
@@ -95,7 +95,7 @@ export default function Event() {
     return () => ctx.revert();
   }, [TRACK_OFFSET, totalPanels]);
   return (
-    <section ref={sectionRef} className=" relative min-h-screen lg:h-screen ">
+    <section ref={sectionRef} className=" relative min-h-screen overflow-x-hidden lg:h-screen ">
       {/* Background */}
       <div
         className="
@@ -157,7 +157,7 @@ export default function Event() {
           flex-col
           items-center
           justify-center
-          pt-32
+          pt-44
           pb-10
         "
             >

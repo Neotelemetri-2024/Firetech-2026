@@ -56,16 +56,15 @@ export const headingVariants = {
       y: 40,
       scale: 0.95,
     },
-    visible: (index: number = 0) => ({
+    visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        delay: index * 0.12,
         duration: 0.8,
         ease: [0.22, 1, 0.36, 1],
       },
-    }),
+    },
   } satisfies Variants,
 
   // Marquee Wrapper

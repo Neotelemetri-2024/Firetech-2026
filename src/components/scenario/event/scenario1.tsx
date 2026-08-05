@@ -19,21 +19,16 @@ const events = [
 ];
 export default function Scenario1() {
   return (
-    <motion.div
-      variants={headingVariants.container}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }}
-      className=" flex items-center justify-center gap-10 px-10 pb-6 "
-    >
+    <div className="flex items-center justify-center gap-10 px-10 pb-6">
       {" "}
-      {events.map((event, index) => (
+      {events.map((event) => (
         <motion.div
           key={event.id}
           variants={headingVariants.card}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: false, amount: 0.3 }}
-          custom={index}
-          className=" overview-card group relative h-100 w-53.75 shrink-0 overflow-hidden rounded-4xl border border-white/10 transition-all duration-700 ease-out hover:-translate-y-4 hover:scale-[1.04] hover:border-white/30 cursor-pointer "
+          className=" overview-card group relative h-95 w-53.75 shrink-0 overflow-hidden rounded-4xl border border-white/10 transition-all duration-700 ease-out hover:-translate-y-4 hover:scale-[1.04] hover:border-white/30 cursor-pointer "
         >
           {" "}
           {/* Image */}{" "}
@@ -76,6 +71,6 @@ export default function Scenario1() {
           </div>{" "}
         </motion.div>
       ))}{" "}
-    </motion.div>
+    </div>
   );
 }

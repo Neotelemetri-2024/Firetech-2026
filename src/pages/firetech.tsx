@@ -165,7 +165,7 @@ export default function Firetech() {
               }
             : {})}
         >
-          Klik logo untuk melanjutkan
+          Click the logo to continue.
         </p>
       </div>
     </div>

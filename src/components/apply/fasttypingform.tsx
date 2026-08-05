@@ -1,4 +1,4 @@
-import type { FastTypingFormData } from "../../types/typesevent";
+import type { FastTypingFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 

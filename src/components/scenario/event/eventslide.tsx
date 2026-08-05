@@ -35,7 +35,7 @@ export default function EventSlide({
       />
       <div className=" relative z-10 w-full max-w-7xl flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-24 lg:translate-y-12 ">
         {/* ================= LEFT ================= */}
-        <div className=" flex w-full max-w-xl lg:w-[42%] flex-col justify-center pl-16 ">
+        <div className=" flex w-full max-w-xl lg:w-[42%] flex-col justify-center pl-16 lg:translate-y-12 ">
           <span
             className={`mb-4 text-sm font-semibold uppercase tracking-[0.35em] ${
               darkMode ? "text-black" : "text-white"
@@ -81,7 +81,7 @@ export default function EventSlide({
           </button>
         </div>
         {/* ================= RIGHT ================= */}
-        <div className=" relative flex w-full lg:w-[58%] items-center justify-center ">
+        <div className=" relative flex w-full lg:w-[58%] items-center justify-center lg:translate-y-12">
           {/* Floating Glow */}
           <div
             className=" absolute left-1/2 top-1/2 h-120 w-120 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[150px] opacity-20 "

@@ -1,4 +1,4 @@
-import type { EfootballFormData } from "../../types/typesevent";
+import type { EfootballFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 
@@ -18,9 +18,9 @@ export default function EfootballForm({
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Nama Pemain"
+          label="Player Name"
           name="namaPemain"
-          placeholder="Nama Lengkap"
+          placeholder="Full Name"
           value={formData.namaPemain}
           onChange={onChange}
           animationClass="animate-slideInLeft"
@@ -29,16 +29,16 @@ export default function EfootballForm({
         <FormField
           label="ID Game efootball"
           name="idGame"
-          placeholder="Contoh: 123456789"
+          placeholder="ex: 123456789"
           value={formData.idGame}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
         />
         <FormField
-          label="Asal Sekolah/Perguruan Tinggi"
+          label="School/University of Origin"
           name="asalSekolah"
-          placeholder="Asal Sekolah/Perguruan Tinggi"
+          placeholder="School/University of Origin"
           value={formData.asalSekolah}
           onChange={onChange}
           animationClass="animate-scaleIn"

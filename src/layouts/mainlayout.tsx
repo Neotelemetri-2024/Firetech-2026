@@ -71,7 +71,7 @@ export default function MainLayout() {
       </div>
 
       <div
-        className={`min-h-screen flex flex-col transition-all duration-500 ${
+        className={`min-h-screen overflow-x-hidden flex flex-col transition-all duration-500 ${
           darkMode ? "text-white" : "text-slate-900"
         }`}
       >

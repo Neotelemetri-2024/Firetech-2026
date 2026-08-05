@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Code2, Keyboard, Palette, Gamepad2, BrainCircuit } from "lucide-react";
+import { Code2, Palette, Gamepad2, BrainCircuit } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
-import type { Category } from "../../types/typesevent";
+import type { Category } from "../../types/applysevent";
 import {
   applyFormConfig,
   initialApplyFormData,
@@ -11,7 +11,6 @@ import {
 import HackathonForm from "../../components/apply/hackathonform";
 import UiUxForm from "../../components/apply/uiuxform";
 import EfootballForm from "../../components/apply/efootballform";
-import FastTypingForm from "../../components/apply/fasttypingform";
 import InformaticsOlympiadForm from "../../components/apply/informaticsolympiadform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import { useTheme } from "../../context/themecontext";
@@ -20,7 +19,6 @@ const categoryIcons: Record<Category, LucideIcon> = {
   Hackathon: Code2,
   "UI/UX": Palette,
   "E-Football": Gamepad2,
-  "Fast Typing": Keyboard,
   "Informatics Olympiad": BrainCircuit,
 };
 
@@ -28,7 +26,6 @@ const categories: Category[] = [
   "Hackathon",
   "UI/UX",
   "E-Football",
-  "Fast Typing",
   "Informatics Olympiad",
 ];
 
@@ -123,14 +120,6 @@ export default function Apply() {
             onChange={handleInputChange}
           />
         );
-      case "Fast Typing":
-        return (
-          <FastTypingForm
-            step={currentStep}
-            formData={formData["Fast Typing"]}
-            onChange={handleInputChange}
-          />
-        );
       case "Informatics Olympiad":
         return (
           <InformaticsOlympiadForm
@@ -143,24 +132,23 @@ export default function Apply() {
   };
 
   return (
-    <main className="min-h-screen py-24">
+    <main className="min-h-screen py-40">
       <div className="mx-auto max-w-7xl px-6">
         {/* Category Tabs */}
         <div
           className="
-          mb-12
-          grid
-          grid-cols-2
-          justify-items-center
-          gap-4
-          animate-slideInDown
+    mb-12
+    grid
+    grid-cols-2
+    gap-4
+    animate-slideInDown
 
-          lg:flex
-          lg:flex-wrap
-        "
+    lg:flex
+    lg:flex-wrap
+    lg:justify-center
+  "
         >
           {categories.map((category) => {
-            const isOlympiad = category === "Informatics Olympiad";
             const Icon = categoryIcons[category];
 
             return (
@@ -168,39 +156,34 @@ export default function Apply() {
                 key={category}
                 onClick={() => handleSelectCategory(category)}
                 className={`
+                group
+                flex
+                w-full
+                items-center
+                justify-center
+                gap-3
+                rounded-2xl
+                px-5
+                py-3
+                cursor-pointer
+                font-semibold
+                transition-all
+                duration-300
+                hover:scale-105
+                active:scale-95
+
+                lg:w-56.25
+
                 ${
-                  isOlympiad
-                    ? "col-span-2 justify-self-center lg:col-auto lg:justify-self-auto"
-                    : ""
+                  selectedCategory === category
+                    ? darkMode
+                      ? "border-2 border-blue-600 text-black"
+                      : "border-2 border-red-600 text-white"
+                    : darkMode
+                      ? "border-2 border-slate-300 bg-white/70 text-slate-700 hover:border-blue-600"
+                      : "border-2 border-slate-700 bg-slate-900/50 text-slate-300 hover:border-red-600"
                 }
-
-                  group
-                  flex
-                  w-full
-                  max-w-42.5
-                  items-center
-                  justify-center
-                  gap-3
-                  rounded-2xl
-                  px-5
-                  py-3
-                  cursor-pointer
-                  font-semibold
-                  transition-all
-                  duration-300
-                  hover:scale-105
-                  active:scale-95
-
-                  ${
-                    selectedCategory === category
-                      ? darkMode
-                        ? "border-2 border-blue-600 text-black"
-                        : "border-2 border-red-600 text-white"
-                      : darkMode
-                        ? "border-2 border-slate-300 bg-white/70 text-slate-700 hover:border-blue-600"
-                        : "border-2 border-slate-700 bg-slate-900/50 text-slate-300 hover:border-red-600"
-                  }
-                `}
+              `}
               >
                 <Icon
                   size={22}
@@ -277,7 +260,7 @@ export default function Apply() {
                       {step < totalSteps && (
                         <div
                           className={`relative mx-2 sm:mx-4 h-1 flex-1 overflow-hidden rounded-full transition-all duration-500 ${
-                            totalSteps <= 2 ? "flex-1" : "w-15 sm:w-18 lg:w-28"
+                            totalSteps <= 2 ? "flex-1" : "w-20 sm:w-18 lg:w-28"
                           } ${
                             getStepStatus(step) === "completed"
                               ? darkMode

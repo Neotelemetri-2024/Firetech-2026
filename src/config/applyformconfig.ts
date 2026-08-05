@@ -1,9 +1,8 @@
 import type { ComponentType } from "react";
-import type { ApplyFormDataMap, Category } from "../types/typesevent";
+import type { ApplyFormDataMap, Category } from "../types/applysevent";
 import HackathonForm from "../components/apply/hackathonform";
 import UiUxForm from "../components/apply/uiuxform";
 import EfootballForm from "../components/apply/efootballform";
-import FastTypingForm from "../components/apply/fasttypingform";
 import InformaticsOlympiadForm from "../components/apply/informaticsolympiadform";
 
 // Nilai awal form data untuk masing-masing kategori event
@@ -47,10 +46,6 @@ export const initialApplyFormData: ApplyFormDataMap = {
     asalSekolah: "",
   },
 
-  "Fast Typing": {
-    namaPeserta: "",
-    asalSekolah: "",
-  },
   "Informatics Olympiad": {
     //Step 1
     namaKetua: "",
@@ -85,10 +80,6 @@ export const applyFormConfig: {
   "E-Football": {
     steps: ["Personal Information", "Payment"],
     Component: EfootballForm,
-  },
-  "Fast Typing": {
-    steps: ["Personal Information", "Payment"],
-    Component: FastTypingForm,
   },
 
   "Informatics Olympiad": {

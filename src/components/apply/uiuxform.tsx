@@ -1,4 +1,4 @@
-import type { UiUxFormData } from "../../types/typesevent";
+import type { UiUxFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 import AddMember from "./addmember";
@@ -13,27 +13,27 @@ type UiUxFormProps = {
 export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
   if (step === 1) {
     return (
-      <div className="space-y-8 animate-fadeIn"> 
+      <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Nama Tim"
+          label="Team Name"
           name="namaTeam"
-          placeholder="Nama Tim"
+          placeholder="Team Name"
           value={formData.namaTeam}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
         />
         <FormField
-          label="Asal Sekolah/Perguruan Tinggi"
+          label="School/University of Origin"
           name="asalSekolah"
-          placeholder="Asal Sekolah/Perguruan Tinggi"
+          placeholder="School/University of Origina"
           value={formData.asalSekolah}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
         />
         <FormField
-          label="Link Portofolio"
+          label="Link Figma"
           name="portofolioUrl"
           placeholder="https://..."
           value={formData.portofolioUrl}

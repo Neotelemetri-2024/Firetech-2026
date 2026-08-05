@@ -42,7 +42,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="relative w-full overflow-hidden top-0">
+    <div className="relative w-full overflow-hidden top-6">
       {/* Glow Background */}
       <motion.div
         animate={{

@@ -1,14 +1,13 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserRound, ChevronDown } from "lucide-react";
-import ThemeSwitcher from "./themeswitcher";
-import LanguageSwitcher from "./languageswitcher";
-import LoginButton from "./button/login";
-import ProfileModal from "./form/profilemodal";
+import { ChevronDown, UserRound } from "lucide-react";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
-import Tooltip from "./ui/tooltip";
+import DesktopNavMenu from "./navbar/menu";
+import NavbarActions from "./navbar/actions";
+import { useUserProfile } from "../hooks/useUserProfile";
+import NavbarModalContainer from "./navbar/modalcontainer";
 
 interface NavChild {
   label: string;
@@ -45,18 +44,6 @@ const navItems: NavItem[] = [
   { label: "FAQ" },
 ];
 
-const user = {
-  photo: "https://i.pravatar.cc/300",
-  name: "Dafnal",
-  email: "dafnal@gmail.com",
-  participantId: "FT26-00127",
-  competition: "Hackathon",
-  team: "Syntax Error",
-  payment: "Paid",
-  submission: "Uploaded",
-  timeline: "Technical Meeting • 2 August 2026",
-};
-
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { darkMode } = useTheme();
@@ -66,13 +53,29 @@ export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+  });
+  const { user, profileAlerts, updateProfile } = useUserProfile();
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    setProfileOpen(false);
 
-    // nanti tambahkan logout Google
-    console.log("Logout");
+  const navigate = useNavigate();
+
+  const handleSaveProfile = (data: {
+    photo: string;
+    name: string;
+    whatsapp: string;
+  }) => {
+    updateProfile(data);
+
+    setEditProfileOpen(false);
+
+    setToast({
+      open: true,
+      message: "Profile updated successfully",
+    });
   };
 
   // Hilangkan data-aos setelah render pertama
@@ -94,6 +97,11 @@ export default function Navbar() {
 
   const handleLoginClick = () => {
     setMenuOpen(false);
+    navigate("/auth");
+  };
+
+  const handleLogout = () => {
+    setProfileOpen(false);
     navigate("/auth");
   };
 
@@ -145,7 +153,7 @@ export default function Navbar() {
               "data-aos-easing": "ease-in-out",
             }
           : {})}
-        className={`sticky top-12 z-50 mx-auto max-w-5xl rounded-2xl border-[1.5px] transition-all duration-500 ${
+        className={`fixed left-4 right-4 top-6 z-50 w-auto max-w-5xl translate-x-0 md:left-1/2 md:right-auto md:top-8 md:w-full md:-translate-x-1/2 rounded-2xl border-[1.5px] transition-all duration-500 ${
           scrolled
             ? darkMode
               ? "shadow-[0_8px_32px_-6px_rgba(99,102,241,0.2)] backdrop-blur-xl bg-white/80"
@@ -166,9 +174,9 @@ export default function Navbar() {
           }`}
         />
 
-        <nav className="flex h-16 items-center px-5 sm:px-6 lg:px-8">
+        <nav className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
           {/* Logo & Brand */}
-          <div className="flex items-center gap-0.5 w-32 shrink-0">
+          <div className="flex items-center gap-0.5 w-26 md:w-32 shrink-0">
             <div className="relative">
               <img
                 src={FiretechLogo}
@@ -200,225 +208,68 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <LayoutGroup>
-            <ul className="mx-auto hidden md:flex">
-              {navItems.map((item) => {
-                const isItemActive = isActive(item);
-                const hasChildren = !!item.children && item.children.length > 0;
-                const isDropdownOpen = openDropdown === item.label;
-
-                return (
-                  <li
-                    key={item.label}
-                    className="relative mx-1"
-                    onMouseEnter={() => handleDropdownEnter(item.label)}
-                    onMouseLeave={handleDropdownLeave}
-                  >
-                    {/* Parent link / trigger */}
-                    <a
-                      onClick={(e) => {
-                        e.preventDefault();
-
-                        if (hasChildren) {
-                          setOpenDropdown(isDropdownOpen ? null : item.label);
-                        } else {
-                          handleNavClick(item);
-                        }
-                      }}
-                      className={`group relative inline-flex items-center gap-1 rounded-full px-6 py-2 text-sm font-semibold transition-colors duration-300 cursor-pointer ${
-                        isItemActive
-                          ? darkMode
-                            ? "text-blue-700"
-                            : "text-red-700"
-                          : darkMode
-                            ? "text-black hover:text-slate-900"
-                            : "text-white hover:text-white"
-                      }`}
-                    >
-                      {/* Active indicator underline */}
-                      {isItemActive && (
-                        <motion.div
-                          layoutId="navbar-underline"
-                          className={`absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full ${
-                            darkMode
-                              ? "bg-linear-to-r from-blue-700 to-blue-600"
-                              : "bg-linear-to-r from-red-700 to-red-600"
-                          }`}
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 40,
-                          }}
-                        />
-                      )}
-
-                      {/* Active Dot */}
-                      {isItemActive && (
-                        <motion.span
-                          layoutId="navbar-dot"
-                          className={`absolute top-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${
-                            darkMode ? "bg-blue-700" : "bg-red-700"
-                          }`}
-                          transition={{
-                            type: "spring",
-                            stiffness: 350,
-                            damping: 28,
-                            mass: 0.8,
-                          }}
-                        />
-                      )}
-
-                      {/* Hover Effect */}
-                      {!isItemActive && (
-                        <span
-                          className={`absolute inset-0 rounded-full opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 ${
-                            darkMode
-                              ? "group-hover:bg-slate-300"
-                              : "group-hover:bg-white/20"
-                          }`}
-                        />
-                      )}
-
-                      <span className="relative z-10 flex items-center gap-1">
-                        {item.label}
-                        {hasChildren && (
-                          <ChevronDown
-                            className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                              isDropdownOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        )}
-                      </span>
-                    </a>
-
-                    {/* Dropdown Submenu */}
-                    <AnimatePresence>
-                      {hasChildren && isDropdownOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }}
-                          className={`absolute left-1/2 -translate-x-1/2 top-full mt-2 min-w-50 rounded-xl border-[1.5px] p-1.5 shadow-xl ${
-                            darkMode
-                              ? "bg-white/95 backdrop-blur-xl border-slate-200 shadow-black/10"
-                              : "bg-black/90 backdrop-blur-xl border-white/15 shadow-black/30"
-                          }`}
-                          onMouseEnter={() => handleDropdownEnter(item.label)}
-                          onMouseLeave={handleDropdownLeave}
-                        >
-                          {item.children!.map((child) => {
-                            const isChildActive = activeSection === child.hash;
-                            return (
-                              <a
-                                key={child.hash}
-                                href={`#${child.hash}`}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleNavClick(item, child.hash);
-                                }}
-                                className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                  isChildActive
-                                    ? darkMode
-                                      ? "bg-blue-50 text-blue-700"
-                                      : "bg-white/10 text-red-400"
-                                    : darkMode
-                                      ? "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                                }`}
-                              >
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                                    isChildActive
-                                      ? darkMode
-                                        ? "bg-blue-500 scale-125"
-                                        : "bg-red-500 scale-125"
-                                      : darkMode
-                                        ? "bg-slate-300"
-                                        : "bg-white/30"
-                                  }`}
-                                />
-                                {child.label}
-                              </a>
-                            );
-                          })}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </li>
-                );
-              })}
-            </ul>
+            <DesktopNavMenu
+              navItems={navItems}
+              darkMode={darkMode}
+              activeSection={activeSection}
+              openDropdown={openDropdown}
+              onDropdownEnter={handleDropdownEnter}
+              onDropdownLeave={handleDropdownLeave}
+              onDropdownToggle={(label) =>
+                setOpenDropdown(openDropdown === label ? null : label)
+              }
+              onNavClick={handleNavClick}
+            />
           </LayoutGroup>
 
           {/* Right side actions */}
-          <div className="ml-auto flex items-center gap-1 sm:gap-2 overflow-visible">
-            {/* Theme Switcher */}
-            <Tooltip text="Change Theme">
-              <ThemeSwitcher />
-            </Tooltip>
 
-            {/* Language Switcher */}
-            <Tooltip text="Change Language">
-              <LanguageSwitcher />
-            </Tooltip>
+          <NavbarActions
+            darkMode={darkMode}
+            profileAlerts={profileAlerts}
+            onProfileClick={() => setProfileOpen(true)}
+            onLoginClick={handleLoginClick}
+          />
 
-            {/* User Icon */}
-            <Tooltip text="My Profile">
-              <button
-                onClick={() => setProfileOpen(true)}
-                className={`relative h-9 w-9 cursor-pointer rounded-full border-[1.5px] p-1.5 transition-all duration-300 hover:scale-110 ${
-                  darkMode
-                    ? "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600 hover:border-indigo-300"
-                    : "bg-white/5 text-white/80 border-white/15 hover:bg-white/10 hover:text-white hover:border-white/30"
+          {/* Mobile Hamburger */}
+
+          <button
+            className={`ml-2 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] p-1.5 transition-all duration-300 md:hidden ${
+              darkMode
+                ? "bg-white/5 text-white/80 border-white/15 hover:bg-white/10"
+                : "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600"
+            }`}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            <div className="relative h-4 w-4">
+              <span
+                className={`absolute left-0 h-0.5 w-full rounded-full transition-all duration-300 ${
+                  darkMode ? "bg-white/80" : "bg-slate-600"
+                } ${menuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"}`}
+              />
+
+              <span
+                className={`absolute left-0 h-0.5 w-full rounded-full transition-all duration-300 ${
+                  darkMode ? "bg-white/80" : "bg-slate-600"
+                } ${
+                  menuOpen
+                    ? "top-1/2 -translate-y-1/2 -rotate-45"
+                    : "top-1/2 -translate-y-1/2"
                 }`}
-                aria-label="User account"
-              >
-                <UserRound className="h-full w-full" />
-              </button>
-            </Tooltip>
+              />
 
-            {/* Mobile Hamburger */}
-            <button
-              className={`ml-0.5 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] p-1.5 transition-all duration-300 md:hidden ${
-                darkMode
-                  ? "bg-white/5 text-white/80 border-white/15 hover:bg-white/10"
-                  : "bg-slate-100 text-slate-500 border-slate-300 hover:bg-white hover:text-indigo-600"
-              }`}
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-            >
-              <div className="relative h-4 w-4">
-                <span
-                  className={`absolute left-0 h-0.5 w-full rounded-full transition-all duration-300 ${
-                    darkMode ? "bg-white/80" : "bg-slate-600"
-                  } ${
-                    menuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 h-0.5 w-full rounded-full transition-all duration-300 ${
-                    darkMode ? "bg-white/80" : "bg-slate-600"
-                  } ${
-                    menuOpen
-                      ? "top-1/2 -translate-y-1/2 -rotate-45"
-                      : "top-1/2 -translate-y-1/2"
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 h-0.5 rounded-full transition-all duration-300 ${
-                    darkMode ? "bg-white/80" : "bg-slate-600"
-                  } ${
-                    menuOpen
-                      ? "bottom-1/2 translate-y-1/2 w-0 opacity-0"
-                      : "bottom-0 w-full"
-                  }`}
-                />
-              </div>
-            </button>
-
-            {/* Login Button - Desktop */}
-            <LoginButton onClick={handleLoginClick} />
-          </div>
+              <span
+                className={`absolute left-0 h-0.5 rounded-full transition-all duration-300 ${
+                  darkMode ? "bg-white/80" : "bg-slate-600"
+                } ${
+                  menuOpen
+                    ? "bottom-1/2 translate-y-1/2 w-0 opacity-0"
+                    : "bottom-0 w-full"
+                }`}
+              />
+            </div>
+          </button>
         </nav>
 
         {/* Mobile Menu */}
@@ -598,11 +449,22 @@ export default function Navbar() {
           </div>
         </div>
       </header>
-      <ProfileModal
-        open={profileOpen}
-        onClose={() => setProfileOpen(false)}
-        onLogout={handleLogout}
+      <NavbarModalContainer
+        profileOpen={profileOpen}
+        editProfileOpen={editProfileOpen}
+        toast={toast}
         user={user}
+        onLogout={handleLogout}
+        onCloseProfile={() => setProfileOpen(false)}
+        onOpenEditProfile={() => setEditProfileOpen(true)}
+        onCloseEditProfile={() => setEditProfileOpen(false)}
+        onSaveProfile={handleSaveProfile}
+        onCloseToast={() =>
+          setToast({
+            open: false,
+            message: "",
+          })
+        }
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CalendarPlus, X } from "lucide-react";
 import EventsTable, { type EventRow } from "../../components/events/tableevent";
 import ParticipantsTable, {
@@ -159,6 +159,7 @@ const DUMMY_EVENTS: EventRow[] = [
 
 export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+  const participantsRef = useRef<HTMLDivElement | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [eventRefresh, setEventRefresh] = useState(0);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
@@ -265,7 +266,19 @@ export default function AdminEvent() {
                       onClick={() => {
                         if (isAdding || editingEvent) return;
 
-                        setSelectedEvent(isActive ? null : event);
+                        if (isActive) {
+                          setSelectedEvent(null);
+                          return;
+                        }
+
+                        setSelectedEvent(event);
+
+                        setTimeout(() => {
+                          participantsRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+                        }, 100);
                       }}
                       className={`rounded-2xl border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] bg-transparent px-4 py-4 text-left text-sm font-bold transition-all duration-200
                       ${
@@ -358,8 +371,7 @@ export default function AdminEvent() {
               </div>
             )}
 
-            {/* EVENTS TABLE */}
-            {!isAdding && !editingEvent && (
+            {!selectedEvent && !isAdding && !editingEvent && (
               <div className="mt-8">
                 <EventsTable
                   key={eventRefresh}
@@ -378,13 +390,20 @@ export default function AdminEvent() {
               </div>
             )}
 
-            {/* PARTICIPANTS TABLE — only shown when an event is selected */}
-            {selectedEvent && !isAdding && (
-              <div className="mt-8">
+            {/* PARTICIPANTS TABLE */}
+            {selectedEvent && !isAdding && !editingEvent && (
+              <div ref={participantsRef} className="mt-8 scroll-mt-8">
                 <ParticipantsTable
                   participants={allParticipants}
                   selectedEvent={selectedEvent}
-                  onBack={() => setSelectedEvent(null)}
+                  onBack={() => {
+                    setSelectedEvent(null);
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
                   pageSize={10}
                 />
               </div>

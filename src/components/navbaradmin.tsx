@@ -5,15 +5,20 @@ import Tooltip from "./ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
+import Badge from "./ui/badge";
+import { users } from "../data/user";
 
 type NavItem = {
   label: string;
   href: string;
+  badge?: number;
 };
+
+const totalUsers = users.length;
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin" },
-  { label: "User", href: "/admin/users" },
+  { label: "User", href: "/admin/users", badge: totalUsers },
   { label: "Event", href: "/admin/event" },
 ];
 
@@ -169,7 +174,7 @@ export default function NavbarAdmin() {
 
                         <span
                           className={`
-                relative z-10 transition-all duration-300
+                relative z-10 inline-flex items-center gap-2 transition-all duration-300
                 ${
                   isActive
                     ? "text-white"
@@ -178,6 +183,9 @@ export default function NavbarAdmin() {
               `}
                         >
                           {item.label}
+                          {item.badge !== undefined && (
+                            <Badge count={item.badge} />
+                          )}
                         </span>
                       </button>
                     </li>
@@ -249,7 +257,12 @@ export default function NavbarAdmin() {
                           : "border-white/10 bg-white/5 text-white/85 hover:border-white/20 hover:bg-white/10 hover:text-white"
                       }`}
                     >
-                      <span>{item.label}</span>
+                      <span className="inline-flex items-center gap-2">
+                        {item.label}
+                        {item.badge !== undefined && (
+                          <Badge count={item.badge} />
+                        )}
+                      </span>
                     </button>
                   </li>
                 );

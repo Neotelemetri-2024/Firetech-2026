@@ -18,9 +18,9 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
   return (
     <div className="space-y-8 animate-fadeIn">
       <FormField
-        label="Nama Anggota 1"
+        label="Member 1 Name"
         name="anggota1"
-        placeholder="Nama Lengkap"
+        placeholder="Full Name"
         value={formData.anggota1}
         onChange={onChange}
         animationClass="animate-slideInLeft"
@@ -28,9 +28,9 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
       />
 
       <FormField
-        label="Nama Anggota 2"
+        label="Member 2 Name"
         name="anggota2"
-        placeholder="Nama Lengkap"
+        placeholder="Full Name"
         value={formData.anggota2}
         onChange={onChange}
         animationClass="animate-slideInRight"
@@ -38,9 +38,9 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
       />
 
       <FormField
-        label="Nama Anggota 3"
+        label="Member 3 Name"
         name="anggota3"
-        placeholder="Nama Lengkap"
+        placeholder="Full Name"
         value={formData.anggota3}
         onChange={onChange}
         animationClass="animate-slideInLeft"
@@ -48,9 +48,9 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
       />
 
       <FormField
-        label="Nama Anggota 4"
+        label="Member 4 Name"
         name="anggota4"
-        placeholder="Nama Lengkap"
+        placeholder="Full Name"
         value={formData.anggota4}
         onChange={onChange}
         animationClass="animate-slideInRight"
@@ -64,7 +64,7 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
             darkMode ? "text-slate-800" : "text-white"
           }`}
         >
-          Upload KTM / Kartu Pelajar
+          Upload Student ID Card
         </label>
 
         <label

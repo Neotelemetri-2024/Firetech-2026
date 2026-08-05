@@ -9,229 +9,31 @@ import {
   Trash2,
   CreditCard,
   FileCheck,
+  Pencil,
+  CheckCircle,
 } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+
+import type { ReactNode } from "react";
+
 import { useState } from "react";
+
 import UserDetail from "../../components/form/userdetailmodal";
 import DeleteModal from "../../components/form/delete";
 import Toast from "../../components/ui/toast";
 import Pagination from "../../components/pagination";
 import Filter from "../../components/filter/filter";
 import Reset from "../../components/button/reset";
-import participantProof from "../../assets/firetech.webp";
+import EditUser from "../../components/form/edituser";
 
-type UserItem = {
-  name: string;
-  email: string;
-  phone: string;
-  school: string;
+import type {
+  UserItem,
+  PaymentStatus,
+  SubmissionStatus,
+} from "../../types/user";
 
-  eventTags: string[];
-
-  paymentStatus: "Paid" | "Declined" | "Pending";
-  submissionStatus: "Submitted" | "Rejected" | "Pending";
-
-  competitions: CompetitionCard[];
-};
-
-type CompetitionCard = NonNullable<
-  ComponentProps<typeof UserDetail>["competitions"]
->[number];
-
-const ALL_EVENTS = [
-  "Hackathon",
-  "Fast Typing",
-  "E-Football",
-  "UI/UX Competition",
-  "Informatics Olympiad",
-];
-
-const users: UserItem[] = [
-  {
-    name: "Wonwoo",
-    email: "jeonwonwoo@gmail.com",
-    phone: "628123456789",
-    school: "Universitas Andalas",
-
-    eventTags: ["UI/UX Competition", "Hackathon"],
-
-    paymentStatus: "Pending",
-    submissionStatus: "Pending",
-
-    competitions: [
-      {
-        title: "Hackathon",
-        team: "Neo Telemetri",
-        payment: "Pending",
-        paymentProof: participantProof,
-        role: "Ketua",
-        submission: "Pending",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-      {
-        title: "UI/UX Competition",
-        team: "Neo Telemetri",
-        payment: "Paid",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Submitted",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-    ],
-  },
-  {
-    name: "Jeonghan",
-    email: "jeonghan@gmail.com",
-    phone: "628998887777",
-    school: "Institut Teknologi Bandung",
-
-    eventTags: ["UI/UX Competition", "Hackathon"],
-
-    paymentStatus: "Declined",
-    submissionStatus: "Submitted",
-
-    competitions: [
-      {
-        title: "Hackathon",
-        team: "Alpha Team",
-        payment: "Declined",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Submitted",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-    ],
-  },
-  {
-    name: "Jeonghan",
-    email: "jeonghan@gmail.com",
-    phone: "628998887777",
-    school: "Institut Teknologi Bandung",
-    eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Paid",
-    submissionStatus: "Submitted",
-
-    competitions: [
-      {
-        title: "UI/UX Competition",
-        team: "Beta Team",
-        payment: "Paid",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Submitted",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-    ],
-  },
-  {
-    name: "Wonwoo",
-    email: "jeonwonwoo@gmail.com",
-    phone: "628123456789",
-    school: "Universitas Andalas",
-    eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Declined",
-    submissionStatus: "Submitted",
-
-    competitions: [
-      {
-        title: "Hackathon",
-        team: "Gamma Team",
-        payment: "Declined",
-        paymentProof: participantProof,
-        role: "Ketua",
-        submission: "Submitted",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-    ],
-  },
-  {
-    name: "Mingyu",
-    email: "kiming@gmail.com",
-    phone: "628112223334",
-    school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Pending",
-    submissionStatus: "Pending",
-
-    competitions: [
-      {
-        title: "Fast Typing",
-        team: "Delta Team",
-        payment: "Pending",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Pending",
-      },
-    ],
-  },
-  {
-    name: "Abdul",
-    email: "abdull@gmail.com",
-    phone: "628112223334",
-    school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Pending",
-    submissionStatus: "Pending",
-
-    competitions: [
-      {
-        title: "Fast Typing",
-        team: "Epsilon Team",
-        payment: "Pending",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Pending",
-      },
-    ],
-  },
-  {
-    name: "Jeonghan",
-    email: "jeonghan@gmail.com",
-    phone: "628998887777",
-    school: "Institut Teknologi Sumatera",
-    eventTags: ["UI/UX Competition", "Hackathon"],
-    paymentStatus: "Declined",
-    submissionStatus: "Rejected",
-
-    competitions: [
-      {
-        title: "UI/UX Competition",
-        team: "Zeta Team",
-        payment: "Declined",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Rejected",
-        submissionLink: "https://github.com/firetech/hackathon-project",
-      },
-    ],
-  },
-  {
-    name: "Abdul",
-    email: "abdull@gmail.com",
-    phone: "628112223334",
-    school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
-    paymentStatus: "Paid",
-    submissionStatus: "Submitted",
-
-    competitions: [
-      {
-        title: "Fast Typing",
-        team: "Eta Team",
-        payment: "Paid",
-        paymentProof: participantProof,
-        role: "Member",
-        submission: "Submitted",
-      },
-    ],
-  },
-];
-
-const stats = [
-  { label: "Total User", value: "128", icon: Users },
-  { label: "Verification", value: "102", icon: BadgeCheck },
-  { label: "Event", value: "5", icon: CalendarDays },
-];
+import { getStatusColor } from "../../utils/status";
+import { users } from "../../data/user";
+import { EVENTS } from "../../constants/event";
 
 function UserTag({ children }: { children: ReactNode }) {
   return (
@@ -273,19 +75,25 @@ function StatusBadge({
 }: {
   icon: typeof CreditCard;
   label: string;
-  status: string;
+  status: PaymentStatus | SubmissionStatus;
 }) {
-  const color =
-    status === "Paid" || status === "Submitted"
-      ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
-      : status === "Pending"
-        ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-        : "border-red-400/30 bg-red-500/15 text-red-300";
+  const tone = getStatusColor(status);
+
+  const colorMap = {
+    success: "border-emerald-400/30 bg-emerald-500/15 text-emerald-300",
+
+    warning: "border-amber-400/30 bg-amber-500/15 text-amber-300",
+
+    danger: "border-red-400/30 bg-red-500/15 text-red-300",
+  };
+
+  const color = colorMap[tone];
 
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.15em] text-white/55">
         <Icon className="h-3.5 w-3.5" />
+
         <span>{label}</span>
       </div>
 
@@ -301,10 +109,12 @@ function StatusBadge({
 function UserCard({
   user,
   onView,
+  onEdit,
   onDelete,
 }: {
   user: UserItem;
   onView: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
@@ -344,27 +154,43 @@ function UserCard({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 md:justify-end">
-          {user.eventTags.map((tag) => (
-            <UserTag key={tag}>{tag}</UserTag>
-          ))}
-          <button
-            type="button"
-            onClick={onView}
-            aria-label={`View ${user.name}'s details`}
-            className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/85 transition hover:-translate-y-0.5 hover:text-white"
-          >
-            <Eye className="h-4 w-4" />
-          </button>
+        <div className="flex flex-col gap-3 md:items-end">
+          {/* EVENT TAG */}
+          <div className="flex flex-wrap gap-2">
+            {user.eventTags.map((tag) => (
+              <UserTag key={tag}>{tag}</UserTag>
+            ))}
+          </div>
 
-          <button
-            type="button"
-            onClick={onDelete}
-            aria-label={`Delete ${user.name}`}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200 cursor-pointer"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {/* ACTION BUTTON */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onView}
+              aria-label={`View ${user.name}'s details`}
+              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/85 transition hover:-translate-y-0.5 hover:text-white"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={onEdit}
+              aria-label={`Edit ${user.name}`}
+              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-blue-400/30 bg-blue-500/15 text-blue-300 transition hover:-translate-y-0.5 hover:bg-blue-500/25 hover:text-blue-200"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={onDelete}
+              aria-label={`Delete ${user.name}`}
+              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -406,10 +232,49 @@ export default function AdminUser() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventFilter, setEventFilter] = useState<string | null>(null);
   const [paymentFilter, setPaymentFilter] = useState<string | null>(null);
   const [submissionFilter, setSubmissionFilter] = useState<string | null>(null);
+
+  const stats = [
+    {
+      label: "Total User",
+      value: userList.length.toString(),
+      icon: Users,
+    },
+
+    {
+      label: "Verification",
+      value: userList.length.toString(),
+      icon: BadgeCheck,
+    },
+
+    {
+      label: "Event",
+      value: EVENTS.length.toString(),
+      icon: CalendarDays,
+    },
+
+    {
+      label: "Paid",
+      value: userList
+        .filter((user) => user.paymentStatus === "Paid")
+        .length.toString(),
+      icon: CheckCircle,
+    },
+
+    {
+      label: "Submitted",
+      value: userList
+        .filter((user) => user.submissionStatus === "Submitted")
+        .length.toString(),
+      icon: FileCheck,
+    },
+  ];
 
   const handleDeleteUser = () => {
     if (!userToDelete) return;
@@ -473,8 +338,7 @@ export default function AdminUser() {
                 title="User Management"
                 subtitle="Review registered participants, filter their status, and scan event participation."
               />
-
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {stats.map((stat) => (
                   <InfoChip
                     key={stat.label}
@@ -488,7 +352,7 @@ export default function AdminUser() {
               <div className="flex flex-col gap-3 lg:flex-row  lg:items-end lg:justify-between">
                 <div className="flex flex-wrap items-center gap-3 ">
                   <Filter
-                    options={ALL_EVENTS}
+                    options={EVENTS}
                     selected={eventFilter}
                     placeholder="Event"
                     onSelect={(value) => setEventFilter(value)}
@@ -559,6 +423,14 @@ export default function AdminUser() {
                           setSelectedUser(user);
                           setIsModalOpen(true);
                         }}
+                        onEdit={() => {
+                          setEditingUser({
+                            ...user,
+                            competitions: [...user.competitions],
+                          });
+
+                          setIsEditOpen(true);
+                        }}
                         onDelete={() => {
                           setUserToDelete(user);
                         }}
@@ -595,6 +467,79 @@ export default function AdminUser() {
               phone={selectedUser?.phone ?? ""}
               school={selectedUser?.school ?? ""}
               competitions={selectedUser?.competitions ?? []}
+            />
+
+            <EditUser
+              open={isEditOpen}
+              onClose={() => {
+                setIsEditOpen(false);
+                setEditingUser(null);
+              }}
+              initialData={
+                editingUser
+                  ? {
+                      name: editingUser.name,
+                      email: editingUser.email,
+                      phone: editingUser.phone,
+                      school: editingUser.school,
+                      competitions: editingUser.competitions.map((item) => ({
+                        title: item.title,
+                        team: item.team,
+                        role: item.role,
+                        payment: item.payment,
+                        submission: item.submission,
+                      })),
+                    }
+                  : undefined
+              }
+              isSaving={isSaving}
+              onSubmit={(data) => {
+                setIsSaving(true);
+
+                setTimeout(() => {
+                  setUserList((prev) =>
+                    prev.map((user) => {
+                      if (user.email !== editingUser?.email) {
+                        return user;
+                      }
+
+                      return {
+                        ...user,
+
+                        name: data.name,
+
+                        email: data.email,
+
+                        phone: data.phone,
+
+                        school: data.school,
+
+                        competitions: [...data.competitions],
+
+                        eventTags: data.competitions.map(
+                          (competition) => competition.title,
+                        ),
+
+                        paymentStatus:
+                          data.competitions[0]?.payment ?? "Pending",
+
+                        submissionStatus:
+                          data.competitions[0]?.submission ?? "Pending",
+                      };
+                    }),
+                  );
+
+                  setIsSaving(false);
+
+                  setIsEditOpen(false);
+
+                  setEditingUser(null);
+
+                  setToastMessage("User successfully updated");
+
+                  setShowToast(true);
+                }, 700);
+              }}
             />
 
             {/* DELETE USER MODAL */}

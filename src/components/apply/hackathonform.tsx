@@ -1,4 +1,4 @@
-import type { HackathonFormData } from "../../types/typesevent";
+import type { HackathonFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
 import AddMember from "./addmember";
@@ -19,27 +19,27 @@ export default function HackathonForm({
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Nama Team"
+          label="Team Name"
           name="namaTeam"
-          placeholder="Nama Team"
+          placeholder="Team Name"
           value={formData.namaTeam}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
         />
         <FormField
-          label="Nama Ketua Team"
+          label="Team Leader Name"
           name="namaKetua"
-          placeholder="Nama Lengkap"
+          placeholder="Full Name"
           value={formData.namaKetua}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
         />
         <FormField
-          label="Asal Sekolah/Perguruan Tinggi"
+          label="School/University of Origin"
           name="asalSekolah"
-          placeholder="Asal Sekolah/Perguruan Tinggi"
+          placeholder="School/University of Origin"
           value={formData.asalSekolah}
           onChange={onChange}
           animationClass="animate-scaleIn"

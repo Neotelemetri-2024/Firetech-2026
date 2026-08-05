@@ -1,5 +1,9 @@
 // Tipe kategori event yang tersedia di halaman Apply
-export type Category = "Hackathon" | "UI/UX" | "E-Football" | "Fast Typing" | "Informatics Olympiad";
+export type Category =
+  | "Hackathon"
+  | "UI/UX"
+  | "E-Football"
+  | "Informatics Olympiad";
 
 // Form data untuk masing-masing kategori event
 export type HackathonFormData = {
@@ -40,11 +44,6 @@ export type EfootballFormData = {
   asalSekolah: string;
 };
 
-export type FastTypingFormData = {
-  namaPeserta: string;
-  asalSekolah: string;
-};
-
 export type InformaticsOlympiadFormData = {
   // Step 1
   namaKetua: string;
@@ -59,7 +58,5 @@ export type ApplyFormDataMap = {
   Hackathon: HackathonFormData;
   "UI/UX": UiUxFormData;
   "E-Football": EfootballFormData;
-  "Fast Typing": FastTypingFormData;
   "Informatics Olympiad": InformaticsOlympiadFormData;
 };
-

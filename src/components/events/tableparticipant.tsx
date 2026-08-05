@@ -153,7 +153,7 @@ export default function ParticipantsTable({
             <button
               type="button"
               onClick={onBack}
-              aria-label="Kembali ke semua event"
+              aria-label="Back to all events"
               className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/75 transition hover:-translate-y-0.5 hover:border-white/30 hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -164,7 +164,7 @@ export default function ParticipantsTable({
             {selectedEvent ? (
               <>
                 <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/50">
-                  Partisipan
+                  Participants
                 </p>
                 <h2 className="text-xl font-black tracking-tight text-white">
                   {selectedEvent}
@@ -173,10 +173,10 @@ export default function ParticipantsTable({
             ) : (
               <>
                 <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/50">
-                  Semua Partisipan
+                  All Participants
                 </p>
                 <h2 className="text-xl font-black tracking-tight text-white">
-                  {participants.length} Peserta
+                  {participants.length} Participants
                 </h2>
               </>
             )}
@@ -194,7 +194,7 @@ export default function ParticipantsTable({
               {filtered.length}
             </span>
             <span className="text-xs font-semibold text-white/50">
-              {filtered.length === 1 ? "Peserta" : "Peserta"}
+              {filtered.length === 1 ? "Participant" : "Participants"}
             </span>
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function ParticipantsTable({
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Cari peserta..."
+            placeholder="Find participants..."
             className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-2.5 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
           />
 
@@ -236,10 +236,10 @@ export default function ParticipantsTable({
                 <thead>
                   <tr className="border-b border-white/15 bg-black/20">
                     <th className="px-4 py-4 text-center text-xs font-black uppercase tracking-[0.2em] text-white/70 w-12">
-                      #
+                      No
                     </th>
                     <SortTh
-                      label="Nama"
+                      label="Name"
                       sortKey="name"
                       currentKey={sortKey}
                       direction={sortDir}
@@ -260,7 +260,7 @@ export default function ParticipantsTable({
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Tim"
+                      label="Team"
                       sortKey="team"
                       currentKey={sortKey}
                       direction={sortDir}
@@ -345,11 +345,11 @@ export default function ParticipantsTable({
           <p className="max-w-md text-sm text-white/60">
             {selectedEvent
               ? search
-                ? `Tidak ditemukan peserta "${search}" pada event ${selectedEvent}.`
-                : `Belum ada peserta terdaftar pada event "${selectedEvent}".`
+                ? `No participant "${search}" found for event ${selectedEvent}.`
+                : `There are no registered participants for the event "${selectedEvent}".`
               : search
-                ? `Tidak ditemukan peserta dengan kata kunci "${search}".`
-                : "Belum ada peserta yang terdaftar."}
+                ? `No participants found matching the keyword "${search}".`
+                : "No participants have registered yet."}
           </p>
         </div>
       )}
