@@ -104,13 +104,13 @@ export const users: UserItem[] = [
     email: "kiming@gmail.com",
     phone: "628112223334",
     school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
+    eventTags: ["UI/UX Competition", "Hackathon"],
     paymentStatus: "Pending",
     submissionStatus: "Pending",
 
     competitions: [
       {
-        title: "Fast Typing",
+        title: "UI/UX Competition",
         team: "Delta Team",
         payment: "Pending",
         paymentProof: participantProof,
@@ -124,13 +124,13 @@ export const users: UserItem[] = [
     email: "abdull@gmail.com",
     phone: "628112223334",
     school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
+    eventTags: ["Informatics Olympiad", "Hackathon"],
     paymentStatus: "Pending",
     submissionStatus: "Pending",
 
     competitions: [
       {
-        title: "Fast Typing",
+        title: "Informatics Olympiad",
         team: "Epsilon Team",
         payment: "Pending",
         paymentProof: participantProof,
@@ -165,13 +165,13 @@ export const users: UserItem[] = [
     email: "abdull@gmail.com",
     phone: "628112223334",
     school: "Universitas Gadjah Mada",
-    eventTags: ["Fast Typing", "Hackathon"],
+    eventTags: ["E-Football", "Hackathon"],
     paymentStatus: "Paid",
     submissionStatus: "Submitted",
 
     competitions: [
       {
-        title: "Fast Typing",
+        title: "E-Football",
         team: "Eta Team",
         payment: "Paid",
         paymentProof: participantProof,

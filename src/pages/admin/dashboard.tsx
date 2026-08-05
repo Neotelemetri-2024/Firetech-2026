@@ -27,7 +27,7 @@ const events = [
       },
     ],
   },
-  {
+  /*{
     name: "Fast Typing",
     stats: [
       {
@@ -46,7 +46,7 @@ const events = [
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
-  },
+  },*/
   {
     name: "E-Football",
     stats: [
