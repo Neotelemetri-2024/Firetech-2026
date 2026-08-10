@@ -213,10 +213,10 @@ absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
                   ${darkMode ? "text-black" : "text-white"}
                 `}
               >
-                Firetech adalah kegiatan tahunan dari UKM Neo Telemetri
-                Universitas Andalas yang bertujuan untuk mengembangkan bakat
-                siswa dan mahasiswa di bidang teknologi informasi. Pada tahun
-                ini Firetech mengangkat tema
+                Firetech is an annual event organized by the Neo Telemetri
+                student organization at Andalas University, aimed at fostering
+                talent among school and university students in the field of
+                information technology. This year, Firetech adopts the theme
                 <span
                   className={`
                     font-semibold
@@ -226,9 +226,9 @@ absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
                   {" "}
                   "Creating Solutions For Better Society"
                 </span>
-                , sebuah wadah bagi generasi muda untuk berinovasi,
-                berkolaborasi, dan menciptakan solusi teknologi yang berdampak
-                bagi masyarakat.
+                —a platform for the younger generation to innovate, collaborate,
+                and create technology-based solutions that make a positive
+                impact on society.
               </motion.p>
 
               {/* Buttons */}

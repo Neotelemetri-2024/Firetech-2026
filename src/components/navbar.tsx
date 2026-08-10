@@ -42,6 +42,7 @@ const navItems: NavItem[] = [
   },
   { label: "Timeline" },
   { label: "FAQ" },
+  { label: "Gallery" },
 ];
 
 export default function Navbar() {
@@ -153,7 +154,7 @@ export default function Navbar() {
               "data-aos-easing": "ease-in-out",
             }
           : {})}
-        className={`fixed left-4 right-4 top-6 z-50 w-auto max-w-5xl translate-x-0 md:left-1/2 md:right-auto md:top-8 md:w-full md:-translate-x-1/2 rounded-2xl border-[1.5px] transition-all duration-500 ${
+        className={`fixed left-4 right-4 top-6 z-50 w-auto max-w-6xl translate-x-0 md:left-1/2 md:right-auto md:top-8 md:w-full md:-translate-x-1/2 rounded-2xl border-[1.5px] transition-all duration-500 ${
           scrolled
             ? darkMode
               ? "shadow-[0_8px_32px_-6px_rgba(99,102,241,0.2)] backdrop-blur-xl bg-white/80"

@@ -36,6 +36,7 @@ const sponsors: Sponsor[] = [
 // Main component untuk menampilkan sponsor dengan animasi
 export default function Sponsor() {
   const { darkMode } = useTheme();
+  void sponsors; // sponsor cards are temporarily commented out
 
   return (
     <section className="relative overflow-hidden py-18">
@@ -79,9 +80,7 @@ export default function Sponsor() {
                 once: false,
                 amount: 0.3,
               }}
-              className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${
-                darkMode ? "text-slate-600" : "text-slate-400"
-              }`}
+              className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${darkMode ? "text-slate-600" : "text-slate-400"}`}
             >
               Proudly supported by industry leaders, innovative companies, and
               valued partners who help make Firetech 2026 possible.
@@ -91,8 +90,8 @@ export default function Sponsor() {
         {/* ===== SPONSOR CARDS SECTION ===== */}
         {/* ===== Desktop Sponsor ===== */}
 
-        <div className="hidden lg:block sp-marquee-wrapper relative mb-24 overflow-hidden">
-          <motion.div
+        <div className="hidden lg:block sp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
+          {/* <motion.div
             variants={headingVariants.marqueeContainer}
             initial="hidden"
             whileInView="visible"
@@ -152,15 +151,39 @@ export default function Sponsor() {
                 />
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-        {/* ===== Mobile Sponsor ===== */}
+          </motion.div> */}
 
-        <div className="grid grid-cols-2 gap-6 lg:hidden">
-          {sponsors.map((item) => (
-            <div
-              key={item.name}
-              className="
+          {/* ===== Coming Soon Overlay - Desktop ===== */}
+          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className={`inline-flex items-center gap-3 rounded-full border-2 border-dashed px-8 py-4 font-syncopate text-2xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:px-10 sm:py-5 sm:text-3xl ${
+                darkMode
+                  ? "border-blue-700 bg-white/80 text-blue-700"
+                  : "border-red-700 bg-black/70 text-red-700"
+              }`}
+            >
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-current" />
+              </span>
+              Coming Soon
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ===== Mobile Sponsor ===== */}
+        <div className="relative min-h-48 lg:hidden">
+          {/* <div className="grid grid-cols-2 gap-6">
+            {sponsors.map((item) => (
+              <div
+                key={item.name}
+                className="
         flex
         items-center
         justify-center
@@ -169,15 +192,56 @@ export default function Sponsor() {
         border-white/10
         p-6
       "
+              >
+                <img
+                  src={item.logo}
+                  alt={item.name}
+                  className="h-16 object-contain"
+                />
+              </div>
+            ))}
+          </div> */}
+
+          {/* ===== Coming Soon Overlay - Mobile ===== */}
+          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className={`inline-flex items-center gap-2 rounded-full border-2 border-dashed px-5 py-3 font-syncopate text-base font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] ${
+                darkMode
+                  ? "border-blue-700 bg-white/80 text-blue-700"
+                  : "border-red-700 bg-black/70 text-red-700"
+              }`}
             >
-              <img
-                src={item.logo}
-                alt={item.name}
-                className="h-16 object-contain"
-              />
-            </div>
-          ))}
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-current" />
+              </span>
+              Coming Soon
+            </motion.div>
+          </div>
         </div>
+
+        {/* ===== Note ===== */}
+        <motion.p
+          variants={headingVariants.subtitle}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: false,
+            amount: 0.3,
+          }}
+          className={`mt-2 text-center font-space text-sm italic ${
+            darkMode ? "text-slate-500" : "text-slate-500"
+          }`}
+        >
+          * Sponsor lineup coming soon — the official list will be announced
+          shortly.
+        </motion.p>
       </div>
     </section>
   );

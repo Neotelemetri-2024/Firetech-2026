@@ -1,5 +1,6 @@
 import ThemeSwitcher from "../themeswitcher";
-import LanguageSwitcher from "../languageswitcher";
+
+//import LanguageSwitcher from "../languageswitcher";//
 import LoginButton from "../button/login";
 
 import Tooltip from "../ui/tooltip";
@@ -35,11 +36,11 @@ export default function NavbarActions({
       <Tooltip text="Change Theme">
         <ThemeSwitcher />
       </Tooltip>
-
-      {/* Language Switcher */}
-      <Tooltip text="Change Language">
-        <LanguageSwitcher />
-      </Tooltip>
+      {/*
+  <Tooltip text="Change Language">
+    <LanguageSwitcher />
+  </Tooltip>
+  */}
 
       {/* User Profile */}
       <UserProfileButton

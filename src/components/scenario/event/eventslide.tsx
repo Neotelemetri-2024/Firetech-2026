@@ -20,6 +20,15 @@ export default function EventSlide({
   const { darkMode } = useTheme();
 
   const handleExploreChallenge = () => {
+    if (title === "Fast Typing") {
+      window.open(
+        "https://fast-typing-firetech2026.vercel.app/",
+        "_blank",
+        "noopener,noreferrer",
+      );
+      return;
+    }
+
     navigate("/dashboard/apply", {
       state: {
         category: title,

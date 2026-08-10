@@ -6,6 +6,7 @@ import FAQ from "../../components/section/user/faq";
 import Event from "../../components/section/user/event";
 import Sponsor from "../../components/section/user/sponsor";
 import MediaPartner from "../../components/section/user/mediapartner";
+import Gallery from "../../components/section/user/gallery";
 import Countdown from "../../components/section/user/countdown";
 import SectionDivider from "../../components/section/divider/sectiondivider";
 
@@ -80,6 +81,12 @@ export default function Home() {
 
       <section id="mediapartner" className="scroll-mt-42">
         <MediaPartner />
+      </section>
+
+      <SectionDivider />
+
+      <section id="gallery" className="scroll-mt-40">
+        <Gallery />
       </section>
 
       <SectionDivider />

@@ -35,6 +35,7 @@ export default function MediaPartner() {
   // Reference ke section element untuk scroll trigger
   const sectionRef = useRef<HTMLElement>(null);
   const { darkMode } = useTheme();
+  void mediaPartners; // media partner cards are temporarily commented out
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden py-18">
@@ -77,14 +78,16 @@ export default function MediaPartner() {
           </motion.p>
         </motion.div>
         {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
-        <motion.div
-          variants={headingVariants.marqueeContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-          className="hidden lg:block mp-marquee-wrapper relative mb-24 overflow-hidden"
-        >
-          <div className="mp-marquee-track flex w-max gap-12">
+        {/* ===== Desktop Media Partner ===== */}
+
+        <div className="hidden lg:block mp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
+          {/* <motion.div
+            variants={headingVariants.marqueeContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            className="mp-marquee-track flex w-max gap-12"
+          >
             {[...mediaPartners, ...mediaPartners].map((item, index) => (
               <motion.div
                 key={`${item.name}-${index}`}
@@ -123,15 +126,39 @@ export default function MediaPartner() {
                 />
               </motion.div>
             ))}
-          </div>
-        </motion.div>
-        {/* ===== Mobile Media Partner ===== */}
+          </motion.div> */}
 
-        <div className="grid grid-cols-2 gap-6 lg:hidden">
-          {mediaPartners.map((item) => (
-            <div
-              key={item.name}
-              className="
+          {/* ===== Coming Soon Overlay - Desktop ===== */}
+          <div className=" pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className={`inline-flex items-center gap-3 rounded-full border-2 border-dashed px-8 py-4 font-syncopate text-2xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:px-10 sm:py-5 sm:text-3xl ${
+                darkMode
+                  ? "border-blue-700 bg-white/80 text-blue-700"
+                  : "border-red-700 bg-black/70 text-red-700"
+              }`}
+            >
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-current" />
+              </span>
+              Coming Soon
+            </motion.div>
+          </div>
+        </div>
+
+        {/* ===== Mobile Media Partner ===== */}
+        <div className="relative min-h-48 lg:hidden">
+          {/* <div className="grid grid-cols-2 gap-6">
+            {mediaPartners.map((item) => (
+              <div
+                key={item.name}
+                className="
         flex
         items-center
         justify-center
@@ -140,15 +167,56 @@ export default function MediaPartner() {
         border-white/10
         p-6
       "
+              >
+                <img
+                  src={item.logo}
+                  alt={item.name}
+                  className="h-16 object-contain"
+                />
+              </div>
+            ))}
+          </div> */}
+
+          {/* ===== Coming Soon Overlay - Mobile ===== */}
+          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className={`inline-flex items-center gap-2 rounded-full border-2 border-dashed px-5 py-3 font-syncopate text-base font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] ${
+                darkMode
+                  ? "border-blue-700 bg-white/80 text-blue-700"
+                  : "border-red-700 bg-black/70 text-red-700"
+              }`}
             >
-              <img
-                src={item.logo}
-                alt={item.name}
-                className="h-16 object-contain"
-              />
-            </div>
-          ))}
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-current" />
+              </span>
+              Coming Soon
+            </motion.div>
+          </div>
         </div>
+
+        {/* ===== Note ===== */}
+        <motion.p
+          variants={headingVariants.subtitle}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: false,
+            amount: 0.3,
+          }}
+          className={`mt-2 text-center font-space text-sm italic ${
+            darkMode ? "text-slate-500" : "text-slate-500"
+          }`}
+        >
+          * Media partner lineup coming soon — the official list will be
+          announced shortly.
+        </motion.p>
       </div>
     </section>
   );

@@ -129,13 +129,22 @@ export default function MobileEventModal({
                 {description}{" "}
               </p>{" "}
               <button
-                onClick={() =>
+                onClick={() => {
+                  if (title === "Fast Typing") {
+                    window.open(
+                      "https://fast-typing-firetech2026.vercel.app/",
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                    return;
+                  }
+
                   navigate("/dashboard/apply", {
                     state: {
                       category: title,
                     },
-                  })
-                }
+                  });
+                }}
                 className=" mt-8 w-full rounded-full bg-linear-to-r from-red-500 to-blue-500 px-6 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] "
               >
                 {" "}

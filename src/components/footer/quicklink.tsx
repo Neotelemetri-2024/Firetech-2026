@@ -1,5 +1,5 @@
 import { useTheme } from "../../context/themecontext";
-import { Laptop, Palette, Gamepad2, Bot, Keyboard } from "lucide-react";
+import { Laptop, Palette, Gamepad2, Keyboard, BrainCircuit } from "lucide-react";
 
 const navItems = [
   { label: "Home", id: "home" },
@@ -19,15 +19,15 @@ const eventItems = [
     icon: Palette,
   },
   {
-    name: "E-Sport Competition",
+    name: "E-Football",
     icon: Gamepad2,
   },
   {
-    name: "Line Follower",
-    icon: Bot,
+    name: "Informatics Olympiad",
+    icon: BrainCircuit,
   },
   {
-    name: "Fast Typing Competition",
+    name: "Fast Typing ",
     icon: Keyboard,
   },
 ];
