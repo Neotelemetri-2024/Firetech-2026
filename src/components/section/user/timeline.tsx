@@ -7,10 +7,10 @@ import {
   Calendar,
   Trophy,
   Gamepad2,
-  Monitor,
   Keyboard,
   PenTool,
   Rocket,
+  Brain,
 } from "lucide-react";
 
 const timelineEvents = [
@@ -26,22 +26,22 @@ const timelineEvents = [
   },
   {
     title: "Hackathon",
-    date: "25-26 September 2026",
+    date: "26-27 September 2026",
     icon: <Trophy size={22} />,
   },
   {
-    title: "Line Follower",
+    title: "Informatics Olympiad",
     date: "25 September 2026",
-    icon: <Monitor size={22} />,
+    icon: <Brain size={22} />,
   },
   {
     title: "Fast Typing",
-    date: "25 September 2026",
+    date: "26 September 2026",
     icon: <Keyboard size={22} />,
   },
   {
     title: "E-Football",
-    date: "26 September 2026",
+    date: "25 September 2026",
     icon: <Gamepad2 size={22} />,
   },
   {
@@ -49,6 +49,11 @@ const timelineEvents = [
     date: "26 September 2026",
     icon: <PenTool size={22} />,
   },
+  {
+    title: "Closing Ceremony",
+    date: "27 September 2026",
+    icon: <Rocket size={22} />,
+  }
 ];
 
 // Pre-generate stable particle positions/sizes so we don't call Math.random during render

@@ -95,6 +95,12 @@ const events = [
         label: "Participants",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
+
+      {
+        value: "12",
+        label: "Teams",
+        icon: "/src/assets/admin/dashboard/team.webp",
+      },
       {
         value: "85",
         label: "Payments",

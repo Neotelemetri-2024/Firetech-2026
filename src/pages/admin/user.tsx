@@ -239,6 +239,11 @@ export default function AdminUser() {
   const [eventFilter, setEventFilter] = useState<string | null>(null);
   const [paymentFilter, setPaymentFilter] = useState<string | null>(null);
   const [submissionFilter, setSubmissionFilter] = useState<string | null>(null);
+  const [teamFilter, setTeamFilter] = useState<string | null>(null);
+
+  const teamOptions = Array.from(
+    new Set(userList.flatMap((user) => user.competitions.map((c) => c.team))),
+  ).sort((a, b) => a.localeCompare(b));
 
   const stats = [
     {
@@ -309,12 +314,22 @@ export default function AdminUser() {
     const matchesSubmission =
       !submissionFilter || user.submissionStatus === submissionFilter;
 
+    const matchesTeam =
+      !teamFilter ||
+      user.competitions.some((competition) => competition.team === teamFilter);
+
     const matchesSearch =
       !search ||
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase());
 
-    return matchesEvent && matchesPayment && matchesSubmission && matchesSearch;
+    return (
+      matchesEvent &&
+      matchesPayment &&
+      matchesSubmission &&
+      matchesTeam &&
+      matchesSearch
+    );
   });
 
   const totalPages = Math.ceil(filteredUsers.length / PAGE_SIZE);
@@ -370,12 +385,26 @@ export default function AdminUser() {
                     placeholder="Submission"
                     onSelect={(value) => setSubmissionFilter(value)}
                   />
-                  {(eventFilter || paymentFilter || submissionFilter) && (
+
+                  <Filter
+                    options={teamOptions}
+                    selected={teamFilter}
+                    placeholder="Team"
+                    onSelect={(value) => {
+                      setTeamFilter(value);
+                      setCurrentPage(1);
+                    }}
+                  />
+                  {(eventFilter ||
+                    paymentFilter ||
+                    submissionFilter ||
+                    teamFilter) && (
                     <Reset
                       onClick={() => {
                         setEventFilter(null);
                         setPaymentFilter(null);
                         setSubmissionFilter(null);
+                        setTeamFilter(null);
                         setCurrentPage(1);
                       }}
                     />

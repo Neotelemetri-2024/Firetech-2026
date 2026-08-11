@@ -23,16 +23,9 @@ export type HackathonFormData = {
 
 export type UiUxFormData = {
   // Step 1
-  namaTeam: string;
-  namaKetua: string;
+  namaPemain: string;
   asalSekolah: string;
   portofolioUrl: string;
-
-  // Step 2
-  anggota1: string;
-  anggota2: string;
-  anggota3: string;
-  anggota4: string;
 
   // Upload
   ktm: File | null;

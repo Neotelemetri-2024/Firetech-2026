@@ -19,7 +19,7 @@ export const users: UserItem[] = [
         team: "Neo Telemetri",
         payment: "Pending",
         paymentProof: participantProof,
-        role: "Ketua",
+        role: "Leader",
         submission: "Pending",
         submissionLink: "https://github.com/firetech/hackathon-project",
       },
@@ -93,7 +93,7 @@ export const users: UserItem[] = [
         team: "Gamma Team",
         payment: "Declined",
         paymentProof: participantProof,
-        role: "Ketua",
+        role: "Leader",
         submission: "Submitted",
         submissionLink: "https://github.com/firetech/hackathon-project",
       },
@@ -111,7 +111,7 @@ export const users: UserItem[] = [
     competitions: [
       {
         title: "UI/UX Competition",
-        team: "Delta Team",
+        team: "Alpha Team",
         payment: "Pending",
         paymentProof: participantProof,
         role: "Member",
