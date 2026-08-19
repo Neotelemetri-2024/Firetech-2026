@@ -339,18 +339,6 @@ export default function Navbar() {
                           }`}
                         >
                           <span className="flex items-center gap-2">
-                            {/* Dot indicator */}
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                                isItemActive
-                                  ? darkMode
-                                    ? "bg-blue-600 scale-125"
-                                    : "bg-red-600 scale-125"
-                                  : darkMode
-                                    ? "bg-white/20"
-                                    : "bg-slate-300"
-                              }`}
-                            />
                             {item.label}
                           </span>
                           {hasChildren && (

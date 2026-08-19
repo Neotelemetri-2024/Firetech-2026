@@ -127,23 +127,6 @@ export default function Menu({
               )}
 
               <span className="relative z-10 flex items-center gap-2">
-                {itemActive && (
-                  <motion.span
-                    layoutId={`dot-${item.label}`}
-                    className={`
-        absolute
-        -top-3
-        left-1/2
-        -translate-x-1/2
-
-        h-2 w-2
-        rounded-full
-
-        ${darkMode ? "bg-blue-600" : "bg-red-600"}
-      `}
-                  />
-                )}
-
                 {item.label}
 
                 {hasChildren && (
