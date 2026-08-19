@@ -16,7 +16,7 @@ import Home from "../src/pages/user/home";
 import Apply from "../src/pages/user/apply";
 
 //Auth//
-import Auth from "./pages/auth/auth";
+import Auth from "./pages/auth/login";
 
 //Admin//
 import Admin from "./pages/admin/dashboard";
@@ -63,7 +63,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           {/* Auth */}
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/login" element={<Auth />} />
 
           {/* Firetech */}
           <Route path="/" element={<Firetech />} />
