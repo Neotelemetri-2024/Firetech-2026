@@ -1,5 +1,4 @@
 import { useTheme } from "../../context/themecontext";
-import Instagram from "../../assets/socialmedia/instagram.webp";
 
 const teamMembers = [
   {
@@ -37,30 +36,18 @@ export default function OurTeam() {
         Our Team
       </span>
 
-      <div className="flex flex-col items-center lg:items-start gap-2.5">
+      <div className="flex flex-col items-center lg:items-start lg:-ml-4 gap-2.5">
         {teamMembers.map((member) => (
           <a
             key={member.role}
             href={member.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className={`group flex w-full lg:w-auto items-center justify-center lg:justify-start gap-3 rounded-xl border px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 ${
-              darkMode
-                ? "border-slate-200/80 bg-slate-50/80 hover:border-blue-600 hover:bg-blue-50"
-                : "border-slate-700/60 bg-slate-900/50 hover:border-red-600 hover:bg-red-700/10"
-            }`}
+            className="group flex w-full lg:w-auto items-center justify-center lg:justify-start gap-3  px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5"
           >
-            <img
-              src={Instagram}
-              alt="Instagram"
-              className={`w-4.5 h-4.5 object-contain transition-transform duration-300 group-hover:scale-110 ${
-                darkMode ? "" : "invert brightness-0"
-              }`}
-            />
-
             <div className="min-w-0">
               <div
-                className={`text-[10px] uppercase tracking-wider ${
+                className={`text-[10px] uppercase font-bold tracking-wider ${
                   darkMode ? "text-slate-400" : "text-slate-500"
                 }`}
               >

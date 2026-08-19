@@ -71,11 +71,7 @@ export default function Connect() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className={`group relative p-2.5 rounded-xl border-2 transition-all duration-300 hover:-translate-y-1 hover:scale-105 ${
-              darkMode
-                ? "border-slate-200 bg-slate-50 hover:bg-blue-700 hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_25px_rgba(37,99,235,0.25)]"
-                : "border-slate-700 bg-slate-900 hover:bg-red-700 hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_25px_rgba(185,28,28,0.25)]"
-            }`}
+            className=" group relative p-2.5  transition-all duration-300 hover:-translate-y-1 hover:scale-105 "
           >
             <img
               src={src}

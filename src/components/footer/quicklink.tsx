@@ -1,5 +1,11 @@
 import { useTheme } from "../../context/themecontext";
-import { Laptop, Palette, Gamepad2, Keyboard, BrainCircuit } from "lucide-react";
+import {
+  Laptop,
+  Palette,
+  Gamepad2,
+  Keyboard,
+  BrainCircuit,
+} from "lucide-react";
 
 const navItems = [
   { label: "Home", id: "home" },
@@ -56,16 +62,16 @@ export default function QuickLinks() {
         Quick Links
       </span>
 
-      <ul className="flex flex-wrap justify-center lg:justify-start gap-2.5">
+      <ul className="flex flex-wrap justify-center lg:justify-start lg:-mr-1 gap-2.5">
         {navItems.map((item) => (
           <li key={item.id}>
             <button
               type="button"
               onClick={() => handleScroll(item.id)}
-              className={`inline-block px-4 py-2 text-xs font-bold cursor-pointer rounded-full border-2 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${
+              className={`inline-block px-4 lg:px-1 py-2 text-xs font-bold cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${
                 darkMode
-                  ? "border-slate-300 text-slate-700 bg-slate-50 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.35),0_8px_20px_rgba(37,99,235,0.25)]"
-                  : "border-slate-600 text-slate-300 bg-slate-900 hover:bg-red-700 hover:text-white hover:border-red-600 hover:shadow-[0_0_20px_rgba(185,28,28,0.35),0_8px_20px_rgba(185,28,28,0.25)]"
+                  ? "border-slate-300 text-slate-700 hover:text-black"
+                  : "border-slate-600 text-slate-300 hover:text-white"
               }`}
             >
               {item.label}
@@ -90,7 +96,7 @@ export default function QuickLinks() {
             return (
               <div
                 key={event.name}
-                className={`flex items-center justify-center lg:justify-start gap-3 transition-all duration-300 hover:translate-x-1 ${
+                className={`flex items-center cursor-pointer justify-center lg:justify-start gap-3 transition-all duration-300 hover:translate-x-1 ${
                   darkMode
                     ? "text-slate-500 hover:text-slate-900"
                     : "text-slate-400 hover:text-white"
