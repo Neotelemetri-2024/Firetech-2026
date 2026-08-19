@@ -1,7 +1,6 @@
 import { useTheme } from "../../context/themecontext";
 import ThemeSwitcher from "../../components/themeswitcher";
 import FiretechLogo from "../../assets/firetech.webp";
-import FiretechLogoWhite from "../../assets/firetechwhite.webp";
 import { motion } from "framer-motion";
 
 const darkGradientStyle = {
@@ -223,17 +222,26 @@ export default function Auth() {
         >
           <motion.img
             initial={{ opacity: 0, x: 60, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1, y: [0, -8, 0] }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              scale: 1,
+              y: [0, -8, 0],
+            }}
             transition={{
               duration: 1,
               delay: 0.5,
               ease: "easeOut",
-              y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+              y: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
             }}
             whileHover={{
               scale: 1.08,
             }}
-            src={darkMode ? FiretechLogoWhite : FiretechLogo}
+            src={FiretechLogo}
             alt="Firetech"
             className="
             cursor-pointer
@@ -242,7 +250,7 @@ export default function Auth() {
             lg:w-105
             object-contain
             drop-shadow-[0_0_50px_rgba(59,130,246,0.35)]
-            "
+          "
           />
         </div>
       </div>
