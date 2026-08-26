@@ -18,7 +18,7 @@ const events = [
     title: "Hackathon",
     tagline: "Build. Innovate. Compete.",
     description:
-      "The Firetech 2026 Hackathon challenges participants to develop innovative technology solutions within a limited timeframe.",
+      "Develop innovative technology solutions and transform ideas into impactful prototypes. Work as a team to solve real-world challenges within a limited timeframe.",
     image: hackathonImg,
     color: "#ef4444",
   },
@@ -27,7 +27,7 @@ const events = [
     title: "Informatics Olympiad",
     tagline: "Think Fast. Solve Smart.",
     description:
-      "An informatics olympiad that tests participants' algorithmic thinking, problem-solving skills, and programming knowledge.",
+      "Test your algorithmic thinking and programming skills through challenging problem sets. Compete against the best minds in logic, efficiency, and problem-solving.",
     image: informaticsImg,
     color: "#f59e0b",
   },
@@ -36,7 +36,7 @@ const events = [
     title: "UI/UX",
     tagline: "Design the Future.",
     description:
-      "A user interface and user experience design competition that emphasizes creativity, innovation, and problem-solving skills.",
+      "Create intuitive and engaging digital experiences that solve real user needs. Showcase your creativity through user-centered design and innovative interfaces.",
     image: uiuxImg,
     color: "#06b6d4",
   },
@@ -45,7 +45,7 @@ const events = [
     title: "E-Football",
     tagline: "Play Beyond Limits.",
     description:
-      "An exciting e-football tournament where participants showcase their strategy, teamwork, and gaming skills.",
+      "Compete in thrilling matches that demand strategy, precision, and quick decision-making. Prove your skills on the virtual pitch and aim for championship glory.",
     image: efootballImg,
     color: "#22c55e",
   },
