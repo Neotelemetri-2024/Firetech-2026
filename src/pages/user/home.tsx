@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Dashboard from "../../components/section/user/dashboard";
+import Firetech from "../../components/section/user/firetech";
 import Timeline from "../../components/section/user/timeline";
 import FAQ from "../../components/section/user/faq";
 import Event from "../../components/section/user/event";
@@ -51,6 +52,12 @@ export default function Home() {
     <>
       <section id="home" className="mt-10">
         <Dashboard />
+      </section>
+
+      <SectionDivider />
+
+      <section id="firetech" className="scroll-mt-40">
+        <Firetech />
       </section>
 
       <SectionDivider />

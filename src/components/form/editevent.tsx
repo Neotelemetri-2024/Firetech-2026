@@ -424,7 +424,7 @@ export default function EditEvent({
                       errors.category ? "border-red-400/60" : ""
                     }`}
                   >
-                    <span>{form.category || "Pilih kategori"}</span>
+                    <span>{form.category || "Select category"}</span>
 
                     <ChevronDown className="h-5 w-5 text-white/50" />
                   </ListboxButton>

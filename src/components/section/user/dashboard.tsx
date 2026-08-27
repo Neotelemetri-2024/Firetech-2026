@@ -56,8 +56,8 @@ const Dashboard = () => {
         }}
         className="
         hidden
-lg:block
-absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
+        lg:block
+        absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
       />
 
       <motion.div
@@ -72,17 +72,17 @@ absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
           delay: 1,
         }}
         className="
-    hidden
-    lg:block
-    absolute
-    bottom-20
-    right-0
-    h-125
-    w-125
-    rounded-full
-    bg-cyan-500/20
-    blur-[200px]
-  "
+        hidden
+        lg:block
+        absolute
+        bottom-20
+        right-0
+        h-125
+        w-125
+        rounded-full
+        bg-cyan-500/20
+        blur-[200px]
+      "
       />
 
       <main className="mx-auto w-full max-w-[1700px] px-6 py-12 lg:px-10">
@@ -191,9 +191,8 @@ absolute left-0 top-20 h-125 w-125 rounded-full bg-blue-600/20 blur-[200px]"
                 font-extrabold
                 tracking-wide
                 bg-linear-to-r
-                ${darkMode ? "from-blue-700 to-red-700" : "from-red-700 to-blue-700"}
+                ${darkMode ? "text-blue-700" : "text-red-700"}
                 bg-clip-text
-                text-transparent
               `}
               >
                 Harmonizing Tech And Humanity

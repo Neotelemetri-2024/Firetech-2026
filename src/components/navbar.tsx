@@ -98,12 +98,12 @@ export default function Navbar() {
 
   const handleLoginClick = () => {
     setMenuOpen(false);
-    navigate("/auth");
+    navigate("/login");
   };
 
   const handleLogout = () => {
     setProfileOpen(false);
-    navigate("/auth");
+    navigate("/login");
   };
 
   const handleNavClick = (item: NavItem, childHash?: string) => {

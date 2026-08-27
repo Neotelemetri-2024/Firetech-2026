@@ -1,203 +1,29 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "../../../utils/gsap";
-import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
+
+import { useTheme } from "../../../context/themecontext";
+
 import { headingVariants } from "../../animations/headingvariants";
-import {
-  Calendar,
-  Trophy,
-  Gamepad2,
-  Keyboard,
-  PenTool,
-  Rocket,
-  Brain,
-} from "lucide-react";
+import { initTimelineAnimation } from "../../animations/timeline";
 
-const timelineEvents = [
-  {
-    title: "Open Registration",
-    date: "1 Agustus 2026",
-    icon: <Calendar size={22} />,
-  },
-  {
-    title: "Opening Ceremony",
-    date: "25 September 2026",
-    icon: <Rocket size={22} />,
-  },
-  {
-    title: "Hackathon",
-    date: "26-27 September 2026",
-    icon: <Trophy size={22} />,
-  },
-  {
-    title: "Informatics Olympiad",
-    date: "25 September 2026",
-    icon: <Brain size={22} />,
-  },
-  {
-    title: "Fast Typing",
-    date: "26 September 2026",
-    icon: <Keyboard size={22} />,
-  },
-  {
-    title: "E-Football",
-    date: "25 September 2026",
-    icon: <Gamepad2 size={22} />,
-  },
-  {
-    title: "UI/UX Competition",
-    date: "26 September 2026",
-    icon: <PenTool size={22} />,
-  },
-  {
-    title: "Closing Ceremony",
-    date: "27 September 2026",
-    icon: <Rocket size={22} />,
-  }
-];
+import roadImage from "../../../assets/timeline/road.webp";
+import TimelineCheckpoint from "../../ui/checkpoint";
 
-// Pre-generate stable particle positions/sizes so we don't call Math.random during render
+import { timelineEvents } from "../../../data/timeline";
 
 export default function Timeline() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const lineGlowRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
   const { darkMode } = useTheme();
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // --- Heading stagger reveal ---
-      const headingChildren = headingRef.current?.children;
-      if (headingChildren) {
-        gsap.fromTo(
-          headingChildren,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: headingRef.current,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          },
-        );
-      }
-
-      // --- Timeline line draw-on-scroll ---
-      gsap.fromTo(
-        lineRef.current,
-        {
-          scaleY: 0,
-        },
-        {
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top center",
-            end: "bottom center",
-            scrub: true,
-          },
-        },
-      );
-
-      // --- Line glow parallax ---
-      if (lineGlowRef.current) {
-        gsap.to(lineGlowRef.current, {
-          opacity: 0.6,
-          y: -60,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
-      }
-
-      // --- Cards fade-up stagger ---
-      cardsRef.current.forEach((card) => {
-        if (!card) return;
-
-        gsap.fromTo(
-          card,
-          {
-            y: 60,
-            opacity: 0,
-            scale: 0.95,
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "top 55%",
-              scrub: 1,
-            },
-          },
-        );
-      });
-
-      // --- Dots pulse + glow loop ---
-      dotsRef.current.forEach((dot) => {
-        if (!dot) return;
-
-        gsap.fromTo(
-          dot,
-          {
-            scale: 0,
-            opacity: 0,
-          },
-          {
-            scale: 1,
-            opacity: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: dot,
-              start: "top 85%",
-              end: "top 55%",
-              scrub: 1,
-            },
-          },
-        );
-      });
-
-      // --- Floating ambient particles ---
-      const particleEls = sectionRef.current?.querySelectorAll(".particle");
-      if (particleEls) {
-        particleEls.forEach((p) => {
-          gsap.to(p, {
-            y: -30 - Math.random() * 40,
-            x: Math.random() > 0.5 ? 10 : -10,
-            opacity: 0.2 + Math.random() * 0.3,
-            duration: 2 + Math.random() * 3,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            delay: Math.random() * 2,
-          });
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    initTimelineAnimation();
   }, []);
 
+  const cardOffsets = ["mt-34", "mt-34", "mt-[44px]", "mt-[44px]"];
   return (
     <section ref={sectionRef} className="relative overflow-hidden py-12">
       {/* Content */}
-      <div className="relative mx-auto max-w-6xl px-6">
+      <div className="relative mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div className="mb-24 text-center">
           <motion.h2
@@ -241,144 +67,385 @@ export default function Timeline() {
           </motion.p>
         </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Desktop vertical line */}
-          <div
-            ref={lineRef}
-            className={`absolute left-1/2 top-0 hidden h-full w-0.75 -translate-x-1/2 rounded-full md:block ${
-              darkMode ? "bg-blue-700 " : "bg-red-700 "
-            }`}
-            style={{ transformOrigin: "top center" }}
-          />
-
-          {/* Line glow */}
-          <div
-            ref={lineGlowRef}
-            className={`absolute left-1/2 top-0 hidden h-full w-16 -translate-x-1/2 blur-2xl md:block ${
-              darkMode
-                ? "bg-linear-to-b from-red-700/20 via-blue-700/20 to-red-700/20"
-                : "bg-linear-to-b from-blue-700/20 via-red-700/20 to-blue-700/20"
-            }`}
-          />
-
-          {timelineEvents.map((event, index) => (
-            <div
-              key={index}
-              className={`relative mb-20 flex items-center ${
-                index % 2 === 0 ? "md:justify-start" : "md:justify-end"
-              }`}
+        {/* Desktop Timeline */}
+        <div className="hidden md:grid md:grid-cols-2 md:gap-16">
+          {/* Left Side */}
+          <div className="sticky top-28">
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: false,
+                amount: 0.2,
+              }}
+              transition={{
+                duration: 0.8,
+              }}
+              className={`
+              relative
+              overflow-hidden
+              rounded-4xl
+              border
+              ${
+                darkMode
+                  ? "border-slate-200 bg-white/80"
+                  : "border-white/10 bg-white/3"
+              }
+            `}
             >
-              {/* Connecting bridge */}
+              {/* Accent Line */}
               <div
-                className={`absolute left-1/2 z-10 hidden h-0.75 w-[8%] -translate-x-1/2 md:block ${
-                  darkMode
-                    ? "bg-linear-to-r from-transparent via-blue-700/30 to-transparent"
-                    : "bg-linear-to-r from-transparent via-red-700/30 to-transparent"
-                }`}
-              />
-              {/* Dot */}
-              <div
-                ref={(el) => {
-                  dotsRef.current[index] = el;
-                }}
-                className={`absolute left-1/2 z-20 hidden h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border-[3px] md:flex ${
-                  darkMode
-                    ? "border-blue-700 bg-blue-100 shadow-[0_0_20px_rgba(29,78,216,0.3)]"
-                    : "border-red-700 bg-red-100 shadow-[0_0_20px_rgba(185,28,28,0.3)]"
-                }`}
-              >
-                <div
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    darkMode ? "bg-blue-500" : "bg-red-500"
-                  }`}
-                />
-              </div>
-
-              {/* Card */}
-              <div
-                ref={(el) => {
-                  cardsRef.current[index] = el;
-                }}
                 className={`
-                group relative
-                w-full md:w-[44%]
-                rounded-2xl
-                p-6
-                backdrop-blur-xl
-                cursor-pointer
-                transition-all
-                duration-500
-                ease-out
-                hover:scale-[1.02]
-                hover:-translate-y-1.5
+                absolute
+                top-0
+                left-0
+                z-30
+                h-1
+                w-full
+                ${darkMode ? "bg-blue-600" : "bg-red-600"}
+              `}
+              />
+
+              {/* Road Image */}
+              <motion.img
+                src={roadImage}
+                alt="Timeline Road"
+                initial={{
+                  opacity: 0,
+                  scale: 0.95,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                viewport={{
+                  once: false,
+                  amount: 0.2,
+                }}
+                transition={{
+                  duration: 1,
+                }}
+                className="
+                h-175
+                w-full
+                object-cover
+                select-none
+                pointer-events-none
+              "
+              />
+
+              {/* Bottom Fade */}
+              <div
+                className={`
+                absolute
+                bottom-0
+                left-0
+                right-0
+                h-32
                 ${
                   darkMode
-                    ? `
-                      border border-black/10
-                      bg-white/30
-                      hover:border-blue-700/40
-                      hover:bg-blue-700/5
-                      hover:shadow-[0_0_50px_rgba(29,78,216,0.15)]
-                    `
-                    : `
-                      border border-white/10
-                      bg-white/4
-                      hover:border-red-700/40
-                      hover:bg-red-700/5
-                      hover:shadow-[0_0_50px_rgba(185,28,28,0.15)]
-                    `
+                    ? "bg-linear-to-t from-white via-white/70 to-transparent"
+                    : "bg-linear-to-t from-[#0f245d] via-[#0f245d]/60 to-transparent"
                 }
+                `}
+              />
+
+              {/* Checkpoints */}
+              {timelineEvents.map((event) => (
+                <TimelineCheckpoint
+                  key={event.id}
+                  id={event.id}
+                  title={event.title}
+                  date={event.date}
+                  top={event.top}
+                  left={event.left}
+                  darkMode={darkMode}
+                />
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right Side */}
+          <div
+            className="
+            grid
+            grid-cols-2
+            gap-x-5
+            gap-y-3
+            content-start
+            self-start
+          "
+          >
+            {timelineEvents.map((event, index) => (
+              <motion.div
+                key={event.id}
+                initial={{
+                  opacity: 0,
+                  y: 40,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: false,
+                  amount: 0.3,
+                }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.08,
+                }}
+                whileHover={{
+                  y: -4,
+                  scale: 1.03,
+                  transition: {
+                    type: "spring",
+                    stiffness: 450,
+                    damping: 20,
+                  },
+                }}
+                className={`
+                relative
+                min-h-42.5
+                overflow-hidden
+                rounded-3xl
+                border
+                p-5
+                backdrop-blur-xl
+                transition-colors
+                cursor-pointer
+                ${cardOffsets[index]}
+                ${darkMode ? "border-slate-200 bg-white/80" : "border-white/10 bg-white/3"}
               `}
               >
-                {/* Inner gradient glow on hover */}
-                <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-cyan-400/10 via-transparent to-blue-500/10" />
+                {/* Top Accent */}
+                <div
+                  className={`
+                  absolute
+                  left-0
+                  top-0
+                  h-1
+                  w-full
+                  ${darkMode ? "bg-blue-600" : "bg-red-600"}
+                `}
+                />
+
+                {/* Large Number */}
+                <div
+                  className={`
+                  absolute
+                  right-4
+                  top-2
+                  text-6xl
+                  font-black
+                  opacity-12
+                  select-none
+                  ${darkMode ? "text-black" : "text-white"}
+                `}
+                >
+                  {event.id}
+                </div>
+                {/* Badge */}
+                <div
+                  className={`
+                  inline-flex
+                  rounded-full
+                  px-3
+                  py-1
+                  text-xs
+                  font-bold
+                  ${
+                    darkMode
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-red-500/10 text-red-400"
+                  }
+                `}
+                >
+                  STEP {event.id}
                 </div>
 
-                <div className="relative flex items-center gap-5">
-                  {/* Icon */}
-                  <div
+                {/* Description */}
+                <p
+                  className={`
+                  mt-4
+                  text-sm
+                  leading-6
+                  ${darkMode ? "text-black" : "text-white"}
+                `}
+                >
+                  {event.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Roadmap */}
+        <div className="relative py-10 md:hidden">
+          <div className="space-y-20">
+            {timelineEvents.map((event, index) => (
+              <motion.div
+                key={event.id}
+                initial={{
+                  opacity: 0,
+                  y: 80,
+                  scale: 0.85,
+                  rotateX: 15,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  rotateX: 0,
+                }}
+                viewport={{
+                  once: false,
+                  amount: 0.2,
+                }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.1,
+                }}
+                className={`flex ${
+                  index % 2 === 0 ? "justify-start" : "justify-end"
+                }`}
+              >
+                <div className="relative w-[80%] max-w-75">
+                  {/* Connector */}
+
+                  {index !== timelineEvents.length - 1 && (
+                    <div
+                      className={`
+                      absolute
+                      top-14
+                      z-0
+                      ${index % 2 === 0 ? "left-12" : "right-12"}
+                      h-32
+                      w-1
+                      rounded-full
+                      ${
+                        darkMode
+                          ? "bg-linear-to-b from-blue-400 to-blue-700"
+                          : "bg-linear-to-b from-red-400 to-red-700"
+                      }
+                    `}
+                    />
+                  )}
+
+                  {/* Card */}
+
+                  <motion.div
+                    whileHover={{
+                      scale: 1.03,
+                    }}
+                    whileTap={{
+                      scale: 0.98,
+                    }}
                     className={`
-                    flex h-14 w-14 shrink-0 items-center justify-center rounded-xl
-                    transition-all duration-500
-                    group-hover:scale-110
+                    relative
+                    overflow-hidden
+                    rounded-3xl
+                    border
+                    p-6
+                    backdrop-blur-md
+                    shadow-xl
                     ${
                       darkMode
-                        ? "bg-black text-white group-hover:bg-blue-700 group-hover:text-white"
-                        : "bg-white text-black group-hover:bg-red-700 group-hover:text-white"
+                        ? "border-slate-200 bg-white/95"
+                        : "border-white/10 bg-white/10"
                     }
                   `}
                   >
-                    {event.icon}
-                  </div>
+                    {/* Accent Line */}
+                    <div
+                      className={`
+                      absolute
+                      top-0
+                      left-0
+                      h-0.5
+                      w-full
+                      ${darkMode ? "bg-blue-700" : "bg-red-700"}
+                    `}
+                    />
 
-                  {/* Text */}
-                  <div className="min-w-0">
-                    <h3
-                      className={`text-xl font-bold transition-colors duration-300 ${
-                        darkMode
-                          ? "text-black group-hover:text-blue-700"
-                          : "text-white group-hover:text-red-700"
-                      }`}
-                    >
-                      {event.title}
-                    </h3>
+                    <div
+                      className={`
+                      absolute
+                      top-0
+                      left-0
+                      h-10
+                      w-full
+                      blur-2xl
+                      opacity-20
+                      ${darkMode ? "bg-blue-500" : "bg-red-500"}
+                    `}
+                    />
 
-                    <p
-                      className={`mt-0.5 text-sm transition-colors duration-300 ${
+                    {/* Number */}
+                    <div
+                      className={`
+                      absolute
+                      -top-3
+                      -right-3
+                      flex
+                      h-14
+                      w-14
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      backdrop-blur-xl
+                      font-black
+                      text-xl
+                      shadow-xl
+                      ${
                         darkMode
-                          ? "text-gray-600 group-hover:text-blue-600"
-                          : "text-slate-400 group-hover:text-red-600"
-                      }`}
+                          ? `
+                            border-blue-300/40
+                            bg-white/70
+                            text-blue-700
+                          `
+                          : `
+                            border-white/20
+                            bg-white/10
+                            text-white
+                          `
+                      }
+                    `}
                     >
-                      {event.date}
-                    </p>
-                  </div>
+                      {index === timelineEvents.length - 1 ? "🏁" : event.id}
+                    </div>
+
+                    {/* Content */}
+
+                    <div className="pt-6">
+                      <h3
+                        className={`text-xl font-bold ${
+                          darkMode ? "text-black" : "text-white"
+                        }`}
+                      >
+                        {event.title}
+                      </h3>
+
+                      <p
+                        className={`mt-2 text-sm ${
+                          darkMode ? "text-slate-600" : "text-slate-300"
+                        }`}
+                      >
+                        {event.date}
+                      </p>
+                    </div>
+                  </motion.div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
