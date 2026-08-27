@@ -52,21 +52,27 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isProgrammaticScrolling, setIsProgrammaticScrolling] = useState(false);
   const getMainMenu = (sectionId: string) => {
     switch (sectionId) {
       case "home":
         return "home";
 
       case "firetech":
+      case "sponsor":
+      case "mediapartner":
+      case "countdown":
         return "about";
 
       case "event":
-      case "countdown":
+      case "hackathon":
+      case "informaticsolympiad":
+      case "ft":
+      case "ef":
+      case "uiux":
         return "event";
 
       case "timeline":
-      case "sponsor":
-      case "mediapartner":
         return "timeline";
 
       case "gallery":
@@ -132,15 +138,18 @@ export default function Navbar() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        // abaikan observer saat navbar sedang auto-scroll
+        if (isProgrammaticScrolling) return;
+
         if (window.scrollY < 150) {
           setActiveSection("home");
           return;
         }
 
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(getMainMenu(entry.target.id));
-          }
+          if (!entry.isIntersecting) return;
+
+          setActiveSection(getMainMenu(entry.target.id));
         });
       },
       {
@@ -154,7 +163,7 @@ export default function Navbar() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isProgrammaticScrolling]);
 
   const handleLoginClick = () => {
     setMenuOpen(false);
@@ -169,21 +178,31 @@ export default function Navbar() {
   const handleNavClick = (item: NavItem, childHash?: string) => {
     const hash = childHash ?? item.label.toLowerCase();
 
+    // lock observer sementara
+    setIsProgrammaticScrolling(true);
+
+    // langsung aktifkan menu tujuan
+    setActiveSection(getMainMenu(hash));
+
     const element = document.getElementById(hash);
 
     if (element) {
-      // Section exists in DOM — scroll directly (we're already on /dashboard/Home)
       const y = element.getBoundingClientRect().top + window.pageYOffset - 140;
-      window.scrollTo({ top: y, behavior: "smooth" });
+
+      window.scrollTo({
+        top: y,
+        behavior: "smooth",
+      });
+
+      // aktifkan observer lagi setelah scroll selesai
+      setTimeout(() => {
+        setIsProgrammaticScrolling(false);
+      }, 1200);
     } else {
-      // Save target in sessionStorage, then navigate to /dashboard
-      // Home.tsx will read sessionStorage and scroll after rendering sections
-      sessionStorage.setItem("scrollTo", hash);
-      navigate("/dashboard");
+      setIsProgrammaticScrolling(false);
     }
 
-    setActiveSection(getMainMenu(hash));
-    setMenuOpen(false);
+    setOpenDropdown(null);
   };
 
   const handleDropdownEnter = (label: string) => {
