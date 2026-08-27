@@ -4,6 +4,9 @@ import ArrowButton from "../components/button/arrow";
 import { Outlet } from "react-router-dom";
 import { useTheme } from "../context/themecontext";
 
+
+import { motion, useScroll } from "framer-motion";
+
 const darkGradientStyle = {
   backgroundImage:
     "radial-gradient(circle at 30% 20%, rgba(185, 28, 28, 0.6) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.6) 0%, transparent 50%), linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
@@ -16,9 +19,20 @@ const lightGradientStyle = {
 
 export default function MainLayout() {
   const { darkMode } = useTheme();
+  const { scrollYProgress } = useScroll();
 
   return (
     <>
+      <motion.div
+        className={`fixed top-0 left-0 right-0 z-9999 h-1 origin-left ${
+          darkMode
+            ? "bg-linear-to-r from-red-600 to-blue-600 shadow-[0_0_20px_rgba(59,130,246,0.8)]"
+            : "bg-linear-to-r from-blue-600 to-red-600 shadow-[0_0_20px_rgba(239,68,68,0.8)]"
+        }`}
+        style={{
+          scaleX: scrollYProgress,
+        }}
+      />
       {/* Fixed Background */}
       <div
         className="fixed inset-0 -z-10"

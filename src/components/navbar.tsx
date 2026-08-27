@@ -41,8 +41,8 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Timeline" },
-  { label: "FAQ" },
   { label: "Gallery" },
+  { label: "FAQ" },
 ];
 
 export default function Navbar() {
@@ -52,6 +52,34 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const getMainMenu = (sectionId: string) => {
+    switch (sectionId) {
+      case "home":
+        return "home";
+
+      case "firetech":
+        return "about";
+
+      case "event":
+      case "countdown":
+        return "event";
+
+      case "timeline":
+      case "sponsor":
+      case "mediapartner":
+        return "timeline";
+
+      case "gallery":
+        return "gallery";
+
+      case "faq":
+        return "faq";
+
+      default:
+        return "home";
+    }
+  };
+
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
@@ -96,6 +124,38 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Active menu berdasarkan section yang terlihat
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (window.scrollY < 150) {
+          setActiveSection("home");
+          return;
+        }
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(getMainMenu(entry.target.id));
+          }
+        });
+      },
+      {
+        rootMargin: "-30% 0px -50% 0px",
+        threshold: 0,
+      },
+    );
+
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleLoginClick = () => {
     setMenuOpen(false);
     navigate("/login");
@@ -122,7 +182,7 @@ export default function Navbar() {
       navigate("/dashboard");
     }
 
-    setActiveSection(hash);
+    setActiveSection(getMainMenu(hash));
     setMenuOpen(false);
   };
 
@@ -141,8 +201,7 @@ export default function Navbar() {
   };
 
   const isActive = (item: NavItem) =>
-    item.label.toLowerCase() === activeSection ||
-    (item.children?.some((c) => c.hash === activeSection) ?? false);
+    item.label.toLowerCase() === activeSection;
 
   return (
     <>
