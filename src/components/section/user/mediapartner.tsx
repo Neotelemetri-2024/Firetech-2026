@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
+import Call from "../../button/call";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -199,6 +200,14 @@ export default function MediaPartner() {
               Coming Soon
             </motion.div>
           </div>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-4xl">
+          <Call
+            phone="628123456789"
+            title="Become Our Media Partner"
+            subtitle="Collaborate with Firetech 2026 and help amplify innovation, technology, and entrepreneurship."
+          />
         </div>
 
         {/* ===== Note ===== */}
