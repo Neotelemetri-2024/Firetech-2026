@@ -61,7 +61,7 @@ export default function Call({
         `}
       />
 
-      <div className="relative z-10 flex items-center gap-5">
+      <div className="relative z-10 flex flex-col items-center text-center gap-4 sm:flex-row sm:text-left">
         {/* Icon */}
         <div className="relative">
           <span
@@ -74,15 +74,15 @@ export default function Call({
             "
           />
 
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-green-500 text-white shadow-lg">
-            <FaWhatsapp size={34} />
+          <div className="relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-green-500 text-white shadow-lg">
+            <FaWhatsapp className="text-3xl sm:text-[34px]" />
           </div>
         </div>
 
         {/* Text */}
         <div className="flex-1">
           <h3
-            className={`font-syncopate text-lg font-black ${
+            className={`font-syncopate text-base sm:text-lg font-black leading-tight ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -90,7 +90,7 @@ export default function Call({
           </h3>
 
           <p
-            className={`mt-2 text-sm ${
+            className={`mt-2 text-xs sm:text-sm leading-relaxed ${
               darkMode ? "text-slate-600" : "text-slate-400"
             }`}
           >
