@@ -99,19 +99,6 @@ export default function Timeline() {
               }
             `}
             >
-              {/* Accent Line */}
-              <div
-                className={`
-                absolute
-                top-0
-                left-0
-                z-30
-                h-1
-                w-full
-                ${darkMode ? "bg-blue-600" : "bg-red-600"}
-              `}
-              />
-
               {/* Road Image */}
               <motion.img
                 src={roadImage}
@@ -224,18 +211,6 @@ export default function Timeline() {
                 ${darkMode ? "border-slate-200 bg-white/80" : "border-white/10 bg-white/3"}
               `}
               >
-                {/* Top Accent */}
-                <div
-                  className={`
-                  absolute
-                  left-0
-                  top-0
-                  h-1
-                  w-full
-                  ${darkMode ? "bg-blue-600" : "bg-red-600"}
-                `}
-                />
-
                 {/* Large Number */}
                 <div
                   className={`

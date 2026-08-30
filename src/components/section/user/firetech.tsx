@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
-import { Sparkles, Lightbulb, Users, Trophy, type LucideIcon } from "lucide-react";
+import {
+  Network,
+  Lightbulb,
+  GraduationCap,
+  Award,
+  type LucideIcon,
+} from "lucide-react";
 import { useTheme } from "../../../context/themecontext";
 import { headingVariants } from "../../animations/headingvariants";
 import FiretechLogo from "../../../assets/firetech.webp";
@@ -14,7 +20,7 @@ type OverviewCard = {
 const overviewCards: OverviewCard[] = [
   {
     id: "01",
-    icon: Sparkles,
+    icon: Network,
     title: "National Technology Hub",
     description:
       "Bringing together talented students from diverse backgrounds to exchange ideas, showcase creativity, and build innovative technology-driven solutions.",
@@ -28,14 +34,14 @@ const overviewCards: OverviewCard[] = [
   },
   {
     id: "03",
-    icon: Users,
+    icon: GraduationCap,
     title: "Growth & Development",
     description:
       "Providing opportunities for participants to strengthen technical expertise, critical thinking, leadership, and teamwork through practical challenges.",
   },
   {
     id: "04",
-    icon: Trophy,
+    icon: Award,
     title: "Competitive Experience",
     description:
       "Featuring five dynamic competition categories that inspire participants to demonstrate their talents, push their limits, and achieve excellence.",
@@ -187,41 +193,44 @@ export default function Firetech() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.2 }}
-          className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-20  grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {overviewCards.map((card) => (
             <motion.div
               key={card.id}
               variants={headingVariants.card}
-              className={`group relative overflow-hidden rounded-2xl border p-6 transition-all duration-500 hover:-translate-y-1 ${
+              className={`group relative overflow-hidden cursor-pointer rounded-3xl border p-6 transition-all duration-500 hover:-translate-y-2 ${
                 darkMode
-                  ? "border-slate-200 bg-white hover:border-blue-600"
-                  : "border-white/10 bg-white/5 hover:border-red-600"
+                  ? "border-slate-200 bg-white hover:border-blue-700"
+                  : "border-white/10 bg-white/5 hover:border-red-700"
               }`}
             >
-              {/* Subtle glow on hover */}
-              <div
-                className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${
-                  darkMode ? "bg-blue-700/4" : "bg-red-700/4"
-                }`}
-              />
+              {/* Header */}
+              <div className="relative flex items-center gap-4">
+                <div
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110 ${
+                    darkMode
+                      ? "bg-blue-700/10 text-blue-700"
+                      : "bg-red-700/10 text-red-700"
+                  }`}
+                >
+                  <card.icon className="h-7 w-7" />
+                </div>
 
-              <card.icon
-                className={`relative h-9 w-9 ${
-                  darkMode ? "text-blue-700" : "text-red-700"
-                }`}
-              />
+                <div>
+                  <h3
+                    className={`mt-1 text-lg font-semibold tracking-tight ${
+                      darkMode ? "text-black" : "text-white"
+                    }`}
+                  >
+                    {card.title}
+                  </h3>
+                </div>
+              </div>
 
-              <h3
-                className={`relative mt-4 font-orbitron text-lg font-bold ${
-                  darkMode ? "text-black" : "text-white"
-                }`}
-              >
-                {card.title}
-              </h3>
-
+              {/* Description */}
               <p
-                className={`relative mt-2 text-sm leading-relaxed ${
+                className={`relative mt-5 text-sm leading-7 ${
                   darkMode ? "text-slate-600" : "text-slate-400"
                 }`}
               >
