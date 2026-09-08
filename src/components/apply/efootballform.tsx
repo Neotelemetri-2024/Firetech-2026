@@ -25,6 +25,7 @@ export default function EfootballForm({
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
+          required
         />
         <FormField
           label="ID Game efootball"
@@ -34,6 +35,7 @@ export default function EfootballForm({
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
+          required
         />
         <FormField
           label="School/University of Origin"
@@ -43,10 +45,11 @@ export default function EfootballForm({
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"
+          required
         />
       </div>
     );
   }
 
-  return <Payment />;
+  return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
 }

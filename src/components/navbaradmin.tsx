@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Globe2, Menu, X } from "lucide-react";
 import LogoutButton from "./button/logout";
 import Tooltip from "./ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -66,7 +66,7 @@ export default function NavbarAdmin() {
     localStorage.removeItem("user");
     sessionStorage.clear();
 
-    navigate("/dashboard", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -222,6 +222,17 @@ export default function NavbarAdmin() {
               hover:shadow-[0_14px_28px_rgba(239,68,68,0.28)]
             "
               />
+            </Tooltip>
+
+            <Tooltip text="Go to Website">
+              <button
+                type="button"
+                aria-label="Go to website"
+                onClick={() => navigate("/dashboard")}
+                className="grid h-12 w-12 cursor-pointer place-items-center rounded-full border border-sky-400/40 bg-sky-500/10 text-sky-300 shadow-[0_10px_24px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-sky-500/20 hover:text-sky-200 hover:shadow-[0_14px_28px_rgba(14,165,233,0.28)]"
+              >
+                <Globe2 className="h-5.5 w-5.5" strokeWidth={2.2} />
+              </button>
             </Tooltip>
           </div>
         </div>

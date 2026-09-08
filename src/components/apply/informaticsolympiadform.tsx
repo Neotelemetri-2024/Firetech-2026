@@ -25,6 +25,7 @@ export default function InformaticsOlympiadForm({
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
+          required
         />
         <FormField
           label="Institution Name"
@@ -34,15 +35,7 @@ export default function InformaticsOlympiadForm({
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"
-        />
-        <FormField
-          label="Member Name"
-          name="namaKetua"
-          placeholder="Member Name"
-          value={formData.namaAnggota}
-          onChange={onChange}
-          animationClass="animate-slideInRight"
-          animationDelay="0.2s"
+          required
         />
       </div>
     );
@@ -52,5 +45,5 @@ export default function InformaticsOlympiadForm({
     return <AddMemberOlyimpiad formData={formData} onChange={onChange} />;
   }
 
-  return <Payment />;
+  return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
 }

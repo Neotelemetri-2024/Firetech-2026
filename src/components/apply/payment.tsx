@@ -1,7 +1,13 @@
 import QRCodePNG from "../../assets/qr.png";
 import { useTheme } from "../../context/themecontext";
+import FileUpload from "../ui/fileupload";
 
-export default function Payment() {
+type PaymentProps = {
+  paymentProof: File | null;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export default function Payment({ paymentProof, onChange }: PaymentProps) {
   const { darkMode } = useTheme();
 
   const amount = 150000;
@@ -10,9 +16,9 @@ export default function Payment() {
     <section className="w-full">
       <div className="mx-auto max-w-4xl p-8 transition-all duration-300 md:p-12">
         <div className="grid items-start gap-10 md:grid-cols-[420px_1fr]">
-          {/* QR Code */}
+          {/* QR Code + Upload Bukti Pembayaran */}
           <div
-            className="flex justify-center animate-slideInLeft"
+            className="flex flex-col items-center animate-slideInLeft"
             style={{ animationDelay: "0.1s" }}
           >
             <div className="p-4 transition-all duration-300 cursor-pointer hover:scale-105">
@@ -20,13 +26,34 @@ export default function Payment() {
                 src={QRCodePNG}
                 alt="QR Code"
                 className="
-        w-52 h-52
-        sm:w-64 sm:h-64
-        md:w-72 md:h-72
-        lg:w-80 lg:h-80
-        xl:w-85 xl:h-85
-        object-contain
-      "
+                w-52 h-52
+                sm:w-64 sm:h-64
+                md:w-72 md:h-72
+                lg:w-80 lg:h-80
+                xl:w-85 xl:h-85
+                object-contain
+              "
+              />
+            </div>
+
+            {/* Upload Payment Proof */}
+            <div className="w-full max-w-[320px]">
+              <FileUpload
+                label="Upload Payment Proof"
+                name="paymentProof"
+                file={paymentProof}
+                required
+                onChange={onChange}
+                onDelete={() =>
+                  onChange({
+                    target: {
+                      name: "paymentProof",
+                      type: "file",
+                      files: null,
+                      value: "",
+                    },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
               />
             </div>
           </div>

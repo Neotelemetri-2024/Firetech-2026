@@ -21,6 +21,7 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
+          required
         />
 
         <FormField
@@ -31,13 +32,14 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
+          required
         />
       </div>
     );
   }
 
   if (step === 2) {
-    return <Payment />;
+    return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
   }
 
   if (step === 3) {
@@ -51,6 +53,7 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.1s"
+          required
         />
       </div>
     );

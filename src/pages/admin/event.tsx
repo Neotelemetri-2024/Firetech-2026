@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { CalendarPlus, X } from "lucide-react";
+import {  X } from "lucide-react";
 import EventsTable, { type EventRow } from "../../components/events/tableevent";
 import ParticipantsTable, {
   type ParticipantRow,
@@ -150,7 +150,7 @@ const DUMMY_EVENTS: EventRow[] = [
 export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const participantsRef = useRef<HTMLDivElement | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding] = useState(false);
   const [eventRefresh] = useState(0);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
   const [events, setEvents] = useState<EventRow[]>(DUMMY_EVENTS);
@@ -288,7 +288,7 @@ export default function AdminEvent() {
                 })}
               </div>
 
-              {/* ADD EVENT BUTTON */}
+              {/* ADD EVENT BUTTON 
               {!isAdding && (
                 <button
                   type="button"
@@ -301,7 +301,7 @@ export default function AdminEvent() {
                   <CalendarPlus className="h-5 w-5" />
                   Add Event
                 </button>
-              )}
+              )}*/}
             </div>
 
             {/* ACTIVE FILTER INFO */}

@@ -19,6 +19,7 @@ export type HackathonFormData = {
   anggota4: string;
 
   ktm: File | null;
+  paymentProof: File | null;
 };
 
 export type UiUxFormData = {
@@ -29,12 +30,14 @@ export type UiUxFormData = {
 
   // Upload
   ktm: File | null;
+  paymentProof: File | null;
 };
 
 export type EfootballFormData = {
   namaPemain: string;
   idGame: string;
   asalSekolah: string;
+  paymentProof: File | null;
 };
 
 export type InformaticsOlympiadFormData = {
@@ -44,6 +47,7 @@ export type InformaticsOlympiadFormData = {
 
   // Step 2
   namaAnggota: string;
+  paymentProof: File | null;
 };
 
 // Peta antara kategori dengan tipe form data-nya masing-masing

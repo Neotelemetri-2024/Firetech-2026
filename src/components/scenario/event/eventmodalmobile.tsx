@@ -139,7 +139,7 @@ export default function MobileEventModal({
                     return;
                   }
 
-                  navigate("/dashboard/apply", {
+                  navigate("/home/apply", {
                     state: {
                       category: title,
                     },

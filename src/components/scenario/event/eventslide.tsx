@@ -29,7 +29,7 @@ export default function EventSlide({
       return;
     }
 
-    navigate("/dashboard/apply", {
+    navigate("/home/apply", {
       state: {
         category: title,
       },

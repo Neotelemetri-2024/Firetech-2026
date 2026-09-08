@@ -8,11 +8,13 @@ import {
   applyFormConfig,
   initialApplyFormData,
 } from "../../config/applyformconfig";
+import { getMissingFields, fieldLabels } from "../../config/applyvalidation";
 import HackathonForm from "../../components/apply/hackathonform";
 import UiUxForm from "../../components/apply/uiuxform";
 import EfootballForm from "../../components/apply/efootballform";
 import InformaticsOlympiadForm from "../../components/apply/informaticsolympiadform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
+import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
 
 const categoryIcons: Record<Category, LucideIcon> = {
@@ -39,38 +41,134 @@ export default function Apply() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState(initialApplyFormData);
+  const [showValidationToast, setShowValidationToast] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
+  const [toastType, setToastType] = useState<"error" | "success">("error");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { steps: stepLabels } = applyFormConfig[selectedCategory];
   const totalSteps = stepLabels.length;
 
+  // Handle category selection
   const handleSelectCategory = (category: Category) => {
     setSelectedCategory(category);
     setCurrentStep(1);
+    setShowValidationToast(false);
   };
 
+  // Handle input changes for form fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, files, type } = e.target;
+
+    const nextValue = type === "file" ? (files?.[0] ?? null) : value;
+
     setFormData((prev) => ({
       ...prev,
       [selectedCategory]: {
-        ...(prev[selectedCategory] as Record<string, string>),
-        [name]: value,
+        ...(prev[selectedCategory] as Record<string, string | File | null>),
+        [name]: nextValue,
       },
     }));
+
+    setShowValidationToast(false);
   };
 
+  // Handle "Next" button click
   const handleNext = () => {
+    const categoryData = formData[selectedCategory] as Record<
+      string,
+      string | File | null
+    >;
+
+    const missingFields = getMissingFields(
+      selectedCategory,
+      currentStep,
+      categoryData,
+    );
+
+    if (missingFields.length > 0) {
+      const missingLabels = missingFields
+        .map((field) => fieldLabels[field] ?? field)
+        .join(", ");
+
+      setValidationMessage(
+        `Please complete the following required fields before proceeding: ${missingLabels}`,
+      );
+
+      setShowValidationToast(true);
+      return;
+    }
+
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+      return;
+    }
+
+    // submit logic nanti di sini
+    console.log("Form valid, ready to submit");
+  };
+
+  // Handle submit form submission final
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const categoryData = formData[selectedCategory] as Record<
+        string,
+        string | File | null
+      >;
+
+      const missingFields = getMissingFields(
+        selectedCategory,
+        currentStep,
+        categoryData,
+      );
+
+      if (missingFields.length > 0) {
+        const missingLabels = missingFields
+          .map((field) => fieldLabels[field] ?? field)
+          .join(", ");
+
+        setToastType("error");
+
+        setValidationMessage(
+          `Please complete the following required fields before proceeding: ${missingLabels}`,
+        );
+
+        setShowValidationToast(true);
+
+        return;
+      }
+
+      // API Submit di sini
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setToastType("success");
+
+      setValidationMessage("Registration submitted successfully!");
+
+      setShowValidationToast(true);
+    } catch {
+      setToastType("error");
+
+      setValidationMessage("Failed to submit registration.");
+
+      setShowValidationToast(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  // Handle "Back" button click
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
+  // Determine the status of a step (completed, active, or pending)
   const getStepStatus = (step: number) => {
     if (step < currentStep) {
       return "completed";
@@ -81,6 +179,7 @@ export default function Apply() {
     return "pending";
   };
 
+  // Determine the color classes for a step based on its status and theme
   const getStepColor = (step: number) => {
     const status = getStepStatus(step);
     const isDark = darkMode;
@@ -94,6 +193,7 @@ export default function Apply() {
       : "border-2 border-slate-600 bg-transparent text-slate-300 hover:border-red-600 ";
   };
 
+  // Render the active form component based on the selected category and current step
   const renderActiveForm = () => {
     switch (selectedCategory) {
       case "Hackathon":
@@ -137,16 +237,15 @@ export default function Apply() {
         {/* Category Tabs */}
         <div
           className="
-    mb-12
-    grid
-    grid-cols-2
-    gap-4
-    animate-slideInDown
-
-    lg:flex
-    lg:flex-wrap
-    lg:justify-center
-  "
+          mb-12
+          grid
+          grid-cols-2
+          gap-4
+          animate-slideInDown
+          lg:flex
+          lg:flex-wrap
+          lg:justify-center
+        "
         >
           {categories.map((category) => {
             const Icon = categoryIcons[category];
@@ -189,18 +288,18 @@ export default function Apply() {
                   size={22}
                   strokeWidth={2.3}
                   className={`
-          transition-all
-          duration-300
-          group-hover:scale-110
-          group-hover:-translate-y-0.5
-          ${
-            selectedCategory === category
-              ? darkMode
-                ? "text-blue-600 drop-shadow-[0_0_8px_rgba(37,99,235,.45)]"
-                : "text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,.45)]"
-              : ""
-          }
-        `}
+                  transition-all
+                  duration-300
+                  group-hover:scale-110
+                  group-hover:-translate-y-0.5
+                  ${
+                    selectedCategory === category
+                      ? darkMode
+                        ? "text-blue-600 drop-shadow-[0_0_8px_rgba(37,99,235,.45)]"
+                        : "text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,.45)]"
+                      : ""
+                  }
+                `}
                 />
 
                 <span>{category}</span>
@@ -208,13 +307,21 @@ export default function Apply() {
             );
           })}
         </div>
-
         {/* Mobile Registration Progress */}
         <div className="mb-8 lg:hidden">
           <RegistrationProgress
             stepLabels={stepLabels}
             currentStep={currentStep}
           />
+
+          <div className="mt-4">
+            <Toast
+              open={showValidationToast}
+              message={validationMessage}
+              type={toastType}
+              onClose={() => setShowValidationToast(false)}
+            />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -295,7 +402,7 @@ export default function Apply() {
                 {/* Back Button */}
                 <button
                   onClick={handleBack}
-                  className={`group relative flex-1 overflow-hidden rounded-full border px-8 py-3 font-bold backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  className={`cursor-pointer group relative flex-1 overflow-hidden rounded-full border px-8 py-3 font-bold backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 ${
                     darkMode
                       ? "border-slate-300 bg-white/70 text-slate-800 hover:border-blue-600 hover:bg-blue-600/10 hover:shadow-lg hover:shadow-blue-600/20"
                       : "border-white/20 bg-white/5 text-white hover:border-red-600 hover:bg-red-600/10 hover:shadow-lg hover:shadow-red-600/20"
@@ -319,15 +426,50 @@ export default function Apply() {
 
                 {/* Next Button */}
                 <button
-                  onClick={handleNext}
-                  className={`group relative flex-1 overflow-hidden rounded-full px-8 py-3 font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
+                  disabled={isSubmitting}
+                  onClick={
+                    currentStep === totalSteps ? handleSubmit : handleNext
+                  }
+                  className={`group relative flex-1 overflow-hidden rounded-full px-8 py-3 font-bold text-white transition-all duration-300 ${
+                    isSubmitting
+                      ? "cursor-not-allowed opacity-70"
+                      : "cursor-pointer hover:scale-105 active:scale-95"
+                  } ${
                     darkMode
                       ? "bg-linear-to-r from-blue-600 to-red-600 hover:shadow-lg hover:shadow-blue-600/40"
                       : "bg-linear-to-r from-red-600 to-blue-600 hover:shadow-lg hover:shadow-red-600/40"
                   }`}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
-                    <span>NEXT</span>
+                    {currentStep === totalSteps && isSubmitting ? (
+                      <>
+                        <svg
+                          className="h-4 w-4 animate-spin"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            opacity="0.25"
+                          />
+                          <path
+                            d="M22 12a10 10 0 0 1-10 10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                        </svg>
+
+                        <span>SUBMITTING...</span>
+                      </>
+                    ) : (
+                      <span>
+                        {currentStep === totalSteps ? "SUBMIT" : "NEXT"}
+                      </span>
+                    )}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       →
                     </span>
@@ -360,10 +502,23 @@ export default function Apply() {
           </div>
           {/* Desktop Registration Progress */}
           <div className="hidden lg:block lg:col-span-1">
-            <RegistrationProgress
-              stepLabels={stepLabels}
-              currentStep={currentStep}
-            />
+            <div className="sticky top-32">
+              <RegistrationProgress
+                stepLabels={stepLabels}
+                currentStep={currentStep}
+              />
+
+              {showValidationToast && (
+                <div className="mt-4">
+                  <Toast
+                    open={showValidationToast}
+                    message={validationMessage}
+                    type={toastType}
+                    onClose={() => setShowValidationToast(false)}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

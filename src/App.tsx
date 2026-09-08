@@ -76,7 +76,7 @@ function App() {
           </Route>
 
           {/* User */}
-          <Route path="/dashboard" element={<MainLayout />}>
+          <Route path="/home" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="users" element={<Home />} />
             <Route path="apply" element={<Apply />} />

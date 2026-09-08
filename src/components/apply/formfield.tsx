@@ -9,6 +9,7 @@ type FormFieldProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   animationClass?: string;
   animationDelay?: string;
+  required?: boolean;
 };
 
 export default function FormField({
@@ -19,6 +20,7 @@ export default function FormField({
   onChange,
   animationClass = "animate-slideInLeft",
   animationDelay = "0s",
+  required = false,
 }: FormFieldProps) {
   const { darkMode } = useTheme();
 
@@ -33,6 +35,9 @@ export default function FormField({
         }`}
       >
         {label}
+        {required && (
+          <span className={darkMode ? "text-blue-600" : "text-red-600"}> *</span>
+        )}
       </label>
 
       <div className="relative overflow-hidden rounded-xl transition-transform duration-300 focus-within:scale-[1.02]">

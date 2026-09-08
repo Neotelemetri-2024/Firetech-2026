@@ -26,6 +26,7 @@ export default function HackathonForm({
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
+          required
         />
         <FormField
           label="Team Leader Name"
@@ -35,6 +36,7 @@ export default function HackathonForm({
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
+          required
         />
         <FormField
           label="School/University of Origin"
@@ -44,6 +46,7 @@ export default function HackathonForm({
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"
+          required
         />
       </div>
     );
@@ -53,5 +56,5 @@ export default function HackathonForm({
     return <AddMember formData={formData} onChange={onChange} />;
   }
 
-  return <Payment />;
+  return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
 }

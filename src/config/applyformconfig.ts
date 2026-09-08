@@ -21,6 +21,7 @@ export const initialApplyFormData: ApplyFormDataMap = {
 
     // Upload
     ktm: null,
+    paymentProof: null,
   },
 
   "UI/UX": {
@@ -31,12 +32,14 @@ export const initialApplyFormData: ApplyFormDataMap = {
 
     // Upload
     ktm: null,
+    paymentProof: null,
   },
 
   "E-Football": {
     namaPemain: "",
     idGame: "",
     asalSekolah: "",
+    paymentProof: null,
   },
 
   "Informatics Olympiad": {
@@ -46,6 +49,7 @@ export const initialApplyFormData: ApplyFormDataMap = {
 
     //Step 2
     namaAnggota: "",
+    paymentProof: null,
   },
 };
 

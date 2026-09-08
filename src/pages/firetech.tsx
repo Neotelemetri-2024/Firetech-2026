@@ -35,7 +35,7 @@ export default function Firetech() {
       scale: [1, 1.3, 1],
       transition: { duration: 0.4, ease: "easeInOut" },
     });
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   return (

@@ -249,7 +249,7 @@ export default function NotFound() {
             </span>
           </motion.button>
           <motion.button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/home")}
             className={`group relative cursor-pointer overflow-hidden rounded-2xl border px-7 py-3.5 text-[15px] font-semibold tracking-wide backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
               darkMode
                 ? "border-black/20 bg-black/5 text-black hover:bg-black hover:text-white"
