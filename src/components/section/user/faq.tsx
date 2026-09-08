@@ -272,7 +272,7 @@ export default function FAQ() {
           <motion.h2
             custom={1}
             variants={headingVariants}
-            className={`mt-3 text-4xl font-bold md:text-5xl ${
+            className={`mt-3 text-4xl font-bold font-orbitron md:text-5xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -281,7 +281,7 @@ export default function FAQ() {
           <motion.p
             custom={3}
             variants={headingVariants}
-            className={`mx-auto mt-6 max-w-2xl text-lg leading-8 ${
+            className={`mx-auto mt-6 max-w-2xl font-jakarta text-lg leading-8 ${
               darkMode ? "text-black" : "text-white"
             }`}
           >

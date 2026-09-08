@@ -52,7 +52,7 @@ export default function MediaPartner() {
           {/* Heading */}
           <motion.h2
             variants={headingVariants.title}
-            className={`text-5xl font-black font-syncopate md:text-6xl ${
+            className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -70,7 +70,7 @@ export default function MediaPartner() {
           {/* Deskripsi section */}
           <motion.p
             variants={headingVariants.subtitle}
-            className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8  ${
+            className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8  ${
               darkMode ? "text-black" : "text-white"
             }`}
           >

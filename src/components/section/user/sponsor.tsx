@@ -55,12 +55,12 @@ export default function Sponsor() {
                 amount: 0.3,
               }}
               className={`
-        text-5xl md:text-6xl
-        font-black
-        font-syncopate
-        ${darkMode ? "text-black" : "text-white"}
-        animate-[floating_5s_ease-in-out_infinite]
-      `}
+              text-5xl md:text-6xl
+              font-black
+              font-orbitron
+              ${darkMode ? "text-black" : "text-white"}
+              animate-[floating_5s_ease-in-out_infinite]
+            `}
             >
               OUR SPONSOR
             </motion.h2>
@@ -81,7 +81,7 @@ export default function Sponsor() {
                 once: false,
                 amount: 0.3,
               }}
-              className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${darkMode ? "text-slate-600" : "text-slate-400"}`}
+              className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8 ${darkMode ? "text-slate-600" : "text-slate-400"}`}
             >
               Proudly supported by industry leaders, innovative companies, and
               valued partners who help make Firetech 2026 possible.

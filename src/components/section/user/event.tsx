@@ -99,29 +99,29 @@ export default function Event() {
       {/* Background */}
       <div
         className="
-    hidden
-    lg:block
-    absolute
-    left-1/2
-    top-1/2
-    h-175
-    w-175
-    -translate-x-1/2
-    -translate-y-1/2
-  "
+        hidden
+        lg:block
+        absolute
+        left-1/2
+        top-1/2
+        h-175
+        w-175
+        -translate-x-1/2
+        -translate-y-1/2
+      "
       />
 
       <div
         className="
-    hidden
-    lg:block
-    absolute
-    left-1/2
-    top-0
-    h-75
-    w-225
-    -translate-x-1/2
-  "
+        hidden
+        lg:block
+        absolute
+        left-1/2
+        top-0
+        h-75
+        w-225
+        -translate-x-1/2
+      "
       />
       {/* ===================================================== */}
       {/* Desktop Layout */}
@@ -140,26 +140,26 @@ export default function Event() {
 
           <div
             className="
-        panel
-        flex
-        h-screen
-        w-screen
-        shrink-0
-        flex-col
-      "
+            panel
+            flex
+            h-screen
+            w-screen
+            shrink-0
+            flex-col
+          "
           >
             {/* Header */}
 
             <div
               className="
-          flex
-          shrink-0
-          flex-col
-          items-center
-          justify-center
-          pt-44
-          pb-10
-        "
+              flex
+              shrink-0
+              flex-col
+              items-center
+              justify-center
+              pt-44
+              pb-10
+            "
             >
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -186,7 +186,7 @@ export default function Event() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
                 transition={{ duration: 0.8, delay: 0.15 }}
-                className={`mx-auto mt-6 max-w-3xl text-center text-lg font-space leading-relaxed ${
+                className={`mx-auto mt-6 max-w-3xl text-center text-lg font-jakarta leading-relaxed ${
                   darkMode ? "text-black" : "text-white"
                 }`}
               >
@@ -277,7 +277,7 @@ export default function Event() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className={`mx-auto mt-5 max-w-md text-sm leading-7 ${
+            className={`mx-auto mt-5 max-w-md font-jakarta text-sm leading-7 ${
               darkMode ? "text-slate-600" : "text-slate-400"
             }`}
           >

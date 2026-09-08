@@ -34,7 +34,7 @@ export default function Timeline() {
               once: false,
               amount: 0.3,
             }}
-            className={`text-5xl md:text-6xl font-black font-syncopate ${
+            className={`text-5xl md:text-6xl font-black font-orbitron ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -57,8 +57,8 @@ export default function Timeline() {
               once: false,
               amount: 0.3,
             }}
-            className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${
-              darkMode ? "text-slate-600" : "text-slate-400"
+            className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8 ${
+              darkMode ? "text-black" : "text-white"
             }`}
           >
             Follow every important milestone, from registration to the grand
@@ -235,6 +235,7 @@ export default function Timeline() {
                   py-1
                   text-xs
                   font-bold
+                  font-orbitron
                   ${
                     darkMode
                       ? "bg-blue-100 text-blue-700"
@@ -251,6 +252,7 @@ export default function Timeline() {
                   mt-4
                   text-sm
                   leading-6
+                  font-jakarta
                   ${darkMode ? "text-black" : "text-white"}
                 `}
                 >

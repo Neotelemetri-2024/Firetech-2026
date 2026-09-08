@@ -68,7 +68,7 @@ export default function Footer() {
 
             <div className="flex flex-col items-center lg:items-start gap-1">
               <p
-                className={`text-sm leading-relaxed font-medium transition-colors duration-500 ${accentColor}`}
+                className={`text-sm leading-relaxed font-medium font-orbitrontransition-colors duration-500 ${accentColor}`}
               >
                 Harmonizing Tech and Humanity
               </p>
@@ -80,7 +80,7 @@ export default function Footer() {
               />
 
               <div
-                className={`text-xs leading-relaxed mt-2 ${
+                className={`text-xs leading-relaxed font-jakarta mt-2 ${
                   darkMode ? "text-slate-500" : "text-slate-400"
                 }`}
               >

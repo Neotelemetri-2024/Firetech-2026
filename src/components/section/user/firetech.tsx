@@ -84,7 +84,7 @@ export default function Firetech() {
         >
           <motion.h2
             variants={headingVariants.title}
-            className={`text-5xl font-black font-syncopate md:text-6xl ${
+            className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -101,7 +101,7 @@ export default function Firetech() {
 
           <motion.p
             variants={headingVariants.subtitle}
-            className={`mx-auto mt-7 max-w-3xl font-space text-lg leading-8 ${
+            className={`mx-auto mt-7 max-w-3xl font-jakarta  text-lg leading-8 ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
@@ -157,7 +157,7 @@ export default function Firetech() {
             />
 
             <p
-              className={`mx-auto mt-7 max-w-xl font-space text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-7 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
                 darkMode ? "text-black" : "text-white"
               }`}
             >
@@ -168,13 +168,13 @@ export default function Firetech() {
             </p>
 
             <p
-              className={`mx-auto mt-4 max-w-xl font-space text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-4 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
                 darkMode ? "text-black" : "text-white"
               }`}
             >
               Through the theme{" "}
               <span
-                className={`font-semibold ${
+                className={`font-semibold font-jakarta ${
                   darkMode ? "text-blue-700" : "text-red-700"
                 }`}
               >
@@ -219,7 +219,7 @@ export default function Firetech() {
 
                 <div>
                   <h3
-                    className={`mt-1 text-lg font-semibold tracking-tight ${
+                    className={`mt-1 text-lg font-semibold font-orbitron tracking-tight ${
                       darkMode ? "text-black" : "text-white"
                     }`}
                   >
@@ -230,7 +230,7 @@ export default function Firetech() {
 
               {/* Description */}
               <p
-                className={`relative mt-5 text-sm leading-7 ${
+                className={`relative mt-5 font-jakarta text-sm leading-7 ${
                   darkMode ? "text-slate-600" : "text-slate-400"
                 }`}
               >

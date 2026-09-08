@@ -4,7 +4,7 @@ import EventsTable, { type EventRow } from "../../components/events/tableevent";
 import ParticipantsTable, {
   type ParticipantRow,
 } from "../../components/events/tableparticipant";
-import AddEvent, { type NewEventData } from "../../components/form/addevent";
+//import AddEvent, { type NewEventData } from "../../components/form/addevent";
 import EditEvent, { type EventFormData } from "../../components/form/editevent";
 import EventDetailModal from "../../components/form/eventdetailmodal";
 import DeleteModal from "../../components/form/delete";
@@ -151,7 +151,7 @@ export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const participantsRef = useRef<HTMLDivElement | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [eventRefresh, setEventRefresh] = useState(0);
+  const [eventRefresh] = useState(0);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
   const [events, setEvents] = useState<EventRow[]>(DUMMY_EVENTS);
   const eventCards = [...new Set(events.map((event) => event.name))];
@@ -161,7 +161,7 @@ export default function AdminEvent() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
-  const handleAddEvent = (data: NewEventData) => {
+  /*const handleAddEvent = (data: NewEventData) => {
     const newEvent: EventRow = {
       ...data,
       id: String(Date.now()),
@@ -176,7 +176,7 @@ export default function AdminEvent() {
 
     setToastMessage(`Event "${newEvent.name}" was successfully added.`);
     setShowToast(true);
-  };
+  };*/
 
   const handleEditEvent = (data: EventFormData) => {
     if (!editingEvent) return;
@@ -322,7 +322,9 @@ export default function AdminEvent() {
               </div>
             )}
 
-            {/* ADD EVENT FORM */}
+            {/*
+            ADD EVENT FORM
+
             {isAdding && (
               <div className="relative mt-8">
                 <button
@@ -340,6 +342,7 @@ export default function AdminEvent() {
                 />
               </div>
             )}
+            */}
 
             {/* EDIT EVENT FORM */}
             {editingEvent && (

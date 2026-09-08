@@ -144,7 +144,7 @@ export default function Gallery() {
           {/* Heading */}
           <motion.h2
             variants={headingVariants.title}
-            className={`text-5xl font-black font-syncopate md:text-6xl ${
+            className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             } animate-[floating_5s_ease-in-out_infinite]`}
           >
@@ -233,7 +233,7 @@ export default function Gallery() {
             className="text-center lg:text-left"
           >
             <p
-              className={`font-orbitron text-2xl font-bold ${
+              className={`font-orbitron text-2xl font-bold font-orbitron ${
                 darkMode ? "text-black" : "text-white"
               }`}
             >
@@ -247,7 +247,7 @@ export default function Gallery() {
             />
 
             <p
-              className={`mx-auto mt-7 max-w-xl font-space text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-7 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
                 darkMode ? "text-slate-600" : "text-slate-400"
               }`}
             >
@@ -258,7 +258,7 @@ export default function Gallery() {
             </p>
 
             <p
-              className={`mx-auto mt-4 max-w-xl font-space text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-4 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
                 darkMode ? "text-slate-600" : "text-slate-400"
               }`}
             >

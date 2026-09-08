@@ -132,6 +132,7 @@ const Dashboard = () => {
                   mt-8
                   text-6xl
                   font-black
+                  font-orbitron
                   uppercase
                   leading-[0.85]
                   tracking-[4px]
@@ -189,6 +190,7 @@ const Dashboard = () => {
                 mt-6
                 text-xl
                 font-extrabold
+                font-orbitron
                 tracking-wide
                 bg-linear-to-r
                 ${darkMode ? "text-blue-700" : "text-red-700"}
@@ -209,6 +211,7 @@ const Dashboard = () => {
                   text-base
                   leading-relaxed
                   lg:text-lg
+                  font-jakarta
                   ${darkMode ? "text-black" : "text-white"}
                 `}
               >
@@ -218,7 +221,7 @@ const Dashboard = () => {
                 information technology. This year, Firetech adopts the theme
                 <span
                   className={`
-                    font-semibold
+                    font-semibold font-jakarta
                     ${darkMode ? "text-blue-700" : "text-red-700"}
                   `}
                 >
@@ -271,7 +274,7 @@ const Dashboard = () => {
                     }
                   `}
                 >
-                  <span className="relative z-10">Guidebook</span>
+                  <span className="relative z-10 font-orbitron">Guidebook</span>
                   <div
                     className={`
                     absolute

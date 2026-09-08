@@ -59,11 +59,11 @@ export default function Countdown() {
           <motion.h1
             variants={headingVariants.title}
             className={`-mt-20 sm:-mt-28 md:-mt-40
-    text-3xl sm:text-4xl md:text-6xl
-    font-black font-syncopate
-    leading-[1.15] md:leading-tight
-    text-center
-    ${darkMode ? "text-black" : "text-white"}`}
+            text-3xl sm:text-4xl md:text-6xl
+            font-black font-orbitron
+            leading-[1.15] md:leading-tight
+            text-center
+            ${darkMode ? "text-black" : "text-white"}`}
           >
             WE ARE
             <span className="mt-3 flex flex-col items-center gap-1 md:mt-2 md:block">
@@ -94,7 +94,7 @@ export default function Countdown() {
           />
           <motion.p
             variants={headingVariants.subtitle}
-            className={`mx-auto mt-6 max-w-3xl font-space text-lg ${
+            className={`mx-auto mt-6 max-w-3xl font-jakarta text-lg ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
