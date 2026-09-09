@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, UserRound } from "lucide-react";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
@@ -35,9 +35,9 @@ const navItems: NavItem[] = [
     children: [
       { label: "Hackathon", hash: "hackathon" },
       { label: "Informatics Olympiad", hash: "informaticsolympiad" },
-      { label: "Fast Typing", hash: "ft" },
-      { label: "E-Football", hash: "ef" },
       { label: "UI/UX", hash: "uiux" },
+      { label: "E-Football", hash: "ef" },
+      { label: "Fast Typing", hash: "ft" },
     ],
   },
   { label: "Timeline" },
@@ -50,7 +50,6 @@ export default function Navbar() {
   const { darkMode } = useTheme();
   const [showAos, setShowAos] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isProgrammaticScrolling, setIsProgrammaticScrolling] = useState(false);
   const getMainMenu = (sectionId: string) => {
@@ -97,6 +96,35 @@ export default function Navbar() {
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [activeEvent, setActiveEvent] = useState(
+    () => sessionStorage.getItem("activeEvent") || "",
+  );
+
+  const [activeSection, setActiveSection] = useState(() =>
+    sessionStorage.getItem("activeEvent") ? "event" : "home",
+  );
+
+  useEffect(() => {
+    console.log("ACTIVE EVENT:", activeEvent);
+  }, [activeEvent]);
+
+  useEffect(() => {
+    const handleEventChange = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+
+      setActiveEvent(customEvent.detail);
+
+      setActiveSection("event");
+    };
+
+    window.addEventListener("firetech-event-change", handleEventChange);
+
+    return () => {
+      window.removeEventListener("firetech-event-change", handleEventChange);
+    };
+  }, []);
 
   const handleSaveProfile = (data: {
     photo: string;
@@ -150,6 +178,14 @@ export default function Navbar() {
           if (!entry.isIntersecting) return;
 
           setActiveSection(getMainMenu(entry.target.id));
+
+          if (
+            ["hackathon", "informaticsolympiad", "ft", "ef", "uiux"].includes(
+              entry.target.id,
+            )
+          ) {
+            setActiveEvent(entry.target.id);
+          }
         });
       },
       {
@@ -175,14 +211,37 @@ export default function Navbar() {
     navigate("/login");
   };
 
+  // Navigasi ke section tertentu
   const handleNavClick = (item: NavItem, childHash?: string) => {
     const hash = childHash ?? item.label.toLowerCase();
 
-    // lock observer sementara
-    setIsProgrammaticScrolling(true);
+    if (
+      ["hackathon", "informaticsolympiad", "ft", "ef", "uiux"].includes(hash)
+    ) {
+      setActiveEvent(hash);
 
-    // langsung aktifkan menu tujuan
+      sessionStorage.setItem("activeEvent", hash);
+
+      window.dispatchEvent(
+        new CustomEvent("firetech-event-change", {
+          detail: hash,
+        }),
+      );
+    }
+
     setActiveSection(getMainMenu(hash));
+
+    // Jika bukan di landing page
+    if (location.pathname !== "/home") {
+      sessionStorage.setItem("scrollTo", hash);
+
+      navigate("/home");
+
+      setOpenDropdown(null);
+      return;
+    }
+
+    setIsProgrammaticScrolling(true);
 
     const element = document.getElementById(hash);
 
@@ -194,7 +253,6 @@ export default function Navbar() {
         behavior: "smooth",
       });
 
-      // aktifkan observer lagi setelah scroll selesai
       setTimeout(() => {
         setIsProgrammaticScrolling(false);
       }, 1200);
@@ -291,6 +349,7 @@ export default function Navbar() {
               navItems={navItems}
               darkMode={darkMode}
               activeSection={activeSection}
+              activeEvent={activeEvent}
               openDropdown={openDropdown}
               onDropdownEnter={handleDropdownEnter}
               onDropdownLeave={handleDropdownLeave}
@@ -311,7 +370,6 @@ export default function Navbar() {
           />
 
           {/* Mobile Hamburger */}
-
           <button
             className={`ml-2 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] p-1.5 transition-all duration-300 md:hidden ${
               darkMode
@@ -381,7 +439,19 @@ export default function Navbar() {
                   const isItemActive = isActive(item);
                   const hasChildren =
                     !!item.children && item.children.length > 0;
-                  const isMobileOpen = mobileExpanded === item.label;
+                  const eventHashes = [
+                    "hackathon",
+                    "informaticsolympiad",
+                    "ft",
+                    "ef",
+                    "uiux",
+                  ];
+
+                  const isMobileOpen =
+                    item.label === "Event"
+                      ? mobileExpanded === "Event" ||
+                        eventHashes.includes(activeEvent)
+                      : mobileExpanded === item.label;
 
                   return (
                     <li
@@ -448,13 +518,21 @@ export default function Navbar() {
                               >
                                 {item.children!.map((child) => {
                                   const isChildActive =
-                                    activeSection === child.hash;
+                                    activeEvent === child.hash;
                                   return (
                                     <a
                                       key={child.hash}
                                       href={`#${child.hash}`}
                                       onClick={(e) => {
                                         e.preventDefault();
+                                        window.dispatchEvent(
+                                          new CustomEvent(
+                                            "firetech-event-change",
+                                            {
+                                              detail: child.hash,
+                                            },
+                                          ),
+                                        );
                                         handleNavClick(item, child.hash);
                                       }}
                                       className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${

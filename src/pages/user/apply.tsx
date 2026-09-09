@@ -26,9 +26,10 @@ const categoryIcons: Record<Category, LucideIcon> = {
 
 const categories: Category[] = [
   "Hackathon",
+  "Informatics Olympiad",
   "UI/UX",
   "E-Football",
-  "Informatics Olympiad",
+  
 ];
 
 export default function Apply() {
@@ -51,6 +52,23 @@ export default function Apply() {
 
   // Handle category selection
   const handleSelectCategory = (category: Category) => {
+    const eventMap: Record<Category, string> = {
+      Hackathon: "hackathon",
+      "Informatics Olympiad": "informaticsolympiad",
+      "E-Football": "ef",
+      "UI/UX": "uiux",
+    };
+
+    const eventId = eventMap[category];
+
+    sessionStorage.setItem("activeEvent", eventId);
+
+    window.dispatchEvent(
+      new CustomEvent("firetech-event-change", {
+        detail: eventId,
+      }),
+    );
+
     setSelectedCategory(category);
     setCurrentStep(1);
     setShowValidationToast(false);

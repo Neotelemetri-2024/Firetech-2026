@@ -18,6 +18,8 @@ interface DesktopNavMenuProps {
 
   activeSection: string;
 
+  activeEvent: string;
+
   openDropdown: string | null;
 
   onDropdownEnter: (label: string) => void;
@@ -33,6 +35,7 @@ export default function Menu({
   navItems,
   darkMode,
   activeSection,
+  activeEvent,
   openDropdown,
   onDropdownEnter,
   onDropdownLeave,
@@ -70,41 +73,38 @@ export default function Menu({
                 }
               }}
               className={`
-  group relative inline-flex
-  items-center gap-1
-  rounded-full px-6 py-2
-  text-sm font-semibold
-  cursor-pointer
+              group relative inline-flex
+              items-center gap-1
+              rounded-full px-6 py-2
+              text-sm font-semibold
+              cursor-pointer
+              border
+              border-transparent
+              transition-all duration-300
+              ${
+                darkMode
+                  ? `
+                    hover:border-slate-300
+                    hover:bg-slate-100
+                    hover:text-slate-900
+                  `
+                  : `
+                    hover:border-white/30
+                    hover:bg-white/10
+                    hover:text-white
+                  `
+              }
 
-  border
-  border-transparent
-
-  transition-all duration-300
-
-  ${
-    darkMode
-      ? `
-        hover:border-slate-300
-        hover:bg-slate-100
-        hover:text-slate-900
-      `
-      : `
-        hover:border-white/30
-        hover:bg-white/10
-        hover:text-white
-      `
-  }
-
-  ${
-    itemActive
-      ? darkMode
-        ? "text-blue-700"
-        : "text-red-700"
-      : darkMode
-        ? "text-black"
-        : "text-white"
-  }
-`}
+              ${
+                itemActive
+                  ? darkMode
+                    ? "text-blue-700"
+                    : "text-red-700"
+                  : darkMode
+                    ? "text-black"
+                    : "text-white"
+              }
+            `}
             >
               {itemActive && (
                 <motion.div
@@ -177,7 +177,7 @@ export default function Menu({
                   `}
                 >
                   {item.children!.map((child) => {
-                    const isChildActive = activeSection === child.hash;
+                    const isChildActive = activeEvent === child.hash;
 
                     return (
                       <a
@@ -188,25 +188,25 @@ export default function Menu({
                           onNavClick(item, child.hash);
                         }}
                         className={`
-        flex items-center gap-3
-        rounded-lg
-        px-4 py-2.5
-        text-sm
-        cursor-pointer
-        transition-all duration-200
+                        flex items-center gap-3
+                        rounded-lg
+                        px-4 py-2.5
+                        text-sm
+                        cursor-pointer
+                        transition-all duration-200
 
-        ${darkMode ? "hover:bg-slate-100" : "hover:bg-white/10"}
+                        ${darkMode ? "hover:bg-slate-100" : "hover:bg-white/10"}
 
-        ${
-          isChildActive
-            ? darkMode
-              ? "text-blue-600 font-semibold"
-              : "text-red-600 font-semibold"
-            : darkMode
-              ? "text-black"
-              : "text-white"
-        }
-      `}
+                        ${
+                          isChildActive
+                            ? darkMode
+                              ? "text-blue-600 font-semibold"
+                              : "text-red-600 font-semibold"
+                            : darkMode
+                              ? "text-black"
+                              : "text-white"
+                        }
+                      `}
                       >
                         <span
                           className={`

@@ -20,6 +20,24 @@ export default function EventSlide({
   const { darkMode } = useTheme();
 
   const handleExploreChallenge = () => {
+    const eventMap: Record<string, string> = {
+      Hackathon: "hackathon",
+      "Informatics Olympiad": "informaticsolympiad",
+      "Fast Typing": "ft",
+      "E-Football": "ef",
+      "UI/UX": "uiux",
+    };
+
+    const selectedEvent = eventMap[title] ?? "hackathon";
+
+    sessionStorage.setItem("activeEvent", selectedEvent);
+
+    window.dispatchEvent(
+      new CustomEvent("firetech-event-change", {
+        detail: selectedEvent,
+      }),
+    );
+
     if (title === "Fast Typing") {
       window.open(
         "https://fast-typing-firetech2026.vercel.app/",
@@ -35,6 +53,7 @@ export default function EventSlide({
       },
     });
   };
+  
   return (
     <section className=" relative flex min-h-screen w-full items-center justify-center px-6 py-16 lg:h-screen lg:w-screen lg:px-24 ">
       <div className="relative z-10 w-full max-w-7xl translate-y-24">
