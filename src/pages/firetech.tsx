@@ -4,7 +4,6 @@ import { useLayoutEffect, useState } from "react";
 import FiretechLogo from "../assets/firetech.webp";
 import { useTheme } from "../context/themecontext";
 import ThemeSwitcher from "../components/themeswitcher";
-import FiretechLogoBlack from "../assets/firetech1.webp";
 
 const darkGradientStyle = {
   backgroundImage:
@@ -144,7 +143,7 @@ export default function Firetech() {
             />
             {/* Logo image */}
             <motion.img
-              src={darkMode ? FiretechLogoBlack : FiretechLogo}
+              src={FiretechLogo}
               alt="Firetech Logo"
               className="relative z-10 h-32 w-32 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.25)] sm:h-40 sm:w-40 lg:h-48 lg:w-48"
               animate={controls}
