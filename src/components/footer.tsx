@@ -5,9 +5,43 @@ import Connect from "./footer/connect";
 import QuickLinks from "./footer/quicklink";
 import Firetech from "../assets/firetech.webp";
 
+import Instagram from "../assets/socialmedia/instagram.webp";
+import Linkedin from "../assets/socialmedia/linkedin.webp";
+import Github from "../assets/socialmedia/github.webp";
+import Youtube from "../assets/socialmedia/youtube.webp";
+import TikTok from "../assets/socialmedia/tiktok.webp";
+
 export default function Footer() {
   const { darkMode } = useTheme();
   const accentColor = darkMode ? "text-blue-700" : "text-red-700";
+
+  const socialLinks = [
+    {
+      src: Instagram,
+      alt: "Instagram",
+      href: "https://www.instagram.com/neotelemetri/",
+    },
+    {
+      src: Linkedin,
+      alt: "LinkedIn",
+      href: "https://www.linkedin.com/company/neotelemetri/",
+    },
+    {
+      src: Github,
+      alt: "GitHub",
+      href: "https://github.com/Neotelemetri-2024",
+    },
+    {
+      src: Youtube,
+      alt: "YouTube",
+      href: "https://youtube.com/@neotelemetri",
+    },
+    {
+      src: TikTok,
+      alt: "TikTok",
+      href: "https://www.tiktok.com/@neotelemetri",
+    },
+  ];
   return (
     <footer
       className={`relative w-full overflow-hidden border ${
@@ -32,12 +66,12 @@ export default function Footer() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
           {/* Brand Section */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
-            <div className="flex flex-col items-center gap-2 lg:flex-row lg:items-center lg:justify-start lg:gap-3">
+          <div className="flex flex-col items-start gap-3 md:gap-5">
+            <div className="flex flex-col items-start gap-2 lg:flex-row lg:items-center lg:justify-start lg:gap-3">
               <img
                 src={Firetech}
                 alt="Firetech Logo"
-                className="h-24 w-24 object-contain transition-all duration-500 hover:-translate-y-0.5 cursor-pointer"
+                className="h-20 w-20 md:h-24 md:w-24 object-contain transition-all duration-500 hover:-translate-y-0.5 cursor-pointer"
               />
 
               <span
@@ -66,7 +100,7 @@ export default function Footer() {
               </span>
             </div>
 
-            <div className="flex flex-col items-center lg:items-start gap-1">
+            <div className="flex flex-col items-left lg:items-start gap-1">
               <p
                 className={`text-sm leading-relaxed font-medium font-orbitrontransition-colors duration-500 ${accentColor}`}
               >
@@ -84,37 +118,70 @@ export default function Footer() {
                   darkMode ? "text-slate-500" : "text-slate-400"
                 }`}
               >
-                Neo Telemetri, Lt. 2,
-                <br />
-                Gedung Pusat Kegiatan Mahasiswa,
-                <br />
-                Universitas Andalas,
-                <br />
-                Kota Padang, Sumatera Barat,
-                <br />
-                Indonesia.
+                {/* Mobile */}
+                <div className="md:hidden flex items-center gap-2">
+                  <span>Universitas Andalas, Padang</span>
+                </div>
+
+                {/* Desktop */}
+                <div className="hidden md:block">
+                  Neo Telemetri, Lt. 2,
+                  <br />
+                  Gedung Pusat Kegiatan Mahasiswa,
+                  <br />
+                  Universitas Andalas,
+                  <br />
+                  Kota Padang, Sumatera Barat,
+                  <br />
+                  Indonesia.
+                </div>
+              </div>
+              <div className="md:hidden mt-5">
+                <div className="flex items-center gap-4">
+                  {socialLinks.map(({ src, alt, href }) => (
+                    <a
+                      key={alt}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <img
+                        src={src}
+                        alt={alt}
+                        className={`h-5 w-5 object-contain ${
+                          darkMode ? "" : "invert brightness-0"
+                        }`}
+                      />
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Our Team */}
-          <OurTeam />
+          {/* Desktop Only */}
+          <div className="hidden md:block">
+            <OurTeam />
+          </div>
 
-          {/* Quick Links + Events */}
-          <QuickLinks />
+          <div className="hidden md:block">
+            <QuickLinks />
+          </div>
 
-          {/* Connect with us */}
-          <Connect />
+          <div className="hidden md:block">
+            <Connect />
+          </div>
         </div>
 
         {/* Divider */}
         <div
-          className={`mt-12 pt-6 border-t ${
+          className={`mt-6 md:mt-12 pt-4 md:pt-6 border-t ${
             darkMode ? "border-slate-800" : "border-slate-200"
-          } flex flex-col sm:flex-row items-center justify-between gap-4`}
+          } flex flex-col items-start sm:flex-row sm:items-center justify-between gap-3`}
         >
           <p
-            className={`text-xs font-medium text-center sm:text-left ${
+            className={`text-xs font-medium text-left sm:text-left ${
               darkMode ? "text-slate-500" : "text-slate-400"
             }`}
           >
