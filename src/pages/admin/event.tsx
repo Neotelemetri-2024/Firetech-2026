@@ -233,12 +233,12 @@ export default function AdminEvent() {
             </p>
 
             <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-              Event Management
+              Manajemen Event
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/75 sm:text-base">
-              Manage all events and view details for each event using the quick
-              filters below.
+              Kelola semua acara dan lihat detail setiap acara menggunakan
+              filter cepat di bawah ini.
             </p>
 
             {/* TOOLBAR */}
@@ -308,7 +308,7 @@ export default function AdminEvent() {
             {selectedEvent && (
               <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="font-semibold text-emerald-300">
-                  Showing event details:{" "}
+                  Menampilkan detail event:{" "}
                   <span className="font-black">{selectedEvent}</span>
                 </p>
 
@@ -317,7 +317,7 @@ export default function AdminEvent() {
                   onClick={() => setSelectedEvent(null)}
                   className="rounded-xl border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 cursor-pointer"
                 >
-                  Show All Events
+                  Tampilkan Semua Event
                 </button>
               </div>
             )}

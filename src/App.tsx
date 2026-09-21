@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Loading from "./components/loading";
 import ScrollToTop from "./components/scrolltotop";
 
@@ -52,15 +53,11 @@ function App() {
     });
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <ThemeProvider>
       <Router>
-        {/* Scroll ke atas setiap pindah halaman */}
         <ScrollToTop />
+
         <Routes>
           {/* Auth */}
           <Route path="/login" element={<Auth />} />
@@ -85,6 +82,8 @@ function App() {
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+
+        <AnimatePresence>{loading && <Loading />}</AnimatePresence>
       </Router>
     </ThemeProvider>
   );

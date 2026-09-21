@@ -193,15 +193,16 @@ export default function NotFound() {
               darkMode ? "border-black text-black" : "border-white text-white"
             }`}
           >
-            Oops! Page Not Found
+            Ups! Halaman Tidak Ditemukan
           </p>
           <p
             className={`mx-auto max-w-md text-sm sm:text-base ${
               darkMode ? "border-black text-black" : "border-white text-white"
             }`}
           >
-            Sorry, we couldn't find the page you're looking for. It may have
-            been moved, deleted, or the URL might be incorrect.
+            Maaf, kami tidak dapat menemukan halaman yang Anda cari. Halaman
+            tersebut mungkin telah dipindahkan, dihapus, atau URL-nya mungkin
+            salah.
           </p>
         </motion.div>
 
@@ -245,7 +246,7 @@ export default function NotFound() {
                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                 />
               </svg>
-              Back to Firetech
+              Kembali ke Firetech
             </span>
           </motion.button>
           <motion.button
@@ -271,7 +272,7 @@ export default function NotFound() {
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              Dashboard
+              Home
             </span>
           </motion.button>
         </motion.div>

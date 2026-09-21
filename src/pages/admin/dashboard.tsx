@@ -7,22 +7,22 @@ const events = [
     stats: [
       {
         value: "300",
-        label: "Participants",
+        label: "Partisipan",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "60",
-        label: "Teams",
+        label: "Tim",
         icon: "/src/assets/admin/dashboard/team.webp",
       },
       {
         value: "56",
-        label: "Payments",
+        label: "Pembayaran",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "34",
-        label: ["Verified", "Payments"],
+        label: ["Terverifikasi", "Pembayaran"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -52,17 +52,17 @@ const events = [
     stats: [
       {
         value: "150",
-        label: "Participants",
+        label: "Partisipan",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "42",
-        label: "Payments",
+        label: "Pembayaran",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "38",
-        label: ["Verified", "Payments"],
+        label: ["Terverifikasi", "Pembayaran"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -72,17 +72,17 @@ const events = [
     stats: [
       {
         value: "200",
-        label: "Participants",
+        label: "Partisipan",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
       {
         value: "78",
-        label: "Payments",
+        label: "Pembayaran",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "72",
-        label: ["Verified", "Payments"],
+        label: ["Terverifikasi", "Pembayaran"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],
@@ -92,23 +92,23 @@ const events = [
     stats: [
       {
         value: "500",
-        label: "Participants",
+        label: "Partisipan",
         icon: "/src/assets/admin/dashboard/participant.webp",
       },
 
       {
         value: "12",
-        label: "Teams",
+        label: "Tim",
         icon: "/src/assets/admin/dashboard/team.webp",
       },
       {
         value: "85",
-        label: "Payments",
+        label: "Pembayaran",
         icon: "/src/assets/admin/dashboard/payment.webp",
       },
       {
         value: "45",
-        label: ["Verified", "Payments"],
+        label: ["Terverifikasi", "Pembayaran"],
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     ],

@@ -247,24 +247,25 @@ export default function Gallery() {
             />
 
             <p
-              className={`mx-auto mt-7 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-7 max-w-xl text-left font-jakarta text-base leading-7 sm:text-lg sm:leading-8 lg:mx-0 lg:text-justify ${
                 darkMode ? "text-slate-600" : "text-slate-400"
               }`}
             >
-              Relive the excitement, energy, and innovation from Firetech's
-              previous editions. This gallery showcases all the memorable
-              activities, competitions, and celebrations that took place, giving
-              you a glimpse of the vibrant community behind every event.
+              Rasakan kembali keseruan, energi, dan inovasi dari penyelenggaraan
+              Firetech sebelumnya. Galeri ini menampilkan berbagai kegiatan,
+              kompetisi, dan perayaan berkesan yang telah berlangsung, serta
+              memberikan gambaran tentang komunitas dinamis di balik setiap
+              acara.
             </p>
 
             <p
-              className={`mx-auto mt-4 max-w-xl font-jakarta text-lg leading-8 lg:mx-0 ${
+              className={`mx-auto mt-4 max-w-xl text-left font-jakarta text-base leading-7 sm:text-lg sm:leading-8 lg:mx-0 lg:text-justify ${
                 darkMode ? "text-slate-600" : "text-slate-400"
               }`}
             >
-              From intense hackathon battles to the thrill of e-football
-              matches, every picture tells a story worth remembering. Be part of
-              the next chapter at Firetech 2026.
+              Mulai dari sengitnya kompetisi hackathon hingga keseruan
+              pertandingan e-football, setiap foto menyimpan cerita yang layak
+              dikenang. Jadilah bagian dari babak selanjutnya di Firetech 2026.
             </p>
           </motion.div>
         </motion.div>

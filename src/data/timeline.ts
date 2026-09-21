@@ -6,7 +6,7 @@ export const timelineEvents = [
     title: "Open Registration",
     date: "1 August 2026",
     description:
-      "Registration officially opens for all participants. Complete your application and secure your place before the registration period ends.",
+      "Pendaftaran resmi dibuka untuk seluruh peserta. Lengkapi pendaftaran Anda dan amankan tempat Anda sebelum periode pendaftaran berakhir.",
     icon: Calendar,
     top: "69%",
     left: "10%",
@@ -17,7 +17,7 @@ export const timelineEvents = [
     title: "Opening Ceremony",
     date: "25 September 2026",
     description:
-      "Firetech 2026 officially begins with welcoming remarks, event briefings, and an introduction to the exciting activities ahead.",
+      "Firetech 2026 resmi dimulai dengan sambutan, pengarahan acara, dan pengenalan terhadap berbagai kegiatan menarik yang telah disiapkan.",
     icon: Rocket,
     top: "44%",
     left: "65%",
@@ -28,7 +28,7 @@ export const timelineEvents = [
     title: "Main Events",
     date: "25-27 September 2026",
     description:
-      "Participants engage in competitions, workshops, and collaborative sessions while showcasing creativity and technical skills.",
+      "Para peserta mengikuti kompetisi, lokakarya, dan sesi kolaboratif sembari menampilkan kreativitas serta keterampilan teknis.",
     icon: Trophy,
     top: "18%",
     left: "16%",
@@ -39,7 +39,7 @@ export const timelineEvents = [
     title: "Announcement",
     date: "28 September 2026",
     description:
-      "The journey concludes with the winner announcement, recognition of outstanding achievements, and the official closing ceremony.",
+      "Rangkaian kegiatan ini diakhiri dengan pengumuman pemenang, pemberian penghargaan atas pencapaian luar biasa, dan upacara penutupan resmi.",
     icon: Brain,
     top: "7%",
     left: "48%",

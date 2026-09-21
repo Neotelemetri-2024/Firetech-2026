@@ -6,39 +6,39 @@ import { useTheme } from "../../../context/themecontext";
 const faqData = [
   {
     id: "01",
-    question: "What are the registration requirements for Firetech 2026?",
+    question: "Apa saja persyaratan pendaftaran untuk Firetech 2026?",
     answer:
-      "Participants must be active university students and meet the eligibility requirements established by the Firetech 2026 organizing committee.",
+      "Peserta harus merupakan mahasiswa universitas yang sedang aktif dan memenuhi syarat kelayakan yang ditetapkan oleh komite penyelenggara Firetech 2026.",
   },
   {
     id: "02",
-    question: "When does the registration period begin?",
+    question: "Kapan periode pendaftaran dimulai?",
     answer:
-      "Registration opens on August 1, 2026, according to the official event timeline.",
+      "Pendaftaran dibuka pada tanggal 1 Agustus 2026, sesuai dengan jadwal resmi event.",
   },
   {
     id: "03",
-    question: "What benefits will participants receive?",
+    question: "Apa saja manfaat yang akan diterima peserta?",
     answer:
-      "Participants will receive a certificate, valuable competition experience, networking opportunities, and the chance to win exciting prizes.",
+      "Peserta akan menerima sertifikat, pengalaman kompetisi berharga, peluang jaringan, dan kesempatan untuk memenangkan hadiah menarik.",
   },
   {
     id: "04",
-    question: "Where will Firetech 2026 be held?",
+    question: "Di mana Firetech 2026 akan diselenggarakan?",
     answer:
-      "The event will take place at the Faculty of Information Technology, Universitas Andalas.",
+      "Event ini akan diselenggarakan di Fakultas Teknologi Informasi, Universitas Andalas.",
   },
   {
     id: "05",
-    question: "How can I register for Firetech 2026?",
+    question: "Bagaimana saya bisa mendaftar untuk Firetech 2026?",
     answer:
-      "Participants can register through the official Firetech 2026 website during the registration period.",
+      "Peserta dapat mendaftar melalui situs resmi Firetech 2026 selama periode pendaftaran.",
   },
   {
     id: "06",
-    question: "Who can I contact for more information?",
+    question: "Siapa yang bisa saya hubungi untuk informasi lebih lanjut?",
     answer:
-      "For further assistance, please contact the official Contact Person listed on the Contact page.",
+      "Untuk bantuan lebih lanjut, silakan hubungi Kontak Person resmi yang tercantum di halaman Kontak.",
   },
 ];
 
@@ -285,7 +285,8 @@ export default function FAQ() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            Everything you need to know about Firetech 2026 in one place.
+            Segala hal yang perlu Anda ketahui tentang Firetech 2026, tersedia
+            di satu tempat.
           </motion.p>
 
           <motion.div
