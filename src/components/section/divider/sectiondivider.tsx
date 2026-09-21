@@ -64,7 +64,7 @@ export default function SectionDivider() {
   }, []);
 
   return (
-    <div ref={dividerRef} className="relative h-32 overflow-hidden">
+    <div ref={dividerRef} className="relative h-72 overflow-hidden">
       {/* Kiri */}
       <img
         src={darkMode ? leftDividerDark : leftDivider}
