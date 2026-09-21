@@ -1,4 +1,4 @@
-import hackathonImg from "../../../assets/event/hackathon.webp";
+import hackathonImg from "../../../assets/gallery/gallery1.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
