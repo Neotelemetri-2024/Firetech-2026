@@ -74,8 +74,8 @@ export default function MediaPartner() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            Together with our media partners, Firetech expands the reach of
-            innovation, technology, and entrepreneurship to a wider audience.
+            Bersama mitra media kami, Firetech memperluas jangkauan inovasi,
+            teknologi, dan kewirausahaan kepada audiens yang lebih luas.
           </motion.p>
         </motion.div>
         {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
@@ -204,9 +204,9 @@ export default function MediaPartner() {
 
         <div className="mx-auto mt-10 max-w-4xl">
           <Call
-            phone="628123456789"
-            title="Become Our Media Partner"
-            subtitle="Collaborate with Firetech 2026 and help amplify innovation, technology, and entrepreneurship."
+            phone="62895618028352"
+            title="Jadilah Mitra Media Kami"
+            subtitle="Bekerja sama dengan Firetech 2026 dan bantu gaungkan inovasi, teknologi, serta kewirausahaan."
           />
         </div>
 
@@ -223,8 +223,8 @@ export default function MediaPartner() {
             darkMode ? "text-slate-500" : "text-slate-500"
           }`}
         >
-          * Media partner lineup coming soon — the official list will be
-          announced shortly.
+          * Daftar mitra media akan segera hadir — daftar resminya akan
+          diumumkan dalam waktu dekat.
         </motion.p>
       </div>
     </section>

@@ -83,8 +83,8 @@ export default function Sponsor() {
               }}
               className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8 ${darkMode ? "text-slate-600" : "text-slate-400"}`}
             >
-              Proudly supported by industry leaders, innovative companies, and
-              valued partners who help make Firetech 2026 possible.
+              Didukung dengan bangga oleh para pemimpin industri, perusahaan
+              inovatif, dan mitra berharga yang turut mewujudkan Firetech 2026.
             </motion.p>
           </div>
         </div>
@@ -229,9 +229,9 @@ export default function Sponsor() {
 
         <div className="mx-auto mt-10 max-w-4xl">
           <Call
-            phone="628123456789"
-            title="Become Our Sponsor"
-            subtitle="Interested in supporting Firetech 2026? Let's discuss sponsorship opportunities with our team."
+            phone="62895618028352"
+            title="Jadilah Sponsor Kami"
+            subtitle="Tertarik untuk mendukung Firetech 2026? Ayo diskusikan peluang sponsor dengan tim kami."
           />
         </div>
 
@@ -248,8 +248,8 @@ export default function Sponsor() {
             darkMode ? "text-slate-500" : "text-slate-500"
           }`}
         >
-          * Sponsor lineup coming soon — the official list will be announced
-          shortly.
+          * Daftar sponsor akan segera hadir — daftar resminya akan diumumkan
+          dalam waktu dekat.
         </motion.p>
       </div>
     </section>
