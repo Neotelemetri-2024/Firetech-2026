@@ -20,11 +20,11 @@ export default function Auth() {
     <div
       style={darkMode ? lightGradientStyle : darkGradientStyle}
       className="
-    relative
-    min-h-screen
-    overflow-hidden
-    text-white
-  "
+      relative
+      min-h-screen
+      overflow-hidden
+      text-white
+    "
     >
       {/* Fixed Background decorations dengan blur gradient effects */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -57,23 +57,23 @@ export default function Auth() {
       </div>
       <div
         className="
-    relative
-    z-10
-    mx-auto
-    flex
-    min-h-screen
-    max-w-7xl
-    flex-col-reverse
-    items-center
-    justify-center
-    gap-12
-    px-6
-    py-10
+        relative
+        z-10
+        mx-auto
+        flex
+        min-h-screen
+        max-w-7xl
+        flex-col-reverse
+        items-center
+        justify-center
+        gap-12
+        px-6
+        py-10
 
-    lg:flex-row
-    lg:justify-between
-    lg:px-8
-  "
+        lg:flex-row
+        lg:justify-between
+        lg:px-8
+      "
       >
         {/* Left Side */}
         <div className="max-w-xl text-center lg:text-left">
@@ -138,7 +138,7 @@ export default function Auth() {
             whileTap={{ scale: 0.97 }}
           >
             <button
-              className={`
+              className="
               group
               mx-auto
               flex
@@ -149,38 +149,24 @@ export default function Auth() {
               gap-3
               rounded-xl
               border
+              border-slate-300/60
+              bg-white
               px-6
               py-3
               text-base
               font-bold
-              sm:w-auto
-              sm:px-8
-              sm:text-lg
-              lg:mx-0
+              text-slate-800
+              shadow-[0_0_20px_rgba(0,0,0,0.12)]
               transition-all
               duration-300
               cursor-pointer
               hover:-translate-y-0.5
-    ${
-      darkMode
-        ? `
-          border-slate-300/60
-          bg-white
-          text-slate-800
-          shadow-[0_0_20px_rgba(0,0,0,0.12)]
-          hover:shadow-[0_0_30px_rgba(0,0,0,0.18)]
-        `
-        : `
-          border-white/30
-          bg-linear-to-r
-          from-sky-700
-          to-indigo-800
-          text-white
-          shadow-[0_0_20px_rgba(59,130,246,0.4)]
-          hover:shadow-[0_0_35px_rgba(59,130,246,0.6)]
-        `
-    }
-  `}
+              hover:shadow-[0_0_30px_rgba(0,0,0,0.18)]
+              sm:w-auto
+              sm:px-8
+              sm:text-lg
+              lg:mx-0
+            "
             >
               Login dengan Google
               <motion.span
