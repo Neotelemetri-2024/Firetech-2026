@@ -228,7 +228,7 @@ export default function NavbarAdmin() {
               <button
                 type="button"
                 aria-label="Go to website"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/home")}
                 className="grid h-12 w-12 cursor-pointer place-items-center rounded-full border border-sky-400/40 bg-sky-500/10 text-sky-300 shadow-[0_10px_24px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-sky-500/20 hover:text-sky-200 hover:shadow-[0_14px_28px_rgba(14,165,233,0.28)]"
               >
                 <Globe2 className="h-5.5 w-5.5" strokeWidth={2.2} />
