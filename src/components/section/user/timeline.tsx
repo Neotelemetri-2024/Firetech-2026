@@ -61,9 +61,8 @@ export default function Timeline() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            Follow every important milestone, from registration to the grand
-            finale, and stay prepared for each exciting stage of the
-            competition.
+            Ikuti setiap tonggak penting, mulai dari pendaftaran hingga babak
+            final, dan bersiaplah menghadapi setiap tahapan kompetisi yang seru.
           </motion.p>
         </div>
 
@@ -263,134 +262,70 @@ export default function Timeline() {
           </div>
         </div>
 
-        {/* Mobile Roadmap */}
-        <div className="relative py-10 md:hidden">
-          <div className="space-y-20">
-            {timelineEvents.map((event, index) => (
-              <motion.div
-                key={event.id}
-                initial={{
-                  opacity: 0,
-                  y: 80,
-                  scale: 0.85,
-                  rotateX: 15,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  rotateX: 0,
-                }}
-                viewport={{
-                  once: false,
-                  amount: 0.2,
-                }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                }}
-                className={`flex ${
-                  index % 2 === 0 ? "justify-start" : "justify-end"
-                }`}
-              >
-                <div className="relative w-[80%] max-w-75">
-                  {/* Connector */}
+        {/* Mobile Metro Timeline */}
+        <div className="relative py-6 md:hidden">
+          <div className="relative">
+            {/* Main Line */}
+            <div
+              className={`
+              absolute
+              left-5
+              top-0
+              bottom-0
+              w-0.75
+              rounded-full
+              ${
+                darkMode
+                  ? "bg-linear-to-b from-blue-400 via-blue-600 to-blue-800"
+                  : "bg-linear-to-b from-red-400 via-red-600 to-red-800"
+              }
+            `}
+            />
 
-                  {index !== timelineEvents.length - 1 && (
+            <div className="space-y-8">
+              {timelineEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  initial={{
+                    opacity: 0,
+                    x: -30,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    x: 0,
+                  }}
+                  viewport={{
+                    once: false,
+                    amount: 0.2,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.08,
+                  }}
+                  className="relative flex gap-5"
+                >
+                  {/* Station */}
+                  <div className="relative z-10 mt-3 shrink-0">
                     <div
                       className={`
-                      absolute
-                      top-14
-                      z-0
-                      ${index % 2 === 0 ? "left-12" : "right-12"}
-                      h-32
-                      w-1
-                      rounded-full
-                      ${
-                        darkMode
-                          ? "bg-linear-to-b from-blue-400 to-blue-700"
-                          : "bg-linear-to-b from-red-400 to-red-700"
-                      }
-                    `}
-                    />
-                  )}
-
-                  {/* Card */}
-
-                  <motion.div
-                    whileHover={{
-                      scale: 1.03,
-                    }}
-                    whileTap={{
-                      scale: 0.98,
-                    }}
-                    className={`
-                    relative
-                    overflow-hidden
-                    rounded-3xl
-                    border
-                    p-6
-                    backdrop-blur-md
-                    shadow-xl
-                    ${
-                      darkMode
-                        ? "border-slate-200 bg-white/95"
-                        : "border-white/10 bg-white/10"
-                    }
-                  `}
-                  >
-                    {/* Accent Line */}
-                    <div
-                      className={`
-                      absolute
-                      top-0
-                      left-0
-                      h-0.5
-                      w-full
-                      ${darkMode ? "bg-blue-700" : "bg-red-700"}
-                    `}
-                    />
-
-                    <div
-                      className={`
-                      absolute
-                      top-0
-                      left-0
-                      h-10
-                      w-full
-                      blur-2xl
-                      opacity-20
-                      ${darkMode ? "bg-blue-500" : "bg-red-500"}
-                    `}
-                    />
-
-                    {/* Number */}
-                    <div
-                      className={`
-                      absolute
-                      -top-3
-                      -right-3
                       flex
-                      h-14
-                      w-14
+                      h-10
+                      w-10
                       items-center
                       justify-center
                       rounded-full
-                      border
-                      backdrop-blur-xl
-                      font-black
-                      text-xl
-                      shadow-xl
+                      border-2
+                      shadow-lg
                       ${
                         darkMode
                           ? `
-                            border-blue-300/40
-                            bg-white/70
-                            text-blue-700
+                            border-blue-500
+                            bg-white
+                            text-black
                           `
                           : `
-                            border-white/20
-                            bg-white/10
+                            border-red-500
+                            bg-black
                             text-white
                           `
                       }
@@ -398,30 +333,98 @@ export default function Timeline() {
                     >
                       {index === timelineEvents.length - 1 ? "🏁" : event.id}
                     </div>
+                  </div>
 
-                    {/* Content */}
+                  {/* Card */}
+                  <motion.div
+                    whileHover={{
+                      x: 4,
+                    }}
+                    className={`
+                    relative
+                    flex-1
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    p-5
+                    backdrop-blur-xl
+                    ${
+                      darkMode
+                        ? "border-slate-200 bg-white/90"
+                        : "border-white/10 bg-white/5"
+                    }
+                  `}
+                  >
+                    {/* Top Accent */}
+                    <div
+                      className={`
+                      absolute
+                      left-0
+                      top-0
+                      h-1
+                      w-full
+                      ${darkMode ? "bg-blue-600" : "bg-red-600"}
+                    `}
+                    />
 
-                    <div className="pt-6">
-                      <h3
-                        className={`text-xl font-bold ${
-                          darkMode ? "text-black" : "text-white"
-                        }`}
-                      >
-                        {event.title}
-                      </h3>
-
-                      <p
-                        className={`mt-2 text-sm ${
-                          darkMode ? "text-slate-600" : "text-slate-300"
-                        }`}
-                      >
-                        {event.date}
-                      </p>
+                    {/* Step */}
+                    <div
+                      className={`
+                      inline-flex
+                      rounded-full
+                      px-3
+                      py-1
+                      text-[11px]
+                      font-bold
+                      font-orbitron
+                      ${
+                        darkMode
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-red-500/10 text-red-400"
+                      }
+                    `}
+                    >
+                      STEP {event.id}
                     </div>
+
+                    {/* Title */}
+                    <h3
+                      className={`
+                      mt-3
+                      text-lg
+                      font-bold
+                      ${darkMode ? "text-black" : "text-white"}
+                    `}
+                    >
+                      {event.title}
+                    </h3>
+
+                    {/* Date */}
+                    <p
+                      className={`
+                      mt-1
+                      text-sm
+                      ${darkMode ? "text-slate-600" : "text-slate-300"}
+                    `}
+                    >
+                      {event.date}
+                    </p>
+
+                    {/* Description */}
+                    <p
+                      className={`
+                      mt-3
+                      text-sm
+                      leading-6
+                      ${darkMode ? "text-slate-700" : "text-slate-400"}
+                    `}
+                    >
+                      {event.description}
+                    </p>
                   </motion.div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
