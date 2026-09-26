@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /home
+Disallow: /apply
+
+Sitemap: https://firetech-2026.vercel.app/sitemap.xml
