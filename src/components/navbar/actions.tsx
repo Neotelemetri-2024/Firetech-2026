@@ -11,6 +11,8 @@ interface NavbarActionsProps {
   darkMode: boolean;
   profileAlerts: number;
 
+  isLoggedIn: boolean;
+
   onProfileClick: () => void;
   onLoginClick: () => void;
 }
@@ -18,6 +20,7 @@ interface NavbarActionsProps {
 export default function NavbarActions({
   darkMode,
   profileAlerts,
+  isLoggedIn,
   onProfileClick,
   onLoginClick,
 }: NavbarActionsProps) {
@@ -50,7 +53,7 @@ export default function NavbarActions({
       />
 
       {/* Login Desktop */}
-      <LoginButton onClick={onLoginClick} />
+      <LoginButton isLoggedIn={isLoggedIn} onClick={onLoginClick} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import DesktopNavMenu from "./navbar/menu";
 import NavbarActions from "./navbar/actions";
 import { useUserProfile } from "../hooks/useUserProfile";
 import NavbarModalContainer from "./navbar/modalcontainer";
+import { logout } from "../services/auth.services";
 
 interface NavChild {
   label: string;
@@ -52,6 +53,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isProgrammaticScrolling, setIsProgrammaticScrolling] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("accessToken"),
+  );
   const getMainMenu = (sectionId: string) => {
     switch (sectionId) {
       case "home":
@@ -123,6 +127,18 @@ export default function Navbar() {
 
     return () => {
       window.removeEventListener("firetech-event-change", handleEventChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const syncAuthState = () => {
+      setIsLoggedIn(!!localStorage.getItem("accessToken"));
+    };
+
+    window.addEventListener("auth-state-changed", syncAuthState);
+
+    return () => {
+      window.removeEventListener("auth-state-changed", syncAuthState);
     };
   }, []);
 
@@ -201,14 +217,54 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, [isProgrammaticScrolling]);
 
-  const handleLoginClick = () => {
+  const handleLoginClick = async () => {
     setMenuOpen(false);
+
+    if (isLoggedIn) {
+      try {
+        await logout();
+      } catch (error) {
+        console.error(error);
+      }
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      localStorage.removeItem("role");
+
+      setIsLoggedIn(false);
+
+      window.dispatchEvent(new Event("auth-state-changed"));
+
+      navigate("/", {
+        replace: true,
+      });
+
+      return;
+    }
+
     navigate("/login");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error(error);
+    }
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+
+    setIsLoggedIn(false);
+
+    window.dispatchEvent(new Event("auth-state-changed"));
+
     setProfileOpen(false);
-    navigate("/login");
+
+    navigate("/", {
+      replace: true,
+    });
   };
 
   // Navigasi ke section tertentu
@@ -349,11 +405,10 @@ export default function Navbar() {
             />
           </LayoutGroup>
 
-          {/* Right side actions */}
-
           <NavbarActions
             darkMode={darkMode}
             profileAlerts={profileAlerts}
+            isLoggedIn={isLoggedIn}
             onProfileClick={() => setProfileOpen(true)}
             onLoginClick={handleLoginClick}
           />
