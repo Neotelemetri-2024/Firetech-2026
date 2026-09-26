@@ -4,7 +4,7 @@ import {
   Palette,
   Gamepad2,
   Keyboard,
-  BrainCircuit,
+  //BrainCircuit,
 } from "lucide-react";
 
 const navItems = [
@@ -28,10 +28,10 @@ const eventItems = [
     name: "E-Football",
     icon: Gamepad2,
   },
-  {
-    name: "Informatics Olympiad",
-    icon: BrainCircuit,
-  },
+  //{
+    //name: "Informatics Olympiad",
+    //icon: BrainCircuit,
+  //},
   {
     name: "Fast Typing ",
     icon: Keyboard,

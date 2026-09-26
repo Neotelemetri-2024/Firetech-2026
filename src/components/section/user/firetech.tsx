@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../../context/themecontext";
 import { headingVariants } from "../../animations/headingvariants";
-import FiretechLogo from "../../../assets/firetech.webp";
+import About from "../../../assets/about.webp";
 
 type OverviewCard = {
   id: string;
@@ -23,28 +23,28 @@ const overviewCards: OverviewCard[] = [
     icon: Network,
     title: "National Technology Hub",
     description:
-      "Bringing together talented students from diverse backgrounds to exchange ideas, showcase creativity, and build innovative technology-driven solutions.",
+      "Mempertemukan mahasiswa berbakat dari beragam latar belakang untuk bertukar gagasan, menampilkan kreativitas, dan membangun solusi inovatif berbasis teknologi.",
   },
   {
     id: "02",
     icon: Lightbulb,
     title: "Impact-Driven Innovation",
     description:
-      "Encouraging participants to develop technology that not only solves problems but also creates meaningful and lasting benefits for society.",
+      "Mendorong peserta untuk mengembangkan teknologi yang tidak hanya menyelesaikan masalah tetapi juga menciptakan manfaat yang bermakna dan berkelanjutan bagi masyarakat.",
   },
   {
     id: "03",
     icon: GraduationCap,
     title: "Growth & Development",
     description:
-      "Providing opportunities for participants to strengthen technical expertise, critical thinking, leadership, and teamwork through practical challenges.",
+      "Menyediakan kesempatan bagi peserta untuk memperkuat keahlian teknis, berpikir kritis, kepemimpinan, dan kerja tim melalui tantangan praktis.",
   },
   {
     id: "04",
     icon: Award,
     title: "Competitive Experience",
     description:
-      "Featuring five dynamic competition categories that inspire participants to demonstrate their talents, push their limits, and achieve excellence.",
+      "Menampilkan lima kategori kompetisi dinamis yang menginspirasi peserta untuk menunjukkan bakat mereka, menghadapi batas-batas, dan mencapai keunggulan.",
   },
 ];
 
@@ -105,9 +105,8 @@ export default function Firetech() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            A collaborative technology platform where students transform ideas
-            into innovation, connect with future changemakers, and create
-            meaningful impact through technology.
+            Platform kolaboratif bagi pelajar untuk berinovasi, berjejaring, dan
+            menciptakan dampak melalui teknologi.
           </motion.p>
         </motion.div>
 
@@ -119,7 +118,7 @@ export default function Firetech() {
           viewport={{ once: false, amount: 0.2 }}
           className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16"
         >
-          {/* Left: logo */}
+          {/* Left: About Image */}
           <motion.div
             variants={headingVariants.card}
             className="order-1 relative flex justify-center"
@@ -127,13 +126,32 @@ export default function Firetech() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="relative p-3"
+              className="group relative"
             >
-              <img
-                src={FiretechLogo}
-                alt="Firetech Logo"
-                className="h-auto w-full max-w-md object-contain select-none"
+              {/* Glow */}
+              <div
+                className={`absolute inset-0 rounded-3xl blur-3xl transition-all duration-500 ${
+                  darkMode ? "bg-blue-700/20" : "bg-red-700/20"
+                }`}
               />
+
+              {/* Card */}
+              <div
+                className={`relative overflow-hidden rounded-3xl border backdrop-blur-xl ${
+                  darkMode
+                    ? "border-blue-700/20 bg-white"
+                    : "border-white/10 bg-white/5"
+                }`}
+              >
+                <img
+                  src={About}
+                  alt="About Firetech"
+                  className="h-65 w-85 object-cover transition-all duration-700 group-hover:scale-105 sm:h-80 sm:w-112.5 lg:h-90 lg:w-130"
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
+              </div>
             </motion.div>
           </motion.div>
 
@@ -161,10 +179,10 @@ export default function Firetech() {
                 darkMode ? "text-black" : "text-white"
               }`}
             >
-              Firetech is a flagship technology event initiated by Neo
-              Telemetri, Faculty of Information Technology, Andalas University,
-              designed to empower students through innovation, competition, and
-              collaborative learning experiences.
+              Firetech adalah acara teknologi unggulan yang digagas oleh UKM Neo
+              Telemetri, Universitas Andalas yang
+              dirancang untuk memberdayakan mahasiswa melalui inovasi,
+              kompetisi, dan pengalaman belajar kolaboratif.
             </p>
 
             <p
@@ -172,7 +190,7 @@ export default function Firetech() {
                 darkMode ? "text-black" : "text-white"
               }`}
             >
-              Through the theme{" "}
+              Melalui tema{" "}
               <span
                 className={`font-semibold font-jakarta ${
                   darkMode ? "text-blue-700" : "text-red-700"
@@ -180,9 +198,10 @@ export default function Firetech() {
               >
                 "Creating Solutions For Better Society"
               </span>
-              , Firetech 2026 inspires participants to transform ideas into
-              impactful innovations, fostering solutions that contribute to a
-              more connected, inclusive, and sustainable future.
+              , Firetech 2026 menginspirasi para peserta untuk mengubah gagasan
+              menjadi inovasi yang berdampak, serta mendorong lahirnya solusi
+              yang berkontribusi pada masa depan yang lebih terhubung, inklusif,
+              dan berkelanjutan.
             </p>
           </motion.div>
         </motion.div>

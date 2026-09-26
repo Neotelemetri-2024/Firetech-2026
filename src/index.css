@@ -450,3 +450,29 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }
+
+
+
+/* ========================================
+   HIDE SCROLLBAR BUT KEEP SCROLL WORKING
+======================================== */
+
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.event-track {
+  overflow: hidden;
+  will-change: transform;
+}

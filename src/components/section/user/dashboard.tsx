@@ -42,7 +42,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="relative w-full overflow-hidden top-6">
+    <div className="relative w-full overflow-hidden top-12">
       {/* Glow Background */}
       <motion.div
         animate={{
@@ -136,7 +136,7 @@ const Dashboard = () => {
                   uppercase
                   leading-[0.85]
                   tracking-[4px]
-                  lg:text-8xl
+                  lg:text-7xl
                 "
                 >
                   <span className={darkMode ? "text-blue-700" : "text-red-700"}>
@@ -200,7 +200,7 @@ const Dashboard = () => {
                 Harmonizing Tech And Humanity
               </motion.p>
 
-              {/* Description */}
+              {/* Deskripsi */}
               <motion.p
                 variants={itemVariants}
                 className={`
@@ -215,10 +215,11 @@ const Dashboard = () => {
                   ${darkMode ? "text-black" : "text-white"}
                 `}
               >
-                Firetech is an annual event organized by the Neo Telemetri
-                student organization at Andalas University, aimed at fostering
-                talent among school and university students in the field of
-                information technology. This year, Firetech adopts the theme
+                Firetech adalah acara tahunan yang diselenggarakan oleh
+                organisasi mahasiswa Neo Telemetri di Universitas Andalas, yang
+                bertujuan untuk mengembangkan bakat siswa sekolah dan mahasiswa
+                di bidang teknologi informasi. Tahun ini, Firetech mengusung
+                tema
                 <span
                   className={`
                     font-semibold font-jakarta
@@ -228,9 +229,9 @@ const Dashboard = () => {
                   {" "}
                   "Creating Solutions For Better Society"
                 </span>
-                —a platform for the younger generation to innovate, collaborate,
-                and create technology-based solutions that make a positive
-                impact on society.
+                —sebuah wadah bagi generasi muda untuk berinovasi,
+                berkolaborasi, dan menciptakan solusi berbasis teknologi yang
+                memberikan dampak positif bagi masyarakat.
               </motion.p>
 
               {/* Buttons */}

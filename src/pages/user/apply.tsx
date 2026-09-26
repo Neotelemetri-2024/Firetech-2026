@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Code2, Palette, Gamepad2, BrainCircuit } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Code2, Palette, Gamepad2 } from "lucide-react";
 
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/applysevent";
@@ -12,7 +12,7 @@ import { getMissingFields, fieldLabels } from "../../config/applyvalidation";
 import HackathonForm from "../../components/apply/hackathonform";
 import UiUxForm from "../../components/apply/uiuxform";
 import EfootballForm from "../../components/apply/efootballform";
-import InformaticsOlympiadForm from "../../components/apply/informaticsolympiadform";
+//import InformaticsOlympiadForm from "../../components/apply/informaticsolympiadform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
@@ -21,20 +21,20 @@ const categoryIcons: Record<Category, LucideIcon> = {
   Hackathon: Code2,
   "UI/UX": Palette,
   "E-Football": Gamepad2,
-  "Informatics Olympiad": BrainCircuit,
+  //"Informatics Olympiad": BrainCircuit,
 };
 
 const categories: Category[] = [
   "Hackathon",
-  "Informatics Olympiad",
+  //"Informatics Olympiad",
   "UI/UX",
   "E-Football",
-  
 ];
 
 export default function Apply() {
   const { darkMode } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const initialCategory =
     (location.state?.category as Category | undefined) ?? "Hackathon";
   const [selectedCategory, setSelectedCategory] =
@@ -54,7 +54,7 @@ export default function Apply() {
   const handleSelectCategory = (category: Category) => {
     const eventMap: Record<Category, string> = {
       Hackathon: "hackathon",
-      "Informatics Olympiad": "informaticsolympiad",
+      //"Informatics Olympiad": "informaticsolympiad",
       "E-Football": "ef",
       "UI/UX": "uiux",
     };
@@ -164,10 +164,13 @@ export default function Apply() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setToastType("success");
-
       setValidationMessage("Registration submitted successfully!");
-
       setShowValidationToast(true);
+
+      // Tunggu toast tampil sebentar
+      setTimeout(() => {
+        navigate("/home");
+      }, 1500);
     } catch {
       setToastType("error");
 
@@ -238,14 +241,14 @@ export default function Apply() {
             onChange={handleInputChange}
           />
         );
-      case "Informatics Olympiad":
-        return (
-          <InformaticsOlympiadForm
-            step={currentStep}
-            formData={formData["Informatics Olympiad"]}
-            onChange={handleInputChange}
-          />
-        );
+      //case "Informatics Olympiad":
+      //return (
+      //<InformaticsOlympiadForm
+      //step={currentStep}
+      //formData={formData["Informatics Olympiad"]}
+      //onChange={handleInputChange}
+      ///>
+      //);
     }
   };
 

@@ -1,4 +1,8 @@
+{
+  /*
+
 import type { InformaticsOlympiadFormData } from "../../types/applysevent";
+
 import FormField from "./formfield";
 import Payment from "./payment";
 import AddMemberOlyimpiad from "./addolympiadmember";
@@ -46,4 +50,7 @@ export default function InformaticsOlympiadForm({
   }
 
   return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
+}
+
+*/
 }

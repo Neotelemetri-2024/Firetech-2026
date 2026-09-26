@@ -2,24 +2,37 @@ import hackathonImg from "../../../assets/gallery/gallery1.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
-import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
+//import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
+import { EVENT_LAYOUT } from "../../../constants/layout";
 const events = [
   { id: "01", title: "Hackathon", image: hackathonImg, color: "#ef4444" },
-  {
-    id: "02",
-    title: "Informatics Olympiad",
-    image: informaticsImg,
-    color: "#f59e0b",
-  },
-  { id: "03", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
-  { id: "04", title: "E-Football", image: efootballImg, color: "#22c55e" },
-  { id: "05", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },
+  //{
+    //id: "02",
+    //title: "Informatics Olympiad",
+    //image: informaticsImg,
+    //color: "#f59e0b",
+  //},
+  { id: "02", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
+  { id: "03", title: "E-Football", image: efootballImg, color: "#22c55e" },
+  { id: "04", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },
 ];
 export default function Scenario1() {
   return (
-    <div className="flex items-center justify-center gap-10 px-10 pb-6">
+    <div
+      className="
+      flex
+      items-end
+      justify-center
+      gap-[clamp(6px,0.8vw,18px)]
+      px-2
+      pb-2
+      w-full
+      max-w-7xl
+      mx-auto
+    "
+    >
       {" "}
       {events.map((event) => (
         <motion.div
@@ -28,7 +41,26 @@ export default function Scenario1() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.3 }}
-          className=" overview-card group relative h-95 w-53.75 shrink-0 overflow-hidden rounded-4xl border border-white/10 transition-all duration-700 ease-out hover:-translate-y-4 hover:scale-[1.04] hover:border-white/30 cursor-pointer "
+          style={{
+            width: EVENT_LAYOUT.CARD.OVERVIEW_WIDTH,
+            height: EVENT_LAYOUT.CARD.OVERVIEW_HEIGHT,
+          }}
+          className="
+          overview-card
+          group
+          relative
+          shrink-0
+          overflow-hidden
+          rounded-4xl
+          border
+          border-white/10
+          transition-all
+          duration-700
+          ease-out
+          hover:-translate-y-2
+          hover:border-white/30
+          cursor-pointer
+          "
         >
           {" "}
           {/* Image */}{" "}

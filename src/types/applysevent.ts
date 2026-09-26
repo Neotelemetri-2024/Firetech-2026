@@ -3,7 +3,7 @@ export type Category =
   | "Hackathon"
   | "UI/UX"
   | "E-Football"
-  | "Informatics Olympiad";
+  //| "Informatics Olympiad";
 
 // Form data untuk masing-masing kategori event
 export type HackathonFormData = {
@@ -40,20 +40,20 @@ export type EfootballFormData = {
   paymentProof: File | null;
 };
 
-export type InformaticsOlympiadFormData = {
+//export type InformaticsOlympiadFormData = {
   // Step 1
-  namaKetua: string;
-  asalSekolah: string;
+  //namaKetua: string;
+  //asalSekolah: string;
 
   // Step 2
-  namaAnggota: string;
-  paymentProof: File | null;
-};
+  //namaAnggota: string;
+  //paymentProof: File | null;
+//};
 
 // Peta antara kategori dengan tipe form data-nya masing-masing
 export type ApplyFormDataMap = {
   Hackathon: HackathonFormData;
   "UI/UX": UiUxFormData;
   "E-Football": EfootballFormData;
-  "Informatics Olympiad": InformaticsOlympiadFormData;
+  //"Informatics Olympiad": InformaticsOlympiadFormData;
 };

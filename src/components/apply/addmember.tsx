@@ -45,7 +45,6 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
         onChange={onChange}
         animationClass="animate-slideInLeft"
         animationDelay="0.3s"
-        required
       />
 
       <FormField
@@ -56,7 +55,6 @@ export default function AddMember({ formData, onChange }: AddMemberProps) {
         onChange={onChange}
         animationClass="animate-slideInRight"
         animationDelay="0.4s"
-        required
       />
 
       {/* Upload KTM */}

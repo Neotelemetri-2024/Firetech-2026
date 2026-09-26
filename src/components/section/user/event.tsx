@@ -10,51 +10,53 @@ import hackathonImg from "../../../assets/gallery/gallery1.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
-import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
+//import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { headingVariants } from "../../animations/headingvariants";
+
+
 const events = [
   {
     id: "01",
     title: "Hackathon",
     tagline: "Build. Innovate. Compete.",
     description:
-      "Develop innovative technology solutions and transform ideas into impactful prototypes. Work as a team to solve real-world challenges within a limited timeframe.",
+      "Kembangkan solusi teknologi inovatif dan ubah gagasan menjadi purwarupa yang berdampak nyata. Bekerjalah sebagai tim untuk memecahkan tantangan dunia nyata dalam batasan waktu tertentu.",
     image: hackathonImg,
     color: "#ef4444",
   },
+  // {
+  //   id: "02",
+  //   title: "Informatics Olympiad",
+  //   tagline: "Think Fast. Solve Smart.",
+  //   description:
+  //     "Uji pemikiran algoritmik dan keterampilan pemrograman Anda melalui serangkaian masalah menantang. Berkompetisi melawan pikiran terbaik dalam logika, efisiensi, dan penyelesaian masalah.",
+   //   image: informaticsImg,
+    //color: "#f59e0b",
+  //},
   {
     id: "02",
-    title: "Informatics Olympiad",
-    tagline: "Think Fast. Solve Smart.",
-    description:
-      "Test your algorithmic thinking and programming skills through challenging problem sets. Compete against the best minds in logic, efficiency, and problem-solving.",
-    image: informaticsImg,
-    color: "#f59e0b",
-  },
-  {
-    id: "03",
     title: "UI/UX",
     tagline: "Design the Future.",
     description:
-      "Create intuitive and engaging digital experiences that solve real user needs. Showcase your creativity through user-centered design and innovative interfaces.",
+      "Ciptakan pengalaman digital yang intuitif dan menarik yang menjawab kebutuhan nyata pengguna. Tunjukkan kreativitas Anda melalui desain yang berpusat pada pengguna dan antarmuka yang inovatif.",
     image: uiuxImg,
     color: "#06b6d4",
   },
   {
-    id: "04",
+    id: "03",
     title: "E-Football",
     tagline: "Play Beyond Limits.",
     description:
-      "Compete in thrilling matches that demand strategy, precision, and quick decision-making. Prove your skills on the virtual pitch and aim for championship glory.",
+      "Bertandinglah dalam laga-laga seru yang menuntut strategi, presisi, dan pengambilan keputusan yang cepat. Buktikan kemampuanmu di lapangan virtual dan raih kejayaan juara.",
     image: efootballImg,
     color: "#22c55e",
   },
   {
-    id: "05",
+    id: "04",
     title: "Fast Typing",
     tagline: "Speed Meets Precision.",
     description:
-      "Test your typing speed and accuracy to compete for the title of the fastest typist at Firetech 2026.",
+      "Uji kecepatan dan akurasi mengetik Anda untuk berkompetisi mendapatkan gelar pengetik tercepat di Firetech 2026.",
     image: fasttypingImg,
     color: "#8b5cf6",
   },
@@ -66,7 +68,7 @@ export default function Event() {
   const [selectedEvent, setSelectedEvent] = useState<
     (typeof events)[number] | null
   >(null);
-  const TRACK_OFFSET = -10;
+  const TRACK_OFFSET = 0;
   const totalPanels = events.length + 1;
 
   useEffect(() => {
@@ -95,7 +97,15 @@ export default function Event() {
     return () => ctx.revert();
   }, [TRACK_OFFSET, totalPanels]);
   return (
-    <section ref={sectionRef} className=" relative min-h-screen overflow-x-hidden lg:h-screen ">
+    <section
+      ref={sectionRef}
+      className="
+      relative
+      min-h-screen
+      pt-20
+      overflow-hidden
+    "
+    >
       {/* Background */}
       <div
         className="
@@ -126,7 +136,7 @@ export default function Event() {
       {/* ===================================================== */}
       {/* Desktop Layout */}
       {/* ===================================================== */}
-      <div className="hidden overflow-hidden lg:block">
+      <div className="hidden overflow-visible lg:block">
         <div
           ref={trackRef}
           className="event-track flex h-screen"
@@ -142,14 +152,13 @@ export default function Event() {
             className="
             panel
             flex
-            h-screen
+            min-h-screen
             w-screen
             shrink-0
             flex-col
           "
           >
             {/* Header */}
-
             <div
               className="
               flex
@@ -157,8 +166,10 @@ export default function Event() {
               flex-col
               items-center
               justify-center
-              pt-44
-              pb-10
+              pt-28
+              xl:pt-24
+              2xl:pt-40
+              pb-6
             "
             >
               <motion.p
@@ -190,8 +201,9 @@ export default function Event() {
                   darkMode ? "text-black" : "text-white"
                 }`}
               >
-                Discover a series of exciting competitions designed to challenge
-                your creativity, technical skills, and innovative thinking.
+                Temukan serangkaian kompetisi menarik yang dirancang untuk
+                menguji kreativitas, keterampilan teknis, dan pemikiran inovatif
+                Anda.
               </motion.p>
             </div>
 
@@ -200,9 +212,13 @@ export default function Event() {
               hidden
               lg:flex
               flex-1
-              items-start
+              items-center
               justify-center
-              px-10
+              pb-6
+              px-2
+              xl:px-4
+              2xl:px-8
+              overflow-visible
             "
             >
               <Scenario1 />
@@ -217,12 +233,12 @@ export default function Event() {
             <div
               key={event.id}
               className="
-          panel
-          flex
-          h-screen
-          w-screen
-          shrink-0
-        "
+              panel
+              flex
+              min-h-screen
+              w-screen
+              shrink-0
+            "
             >
               <EventSlide
                 id={event.id}
@@ -281,8 +297,8 @@ export default function Event() {
               darkMode ? "text-slate-600" : "text-slate-400"
             }`}
           >
-            Discover a series of exciting competitions designed to challenge
-            your creativity, technical skills, and innovative thinking.
+            Temukan serangkaian kompetisi menarik yang dirancang untuk menguji
+            kreativitas, keterampilan teknis, dan pemikiran inovatif Anda.
           </motion.p>
         </div>
 

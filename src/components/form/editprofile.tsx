@@ -5,8 +5,6 @@ import {
   Trophy,
   Users,
   CreditCard,
-  CalendarDays,
-  BadgeCheck,
   FileText,
   Camera,
   CircleCheckBig,
@@ -318,11 +316,6 @@ export default function EditProfile({
               {/* Grid Card — read only */}
               <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2">
                 <ProfileItem
-                  icon={<BadgeCheck size={18} />}
-                  title="Participant ID"
-                  value={user.participantId}
-                />
-                <ProfileItem
                   icon={<Trophy size={18} />}
                   title="Competition"
                   value={user.competition}
@@ -343,11 +336,6 @@ export default function EditProfile({
                   title="Submission"
                   value={user.submission}
                   statusColor="yellow"
-                />
-                <ProfileItem
-                  icon={<CalendarDays size={18} />}
-                  title="Next Timeline"
-                  value="Technical Meeting • 2026-08-02"
                 />
                 <ProfileItem
                   icon={<Mail size={18} />}

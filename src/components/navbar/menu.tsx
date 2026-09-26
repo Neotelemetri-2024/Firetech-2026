@@ -113,7 +113,7 @@ export default function Menu({
                   absolute
                   -bottom-1
                   left-1/2
-                  h-0.5 w-12
+                  h-0.5 w-20
                   -translate-x-1/2
                   rounded-full
 

@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
     label: "Event",
     children: [
       { label: "Hackathon", hash: "hackathon" },
-      { label: "Informatics Olympiad", hash: "informaticsolympiad" },
+      //{ label: "Informatics Olympiad", hash: "informaticsolympiad" },
       { label: "UI/UX", hash: "uiux" },
       { label: "E-Football", hash: "ef" },
       { label: "Fast Typing", hash: "ft" },
@@ -300,17 +300,6 @@ export default function Navbar() {
               : "shadow-[0_4px_20px_-4px_rgba(236,72,153,0.15)] backdrop-blur-lg bg-black/70"
         } ${darkMode ? "border-slate-300/60 " : "border-white/15"}`}
       >
-        {/* Decorative top gradient line */}
-        <div
-          className={`absolute top-0 left-1/2 -translate-x-1/2 h-px w-3/4 rounded-full transition-opacity duration-500 ${
-            scrolled ? "opacity-100" : "opacity-0"
-          } ${
-            darkMode
-              ? "bg-linear-to-r from-transparent via-red-600 to-transparent"
-              : "bg-linear-to-r from-transparent via-blue-600 to-transparent"
-          }`}
-        />
-
         <nav className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
           {/* Logo & Brand */}
           <div className="flex items-center gap-0.5 w-26 md:w-32 shrink-0">

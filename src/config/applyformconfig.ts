@@ -3,7 +3,7 @@ import type { ApplyFormDataMap, Category } from "../types/applysevent";
 import HackathonForm from "../components/apply/hackathonform";
 import UiUxForm from "../components/apply/uiuxform";
 import EfootballForm from "../components/apply/efootballform";
-import InformaticsOlympiadForm from "../components/apply/informaticsolympiadform";
+//import InformaticsOlympiadForm from "../components/apply/informaticsolympiadform";
 
 // Nilai awal form data untuk masing-masing kategori event
 export const initialApplyFormData: ApplyFormDataMap = {
@@ -42,15 +42,15 @@ export const initialApplyFormData: ApplyFormDataMap = {
     paymentProof: null,
   },
 
-  "Informatics Olympiad": {
+  //"Informatics Olympiad": {
     //Step 1
-    namaKetua: "",
-    asalSekolah: "",
+    //namaKetua: "",
+    //asalSekolah: "",
 
     //Step 2
-    namaAnggota: "",
-    paymentProof: null,
-  },
+    //namaAnggota: "",
+    //paymentProof: null,
+  //},
 };
 
 type ApplyFormProps<C extends Category> = {
@@ -79,8 +79,8 @@ export const applyFormConfig: {
     Component: EfootballForm,
   },
 
-  "Informatics Olympiad": {
-    steps: ["Personal Information", "Add Member", "Payment"],
-    Component: InformaticsOlympiadForm,
-  },
+  //"Informatics Olympiad": {
+    //steps: ["Personal Information", "Add Member", "Payment"],
+    //Component: InformaticsOlympiadForm,
+  //},
 };

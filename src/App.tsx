@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Loading from "./components/loading";
 import ScrollToTop from "./components/scrolltotop";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import AdminRoute from "./components/AdminRoute";
 
 //Layouts (Navbar dan Footer)//
 import MainLayout from "./layouts/mainlayout";
@@ -53,39 +55,50 @@ function App() {
     });
   }, []);
 
+  console.log("GOOGLE CLIENT ID:", import.meta.env.VITE_GOOGLE_CLIENT_ID);
+
   return (
-    <ThemeProvider>
-      <Router>
-        <ScrollToTop />
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <ThemeProvider>
+        <Router>
+          <ScrollToTop />
 
-        <Routes>
-          {/* Auth */}
-          <Route path="/login" element={<Auth />} />
+          <Routes>
+            {/* Auth */}
+            <Route path="/login" element={<Auth />} />
 
-          {/* Firetech */}
-          <Route path="/" element={<Firetech />} />
+            {/* Firetech */}
+            <Route path="/" element={<Firetech />} />
 
-          {/* Admin */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Admin />} />
-            <Route path="users" element={<User />} />
-            <Route path="event" element={<Event />} />
-          </Route>
+            {/* Admin */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
+              <Route index element={<Admin />} />
+              <Route path="users" element={<User />} />
+              <Route path="event" element={<Event />} />
+            </Route>
 
-          {/* User */}
-          <Route path="/home" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="users" element={<Home />} />
-            <Route path="apply" element={<Apply />} />
-          </Route>
+            {/* User */}
+            <Route path="/home" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="users" element={<Home />} />
+              <Route path="apply" element={<Apply />} />
+            </Route>
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
-        <AnimatePresence>{loading && <Loading />}</AnimatePresence>
-      </Router>
-    </ThemeProvider>
+          <AnimatePresence>{loading && <Loading />}</AnimatePresence>
+        </Router>
+      </ThemeProvider>
+    </GoogleOAuthProvider>
   );
 }
 

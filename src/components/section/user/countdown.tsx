@@ -98,8 +98,8 @@ export default function Countdown() {
               darkMode ? "text-black" : "text-white"
             }`}
           >
-            Something extraordinary is on the horizon. Stay tuned for the next
-            generation of innovation.
+            Sesuatu yang luar biasa akan segera hadir. Nantikan inovasi generasi
+            berikutnya.
           </motion.p>
         </motion.div>
 

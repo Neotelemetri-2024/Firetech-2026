@@ -5,8 +5,6 @@ import {
   Trophy,
   Users,
   CreditCard,
-  CalendarDays,
-  BadgeCheck,
   FileText,
   LogOut,
   ZoomIn,
@@ -91,7 +89,7 @@ export default function ProfileModal({
     user.submission !== "Submitted" && "Submission has not been uploaded",
     getTimelineReminder(),
   ].filter((alert): alert is string => Boolean(alert));
-  
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -199,11 +197,6 @@ export default function ProfileModal({
             {/* Grid Card */}
             <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2 cursor-pointer">
               <ProfileItem
-                icon={<BadgeCheck size={18} />}
-                title="Participant ID"
-                value={user.participantId}
-              />
-              <ProfileItem
                 icon={<Trophy size={18} />}
                 title="Competition"
                 value={user.competition}
@@ -224,11 +217,6 @@ export default function ProfileModal({
                 title="Submission"
                 value={user.submission}
                 statusColor={getSubmissionTone(user.submission)}
-              />
-              <ProfileItem
-                icon={<CalendarDays size={18} />}
-                title="Next Timeline"
-                value={`${user.timeline.title} • ${user.timeline.date}`}
               />
               <ProfileItem
                 icon={<Phone size={18} />}

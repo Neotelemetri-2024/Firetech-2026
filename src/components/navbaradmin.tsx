@@ -3,6 +3,7 @@ import { ChevronDown, Globe2, Menu, X } from "lucide-react";
 import LogoutButton from "./button/logout";
 import Tooltip from "./ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../services/auth.services";
 import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
 import Badge from "./ui/badge";
@@ -61,12 +62,32 @@ export default function NavbarAdmin() {
     navigate(item.href);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.clear();
+  const handleLogout = async () => {
+    try {
+      await logout();
 
-    navigate("/login", { replace: true });
+      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+
+      sessionStorage.clear();
+
+      navigate("/", {
+        replace: true,
+      });
+    } catch (error) {
+      console.error("Logout gagal:", error);
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+
+      sessionStorage.clear();
+
+      navigate("/", {
+        replace: true,
+      });
+    }
   };
 
   return (

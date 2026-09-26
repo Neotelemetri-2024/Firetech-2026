@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../context/themecontext";
+import { EVENT_LAYOUT } from "../../../constants/layout";
+
 type EventSlideProps = {
   id: string;
   title: string;
@@ -22,7 +24,7 @@ export default function EventSlide({
   const handleExploreChallenge = () => {
     const eventMap: Record<string, string> = {
       Hackathon: "hackathon",
-      "Informatics Olympiad": "informaticsolympiad",
+      //"Informatics Olympiad": "informaticsolympiad",
       "Fast Typing": "ft",
       "E-Football": "ef",
       "UI/UX": "uiux",
@@ -53,14 +55,62 @@ export default function EventSlide({
       },
     });
   };
-  
+
   return (
-    <section className=" relative flex min-h-screen w-full items-center justify-center px-6 py-16 lg:h-screen lg:w-screen lg:px-24 ">
-      <div className="relative z-10 w-full max-w-7xl translate-y-24">
-        <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:items-center">
+    <section
+      className="
+      relative
+      flex
+      min-h-screen
+      w-full
+      items-center
+      justify-center
+
+      px-6
+      py-8
+
+      lg:h-screen
+      lg:w-screen
+      lg:px-16
+    "
+    >
+      <div
+        className="
+        relative
+        z-10
+        w-full
+        max-w-7xl
+      "
+      >
+        <div
+          className="
+          grid
+          gap-6
+          lg:grid-cols-[clamp(160px,12vw,240px)_1fr]
+          lg:items-center
+        "
+        >
           {/* ================= LEFT : EVENT CARD ================= */}
           <div className="flex justify-center lg:justify-start">
-            <div className="event-image group relative h-130 w-70 overflow-hidden rounded-4xl border border-white/10 transition-all duration-700 hover:-translate-y-3">
+            <div
+              style={{
+                width: EVENT_LAYOUT.CARD.DETAIL_WIDTH,
+                aspectRatio: EVENT_LAYOUT.CARD.DETAIL_RATIO,
+              }}
+              className="
+              event-image
+              group
+              relative
+              shrink-0
+              overflow-hidden
+              rounded-4xl
+              border
+              border-white/10
+              transition-all
+              duration-700
+              hover:-translate-y-3
+            "
+            >
               <img
                 src={image}
                 alt={title}
@@ -89,7 +139,15 @@ export default function EventSlide({
               </div>
 
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                <span className="text-[120px] font-black leading-none text-transparent [-webkit-text-stroke:1.5px_white]">
+                <span
+                  className="
+                  text-[clamp(70px,6vw,110px)]
+                  font-black
+                  leading-none
+                  text-transparent
+                  [-webkit-text-stroke:1.5px_white]
+                "
+                >
                   {id}
                 </span>
               </div>
@@ -97,15 +155,18 @@ export default function EventSlide({
           </div>
           {/* ================= RIGHT : EVENT INFO ================= */}
           <div
+            style={{
+              minHeight: EVENT_LAYOUT.PANEL.MIN_HEIGHT,
+            }}
             className="
             relative
+            min-w-0
             overflow-hidden
             rounded-[40px]
             border
             border-white/10
-            p-8
-            lg:p-14
-            min-h-130
+            p-6
+            lg:p-8
             flex
             items-center
           "
@@ -155,7 +216,15 @@ export default function EventSlide({
                 Firetech 2026
               </span>
 
-              <h2 className="mt-4 text-4xl font-black text-white lg:text-6xl">
+              <h2
+                className="
+                mt-4
+                text-4xl
+                lg:text-[clamp(2.8rem,3.8vw,5rem)]
+                font-black
+                text-white
+              "
+              >
                 {title}
               </h2>
 

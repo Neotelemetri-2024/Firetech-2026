@@ -5,30 +5,30 @@ import type { Category } from "../types/applysevent";
 export const requiredFieldsConfig: Record<Category, Record<number, string[]>> = {
   Hackathon: {
     1: ["namaTeam", "namaKetua", "asalSekolah"],
-    2: ["anggota1", "anggota2", "anggota3", "anggota4", "ktm"],
+    2: ["anggota1", "anggota2", "ktm"],
     3: ["paymentProof"],
   },
   "UI/UX": {
     1: ["namaPemain", "asalSekolah"],
     2: ["paymentProof"],
-    3: ["portofolioUrl"],
+    //3: ["portofolioUrl"],
   },
   "E-Football": {
     1: ["namaPemain", "idGame", "asalSekolah"],
     2: ["paymentProof"],
   },
-  "Informatics Olympiad": {
-    1: ["namaKetua", "asalSekolah"],
-    2: ["namaAnggota", "ktm"],
-    3: ["paymentProof"],
-  },
+  //"Informatics Olympiad": {
+  //1: ["namaKetua", "asalSekolah"],
+  //2: ["namaAnggota", "ktm"],
+  //3: ["paymentProof"],
+  //},
 };
 
 // Label ramah untuk setiap field, dipakai saat menyusun pesan notifikasi.
 export const fieldLabels: Record<string, string> = {
   namaTeam: "Team Name",
   namaKetua: "Leader Name",
-  asalSekolah: "School/University of Origin",
+  asalSekolah: "University of Origin",
   anggota1: "Member 1 Name",
   anggota2: "Member 2 Name",
   anggota3: "Member 3 Name",
@@ -36,7 +36,7 @@ export const fieldLabels: Record<string, string> = {
   ktm: "Student ID Card (KTM)",
   namaPemain: "Player Name",
   idGame: "ID Game eFootball",
-  portofolioUrl: "Portfolio Link (Figma)",
+  portofolioUrl: "Link (Figma)",
   namaAnggota: "Member Name",
 
   paymentProof: "Payment Proof",
