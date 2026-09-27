@@ -7,6 +7,7 @@ import {
   CreditCard,
   FileText,
   LogOut,
+  LogIn,
   ZoomIn,
   Pencil,
   Phone,
@@ -30,11 +31,11 @@ interface TimelineData {
 }
 
 interface UserData {
-  photo: string;
+  avatarUrl: string;
   name: string;
   email: string;
 
-  whatsapp?: string;
+  phone?: string;
 
   participantId: string;
   competition: string;
@@ -49,6 +50,7 @@ interface ProfileModalProps {
   open: boolean;
   onClose: () => void;
   onLogout: () => void;
+  onLogin: () => void;
   onEdit: () => void;
   user: UserData;
 }
@@ -58,11 +60,14 @@ export default function ProfileModal({
   onClose,
   user,
   onLogout,
+  onLogin,
   onEdit,
 }: ProfileModalProps) {
   const { darkMode } = useTheme();
   const [previewPhoto, setPreviewPhoto] = useState(false);
   const emailStatus = getEmailStatus(user.email);
+
+  const isLoggedIn = Boolean(user.email);
 
   const getTimelineReminder = () => {
     const today = new Date();
@@ -84,9 +89,9 @@ export default function ProfileModal({
     return null;
   };
   const profileAlerts = [
-    user.whatsapp === "" && "WhatsApp number has not been added",
-    user.payment !== "Paid" && "Payment has not been completed",
-    user.submission !== "Submitted" && "Submission has not been uploaded",
+    !user.phone && "Nomor WhatsApp belum ditambahkan",
+    user.payment !== "Paid" && "Pembayaran Belum Diselesaikan.",
+    user.submission !== "Submitted" && "Pengumpulan Berkas Belum Diunggah",
     getTimelineReminder(),
   ].filter((alert): alert is string => Boolean(alert));
 
@@ -162,7 +167,7 @@ export default function ProfileModal({
                   aria-label={`Preview foto ${user.name}`}
                 >
                   <motion.img
-                    src={user.photo}
+                    src={user.avatarUrl}
                     alt={user.name}
                     className={`h-24 w-24 sm:h-24 sm:w-24 rounded-full border-4 object-cover shadow-xl transition-all duration-300 ${
                       darkMode
@@ -221,7 +226,7 @@ export default function ProfileModal({
               <ProfileItem
                 icon={<Phone size={18} />}
                 title="WhatsApp"
-                value={user.whatsapp || "Not set"}
+                value={user.phone || "Not set"}
               />
 
               <ProfileItem
@@ -233,27 +238,36 @@ export default function ProfileModal({
             </div>
 
             {/* Edit Profile Button */}
-            <button
-              onClick={() => {
-                onEdit();
-              }}
-              className={`mt-8 cursor-pointer flex w-full items-center justify-center gap-3 rounded-xl border py-3 text-sm font-semibold transition hover:scale-[1.02] sm:gap-3 sm:text-base ${
-                darkMode
-                  ? "border-slate-300 text-slate-700 hover:bg-slate-100"
-                  : "border-white/20 bg-white/5 text-white hover:bg-white/10"
-              }`}
-            >
-              <Pencil size={18} />
-              Edit Profile
-            </button>
+            {isLoggedIn && (
+              <button
+                onClick={onEdit}
+                className={`mt-8 cursor-pointer flex w-full items-center justify-center gap-3 rounded-xl border py-3 text-sm font-semibold transition hover:scale-[1.02] sm:gap-3 sm:text-base ${
+                  darkMode
+                    ? "border-slate-300 text-slate-700 hover:bg-slate-100"
+                    : "border-white/20 bg-white/5 text-white hover:bg-white/10"
+                }`}
+              >
+                <Pencil size={18} />
+                Edit Profile
+              </button>
+            )}
 
             {/* Logout Button */}
             <button
-              onClick={onLogout}
+              onClick={isLoggedIn ? onLogout : onLogin}
               className="mt-3 cursor-pointer flex w-full items-center justify-center gap-3 text-sm sm:mt-3 sm:gap-3 sm:text-base rounded-xl bg-linear-to-r from-red-600 to-blue-600 py-3 font-semibold text-white transition hover:scale-[1.02]"
             >
-              <LogOut size={18} />
-              Logout
+              {isLoggedIn ? (
+                <>
+                  <LogOut size={18} />
+                  Logout
+                </>
+              ) : (
+                <>
+                  <LogIn size={18} />
+                  Login
+                </>
+              )}
             </button>
           </div>
         </motion.div>
@@ -262,7 +276,7 @@ export default function ProfileModal({
       {/* Preview Photo Modal */}
       <ProfilePreview
         open={previewPhoto}
-        photo={user.photo}
+        avatarUrl={user.avatarUrl}
         name={user.name}
         onClose={() => setPreviewPhoto(false)}
       />

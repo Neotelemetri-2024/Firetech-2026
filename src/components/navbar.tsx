@@ -92,10 +92,6 @@ export default function Navbar() {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [toast, setToast] = useState({
-    open: false,
-    message: "",
-  });
   const { user, profileAlerts, updateProfile } = useUserProfile();
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -142,19 +138,12 @@ export default function Navbar() {
     };
   }, []);
 
-  const handleSaveProfile = (data: {
-    photo: string;
+  const handleSaveProfile = async (data: {
+    avatarUrl: string;
     name: string;
-    whatsapp: string;
+    phone: string;
   }) => {
-    updateProfile(data);
-
-    setEditProfileOpen(false);
-
-    setToast({
-      open: true,
-      message: "Profile updated successfully",
-    });
+    await updateProfile(data);
   };
 
   // Hilangkan data-aos setelah render pertama
@@ -641,19 +630,13 @@ export default function Navbar() {
       <NavbarModalContainer
         profileOpen={profileOpen}
         editProfileOpen={editProfileOpen}
-        toast={toast}
         user={user}
         onLogout={handleLogout}
+        onLogin={handleLoginClick}
         onCloseProfile={() => setProfileOpen(false)}
         onOpenEditProfile={() => setEditProfileOpen(true)}
         onCloseEditProfile={() => setEditProfileOpen(false)}
         onSaveProfile={handleSaveProfile}
-        onCloseToast={() =>
-          setToast({
-            open: false,
-            message: "",
-          })
-        }
       />
     </>
   );

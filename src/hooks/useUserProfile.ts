@@ -1,21 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import {
+  getProfile,
+  updateProfile as updateProfileApi,
+} from "../services/profile.services";
+
+import type { UpdateProfilePayload } from "../services/profile.services";
 import type { PaymentStatus, SubmissionStatus } from "../types/user";
 
 interface UserData {
-  photo: string;
+  avatarUrl: string;
   name: string;
   email: string;
-
-  whatsapp: string;
-
+  phone: string;
   participantId: string;
   competition: string;
   team: string;
-
   payment: PaymentStatus;
   submission: SubmissionStatus;
-
   timeline: {
     title: string;
     date: string;
@@ -23,49 +25,99 @@ interface UserData {
 }
 
 export function useUserProfile() {
-  const [user, setUser] = useState<UserData>({
-    photo: "https://i.pravatar.cc/300",
+  const [user, setUser] = useState<UserData>(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-    name: "Dafnal",
+    return {
+      avatarUrl:
+        storedUser.avatarUrl ||
+        storedUser.picture ||
+        storedUser.photo ||
+        "https://ui-avatars.com/api/?name=" +
+          encodeURIComponent(storedUser.name || "Guest"),
 
-    email: "dafnal@gmail.com",
+      name: storedUser.name || storedUser.fullName || "Guest",
 
-    whatsapp: "",
+      email: storedUser.email || "",
 
-    participantId: "FT26-00127",
+      phone: storedUser.phone || storedUser.whatsapp || "",
 
-    competition: "Hackathon",
+      participantId: "FT26-00127",
 
-    team: "Syntax Error",
+      competition: "Hackathon",
 
-    payment: "Pending",
+      team: "Syntax Error",
 
-    submission: "Submitted",
+      payment: "Pending",
 
-    timeline: {
-      title: "Technical Meeting",
+      submission: "Pending",
 
-      date: "2026-08-11",
-    },
+      timeline: {
+        title: "Technical Meeting",
+        date: "2026-08-11",
+      },
+    };
   });
 
   const profileAlerts = [
-    user.whatsapp === "",
-    user.photo === "",
+    user.phone === "",
+    user.avatarUrl === "",
     user.payment !== "Paid",
     user.submission !== "Submitted",
   ].filter(Boolean).length;
 
-  const updateProfile = (data: {
-    photo: string;
-    name: string;
-    whatsapp: string;
-  }) => {
-    setUser((prev) => ({
-      ...prev,
-      ...data,
-    }));
+  const updateProfile = async (data: UpdateProfilePayload) => {
+    try {
+      const result = await updateProfileApi(data);
+
+      const updatedUser = result.data;
+
+      setUser((prev) => ({
+        ...prev,
+        ...updatedUser,
+      }));
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...JSON.parse(localStorage.getItem("user") || "{}"),
+          ...updatedUser,
+        }),
+      );
+
+      return updatedUser;
+    } catch (error) {
+      console.error("Update profile failed:", error);
+      throw error;
+    }
   };
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getProfile();
+
+        const profileData = profile.data;
+
+        setUser((prev) => ({
+          ...prev,
+          ...profileData,
+        }));
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...JSON.parse(localStorage.getItem("user") || "{}"),
+            ...profileData,
+          }),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
   return {
     user,

@@ -1,35 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  X,
-  Mail,
-  Trophy,
-  Users,
-  CreditCard,
-  FileText,
-  Camera,
-  CircleCheckBig,
-  CircleDashed,
-  CircleX,
-  Pencil,
-  Loader2,
-} from "lucide-react";
+import { X, Camera, Pencil, Loader2 } from "lucide-react";
 import { useTheme } from "../../context/themecontext";
 
 import { useEffect, useRef, useState } from "react";
-import type { ChangeEvent, ReactNode } from "react";
+import type { ChangeEvent } from "react";
 
 interface UserData {
-  photo: string;
+  avatarUrl: string;
   name: string;
   email: string;
 
-  whatsapp?: string;
-
-  participantId: string;
-  competition: string;
-  team: string;
-  payment: string;
-  submission: string;
+  phone?: string;
 }
 
 interface EditProfileProps {
@@ -37,85 +18,13 @@ interface EditProfileProps {
   onClose: () => void;
   user: UserData;
 
-  onSave: (data: { photo: string; name: string; whatsapp: string }) => void;
+  onSave: (data: {
+    avatarUrl: string;
+    name: string;
+    phone: string;
+  }) => Promise<void>;
 
   isSaving?: boolean;
-}
-
-interface ProfileItemProps {
-  icon: ReactNode;
-  title: string;
-  value: string;
-  statusColor?: "green" | "yellow" | "red";
-}
-
-function ProfileItem({ icon, title, value, statusColor }: ProfileItemProps) {
-  const { darkMode } = useTheme();
-  return (
-    <div
-      className={`flex items-center gap-3 rounded-xl border p-3 sm:gap-4 sm:p-4 transition-all duration-300 ${
-        darkMode
-          ? "border-slate-200 bg-slate-100 hover:bg-slate-200"
-          : "border-white/10 bg-white/5 hover:bg-white/10"
-      }`}
-    >
-      <div
-        className={`transition-colors duration-300 ${
-          darkMode ? "text-blue-600" : "text-red-500"
-        }`}
-      >
-        {icon}
-      </div>
-
-      <div className="flex-1">
-        <p
-          className={`text-xs ${darkMode ? "text-slate-500" : "text-slate-400"}`}
-        >
-          {title}
-        </p>
-
-        {statusColor ? (
-          <div
-            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold
-
-    ${
-      statusColor === "green"
-        ? darkMode
-          ? "bg-green-100 text-green-700"
-          : "bg-green-500/15 text-green-400"
-        : statusColor === "yellow"
-          ? darkMode
-            ? "bg-yellow-100 text-yellow-700"
-            : "bg-yellow-500/15 text-yellow-400"
-          : darkMode
-            ? "bg-red-100 text-red-700"
-            : "bg-red-500/15 text-red-400"
-    }
-
-    `}
-          >
-            {statusColor === "green" ? (
-              <CircleCheckBig size={16} />
-            ) : statusColor === "yellow" ? (
-              <CircleDashed size={16} />
-            ) : (
-              <CircleX size={16} />
-            )}
-
-            {value}
-          </div>
-        ) : (
-          <p
-            className={`font-semibold ${
-              darkMode ? "text-slate-800" : "text-white"
-            }`}
-          >
-            {value}
-          </p>
-        )}
-      </div>
-    </div>
-  );
 }
 
 export default function EditProfile({
@@ -126,23 +35,17 @@ export default function EditProfile({
   isSaving = false,
 }: EditProfileProps) {
   const { darkMode } = useTheme();
-  const [photo, setPhoto] = useState(user.photo);
-  const [name, setName] = useState(user.name);
-  const [whatsapp, setWhatsapp] = useState(user.whatsapp ?? "");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const lastUserRef = useRef(user);
 
-  /* Reset the form each time the modal opens with fresh user data */
-  useEffect(() => {
-    if (open && lastUserRef.current !== user) {
-      lastUserRef.current = user;
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-      setPhoto(user.photo);
-      setName(user.name);
-
-      setWhatsapp(user.whatsapp ?? "");
-    }
-  }, [open, user]);
+  const [form, setForm] = useState(() => ({
+    photo: user.avatarUrl,
+    name: user.name,
+    whatsapp: user.phone ?? "",
+  }));
 
   /* Lock body scroll while open */
   useEffect(() => {
@@ -162,22 +65,47 @@ export default function EditProfile({
 
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setPhoto(reader.result);
-      }
+      const result = reader.result;
+
+      if (typeof result !== "string") return;
+
+      setForm((prev) => ({
+        ...prev,
+        photo: result,
+      }));
     };
     reader.readAsDataURL(file);
     e.target.value = "";
   };
 
-  const handleSave = () => {
-    onSave({
-      photo,
+  const handleSave = async () => {
+    const phone = form.whatsapp.trim();
 
-      name: name.trim() || user.name,
+    if (!/^08\d{8,11}$/.test(phone)) {
+      setSuccess("");
+      setError("Nomor WhatsApp harus diawali 08 dan hanya berisi angka");
+      return;
+    }
 
-      whatsapp: whatsapp.trim(),
-    });
+    setError("");
+    setSuccess("");
+
+    try {
+      await onSave({
+        name: form.name.trim() || user.name,
+        phone,
+        avatarUrl: form.photo,
+      });
+
+      setSuccess("Profil berhasil diperbarui");
+
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch {
+      setSuccess("");
+      setError("Gagal memperbarui profil");
+    }
   };
 
   return (
@@ -239,8 +167,8 @@ export default function EditProfile({
                     aria-label="Ubah foto profil"
                   >
                     <motion.img
-                      src={photo}
-                      alt={name}
+                      src={form.photo}
+                      alt={form.name}
                       className={`h-24 w-24 sm:h-24 sm:w-24 rounded-full border-4 object-cover shadow-xl transition-all duration-300 ${
                         darkMode
                           ? "border-blue-500 shadow-blue-300/40"
@@ -276,8 +204,13 @@ export default function EditProfile({
                 <div className="mt-2 w-full max-w-md">
                   <input
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
                     placeholder="Your name"
                     aria-label="Full name"
                     className={`w-full rounded-xl border-b-2 bg-transparent px-2 py-1 text-center text-xl sm:text-2xl font-bold outline-none transition ${
@@ -292,8 +225,17 @@ export default function EditProfile({
                 <div className="mt-4 w-full max-w-md">
                   <input
                     type="tel"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
+                    value={form.whatsapp}
+                    onChange={(e) => {
+                      const value = e.target.value
+                        .replace(/\D/g, "")
+                        .slice(0, 13);
+
+                      setForm((prev) => ({
+                        ...prev,
+                        whatsapp: value,
+                      }));
+                    }}
                     placeholder="WhatsApp number"
                     className={`w-full rounded-xl border-b-2 
                     bg-transparent px-2 py-2 text-center
@@ -313,37 +255,30 @@ export default function EditProfile({
                 </p>
               </div>
 
-              {/* Grid Card — read only */}
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2">
-                <ProfileItem
-                  icon={<Trophy size={18} />}
-                  title="Competition"
-                  value={user.competition}
-                />
-                <ProfileItem
-                  icon={<Users size={18} />}
-                  title="Team"
-                  value={user.team}
-                />
-                <ProfileItem
-                  icon={<CreditCard size={18} />}
-                  title="Payment"
-                  value={user.payment}
-                  statusColor="green"
-                />
-                <ProfileItem
-                  icon={<FileText size={18} />}
-                  title="Submission"
-                  value={user.submission}
-                  statusColor="yellow"
-                />
-                <ProfileItem
-                  icon={<Mail size={18} />}
-                  title="Email Status"
-                  value="Verified"
-                  statusColor="red"
-                />
-              </div>
+              {/* Notif */}
+              {success && (
+                <div
+                  className={`mt-6 w-full rounded-xl border px-4 py-3 text-sm ${
+                    darkMode
+                      ? "border-green-300 bg-green-50 text-green-700"
+                      : "border-green-500/30 bg-green-500/10 text-green-400"
+                  }`}
+                >
+                  {success}
+                </div>
+              )}
+
+              {error && (
+                <div
+                  className={`mt-6 w-full rounded-xl border px-4 py-3 text-sm ${
+                    darkMode
+                      ? "border-red-300 bg-red-50 text-red-600"
+                      : "border-red-500/30 bg-red-500/10 text-red-400"
+                  }`}
+                >
+                  {error}
+                </div>
+              )}
 
               {/* Actions */}
               <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">

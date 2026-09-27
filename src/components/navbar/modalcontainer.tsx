@@ -1,16 +1,15 @@
 import ProfileModal from "../form/profilemodal";
 import EditProfile from "../form/editprofile";
-import Toast from "../ui/toast";
 import type { PaymentStatus, SubmissionStatus } from "../../types/user";
 
 interface ProfileUser {
-  photo: string;
+  avatarUrl: string;
 
   name: string;
 
   email: string;
 
-  whatsapp: string;
+  phone: string;
 
   participantId: string;
 
@@ -30,38 +29,26 @@ interface ProfileUser {
 
 interface NavbarModalContainerProps {
   profileOpen: boolean;
-
   editProfileOpen: boolean;
-
-  toast: {
-    open: boolean;
-    message: string;
-  };
 
   user: ProfileUser;
 
   onCloseProfile: () => void;
-
   onLogout: () => void;
-
+  onLogin: () => void;
   onOpenEditProfile: () => void;
-
   onCloseEditProfile: () => void;
 
   onSaveProfile: (data: {
-    photo: string;
+    avatarUrl: string;
     name: string;
-    whatsapp: string;
-  }) => void;
-
-  onCloseToast: () => void;
+    phone: string;
+  }) => Promise<void>;
 }
 export default function NavbarModalContainer({
   profileOpen,
 
   editProfileOpen,
-
-  toast,
 
   user,
 
@@ -69,32 +56,32 @@ export default function NavbarModalContainer({
 
   onLogout,
 
+  onLogin,
+
   onOpenEditProfile,
 
   onCloseEditProfile,
 
   onSaveProfile,
-
-  onCloseToast,
 }: NavbarModalContainerProps) {
   return (
     <>
       <ProfileModal
         open={profileOpen}
         onLogout={onLogout}
+        onLogin={onLogin}
         onClose={onCloseProfile}
         onEdit={onOpenEditProfile}
         user={user}
       />
 
       <EditProfile
+        key={`${user.email}-${editProfileOpen}`}
         open={editProfileOpen}
         user={user}
         onClose={onCloseEditProfile}
         onSave={onSaveProfile}
       />
-
-      <Toast open={toast.open} message={toast.message} onClose={onCloseToast} />
     </>
   );
 }

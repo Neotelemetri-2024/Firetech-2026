@@ -3,14 +3,14 @@ import { X } from "lucide-react";
 
 interface ProfilePreviewProps {
   open: boolean;
-  photo: string;
+  avatarUrl: string;
   name: string;
   onClose: () => void;
 }
 
 export default function ProfilePreview({
   open,
-  photo,
+  avatarUrl,
   name,
   onClose,
 }: ProfilePreviewProps) {
@@ -33,7 +33,7 @@ export default function ProfilePreview({
         className="relative"
       >
         <img
-          src={photo}
+          src={avatarUrl}
           alt={`Foto ${name}`}
           className="max-h-[60vh] sm:max-h-[70vh] w-auto max-w-full rounded-2xl border-4 border-white object-cover shadow-2xl"
         />
