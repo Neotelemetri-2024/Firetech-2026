@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../../context/themecontext";
 import { headingVariants } from "../../animations/headingvariants";
-import About from "../../../assets/about.webp";
+import AboutVideo from "../../../assets/vid_firetech.mp4";
 
 type OverviewCard = {
   id: string;
@@ -143,11 +143,16 @@ export default function Firetech() {
                     : "border-white/10 bg-white/5"
                 }`}
               >
-                <img
-                  src={About}
-                  alt="About Firetech"
-                  className="h-65 w-85 object-cover transition-all duration-700 group-hover:scale-105 sm:h-80 sm:w-112.5 lg:h-90 lg:w-130"
-                />
+                <div className="overflow-hidden rounded-3xl">
+                  <video
+                    src={AboutVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="h-65 w-85 object-cover scale-[1.24] transition-all duration-700  sm:h-80 sm:w-112.5 lg:h-90 lg:w-130"
+                  />
+                </div>
 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
@@ -180,9 +185,9 @@ export default function Firetech() {
               }`}
             >
               Firetech adalah acara teknologi unggulan yang digagas oleh UKM Neo
-              Telemetri, Universitas Andalas yang
-              dirancang untuk memberdayakan mahasiswa melalui inovasi,
-              kompetisi, dan pengalaman belajar kolaboratif.
+              Telemetri, Universitas Andalas yang dirancang untuk memberdayakan
+              mahasiswa melalui inovasi, kompetisi, dan pengalaman belajar
+              kolaboratif.
             </p>
 
             <p
