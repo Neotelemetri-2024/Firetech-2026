@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, UserRound } from "lucide-react";
+import { ChevronDown, UserRound, LogOut } from "lucide-react";
 import { useTheme } from "../context/themecontext";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
@@ -616,12 +616,19 @@ export default function Navbar() {
                 onClick={handleLoginClick}
                 className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-red-600 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-red-500/20 active:scale-[0.98]"
               >
-                <UserRound
-                  size={18}
-                  className="transition-transform duration-300 group-hover:scale-110"
-                />
+                {isLoggedIn ? (
+                  <LogOut
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-110"
+                  />
+                ) : (
+                  <UserRound
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-110"
+                  />
+                )}
 
-                <span>Login</span>
+                <span>{isLoggedIn ? "Logout" : "Login"}</span>
               </button>
             </div>
           </div>

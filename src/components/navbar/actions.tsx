@@ -10,7 +10,6 @@ import UserProfileButton from "./userprofilebutton";
 interface NavbarActionsProps {
   darkMode: boolean;
   profileAlerts: number;
-
   isLoggedIn: boolean;
 
   onProfileClick: () => void;
@@ -24,6 +23,11 @@ export default function NavbarActions({
   onProfileClick,
   onLoginClick,
 }: NavbarActionsProps) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const role = user.role?.toUpperCase();
+
+  const isAdmin = role?.includes("ADMIN") ?? false;
   return (
     <div
       className="
@@ -46,11 +50,13 @@ export default function NavbarActions({
   */}
 
       {/* User Profile */}
-      <UserProfileButton
-        count={profileAlerts}
-        darkMode={darkMode}
-        onClick={onProfileClick}
-      />
+      {!isAdmin && (
+        <UserProfileButton
+          count={profileAlerts}
+          darkMode={darkMode}
+          onClick={onProfileClick}
+        />
+      )}
 
       {/* Login Desktop */}
       <LoginButton isLoggedIn={isLoggedIn} onClick={onLoginClick} />
