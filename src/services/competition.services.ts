@@ -7,12 +7,14 @@ export interface Competition {
   category: string;
   description: string;
   status: string;
+
   participantQuota: number;
   slotsUsed: number;
   slotsLeft: number;
 
-  registrationOpen: string;
+  totalRegistrations?: number;
 
+  registrationOpen: string;
   eventDate: string;
   registrationClose: string;
 }

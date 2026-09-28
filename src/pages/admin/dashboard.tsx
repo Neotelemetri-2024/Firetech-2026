@@ -1,123 +1,201 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  getCompetitions,
+  type Competition,
+} from "../../services/competition.services";
 
-const events = [
-  {
-    name: "Hackathon",
-    stats: [
-      {
-        value: "300",
-        label: "Partisipan",
-        icon: "/src/assets/admin/dashboard/participant.webp",
-      },
-      {
-        value: "60",
-        label: "Tim",
-        icon: "/src/assets/admin/dashboard/team.webp",
-      },
-      {
-        value: "56",
-        label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
-      },
-      {
-        value: "34",
-        label: ["Terverifikasi", "Pembayaran"],
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
-      },
-    ],
-  },
-  /*{
-    name: "Fast Typing",
-    stats: [
-      {
-        value: "500",
-        label: "Participants",
-        icon: "/src/assets/admin/dashboard/participant.webp",
-      },
-      {
-        value: "85",
-        label: "Payments",
-        icon: "/src/assets/admin/dashboard/payment.webp",
-      },
-      {
-        value: "45",
-        label: ["Verified", "Payments"],
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
-      },
-    ],
-  },*/
-  {
-    name: "E-Football",
-    stats: [
-      {
-        value: "150",
-        label: "Partisipan",
-        icon: "/src/assets/admin/dashboard/participant.webp",
-      },
-      {
-        value: "42",
-        label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
-      },
-      {
-        value: "38",
-        label: ["Terverifikasi", "Pembayaran"],
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
-      },
-    ],
-  },
-  {
-    name: "UI/UX Competition",
-    stats: [
-      {
-        value: "200",
-        label: "Partisipan",
-        icon: "/src/assets/admin/dashboard/participant.webp",
-      },
-      {
-        value: "78",
-        label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
-      },
-      {
-        value: "72",
-        label: ["Terverifikasi", "Pembayaran"],
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
-      },
-    ],
-  },
-  {
-    name: "Informatics Olympiad",
-    stats: [
-      {
-        value: "500",
-        label: "Partisipan",
-        icon: "/src/assets/admin/dashboard/participant.webp",
-      },
+// const events = [
+//   {
+//     name: "Hackathon",
+//     stats: [
+//       {
+//         value: "300",
+//         label: "Partisipan",
+//         icon: "/src/assets/admin/dashboard/participant.webp",
+//       },
+//       {
+//         value: "60",
+//         label: "Tim",
+//         icon: "/src/assets/admin/dashboard/team.webp",
+//       },
+//       {
+//         value: "56",
+//         label: "Pembayaran",
+//         icon: "/src/assets/admin/dashboard/payment.webp",
+//       },
+//       {
+//         value: "34",
+//         label: ["Terverifikasi", "Pembayaran"],
+//         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+//       },
+//     ],
+//   },
+//   /*{
+//     name: "Fast Typing",
+//     stats: [
+//       {
+//         value: "500",
+//         label: "Participants",
+//         icon: "/src/assets/admin/dashboard/participant.webp",
+//       },
+//       {
+//         value: "85",
+//         label: "Payments",
+//         icon: "/src/assets/admin/dashboard/payment.webp",
+//       },
+//       {
+//         value: "45",
+//         label: ["Verified", "Payments"],
+//         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+//       },
+//     ],
+//   },*/
+//   {
+//     name: "E-Football",
+//     stats: [
+//       {
+//         value: "150",
+//         label: "Partisipan",
+//         icon: "/src/assets/admin/dashboard/participant.webp",
+//       },
+//       {
+//         value: "42",
+//         label: "Pembayaran",
+//         icon: "/src/assets/admin/dashboard/payment.webp",
+//       },
+//       {
+//         value: "38",
+//         label: ["Terverifikasi", "Pembayaran"],
+//         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+//       },
+//     ],
+//   },
+//   {
+//     name: "UI/UX Competition",
+//     stats: [
+//       {
+//         value: "200",
+//         label: "Partisipan",
+//         icon: "/src/assets/admin/dashboard/participant.webp",
+//       },
+//       {
+//         value: "78",
+//         label: "Pembayaran",
+//         icon: "/src/assets/admin/dashboard/payment.webp",
+//       },
+//       {
+//         value: "72",
+//         label: ["Terverifikasi", "Pembayaran"],
+//         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+//       },
+//     ],
+//   },
+//   {
+//     name: "Informatics Olympiad",
+//     stats: [
+//       {
+//         value: "500",
+//         label: "Partisipan",
+//         icon: "/src/assets/admin/dashboard/participant.webp",
+//       },
 
-      {
-        value: "12",
-        label: "Tim",
-        icon: "/src/assets/admin/dashboard/team.webp",
-      },
-      {
-        value: "85",
-        label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
-      },
-      {
-        value: "45",
-        label: ["Terverifikasi", "Pembayaran"],
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
-      },
-    ],
-  },
-];
+//       {
+//         value: "12",
+//         label: "Tim",
+//         icon: "/src/assets/admin/dashboard/team.webp",
+//       },
+//       {
+//         value: "85",
+//         label: "Pembayaran",
+//         icon: "/src/assets/admin/dashboard/payment.webp",
+//       },
+//       {
+//         value: "45",
+//         label: ["Terverifikasi", "Pembayaran"],
+//         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+//       },
+//     ],
+//   },
+// ];
 
 export default function AdminDashboard() {
   const [currentEvent, setCurrentEvent] = useState(0);
-  const currentStats = events[currentEvent].stats;
+
+  const [events, setEvents] = useState<Competition[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCompetitions = async () => {
+      try {
+        const competitions = await getCompetitions();
+        setEvents(competitions);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompetitions();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20 text-white">Loading...</div>
+    );
+  }
+
+  if (!events.length) {
+    return (
+      <div className="flex justify-center py-20 text-white">
+        No competitions found
+      </div>
+    );
+  }
+
+  const selectedEvent = events[currentEvent];
+
+  const visibleStats = [
+    {
+      value: String(selectedEvent.slotsUsed ?? 0),
+      label: "Partisipan",
+      icon: "/src/assets/admin/dashboard/participant.webp",
+    },
+  ];
+
+  if (selectedEvent.slug === "hackathon") {
+    visibleStats.push(
+      {
+        value: String(selectedEvent.participantQuota ?? 0),
+        label: "Tim",
+        icon: "/src/assets/admin/dashboard/team.webp",
+      },
+      {
+        value: String(selectedEvent.totalRegistrations ?? 0),
+        label: "Pembayaran",
+        icon: "/src/assets/admin/dashboard/payment.webp",
+      },
+      {
+        value: String(selectedEvent.slotsLeft ?? 0),
+        label: "Terverifikasi",
+        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+      },
+    );
+  } else {
+    visibleStats.push(
+      {
+        value: String(selectedEvent.totalRegistrations ?? 0),
+        label: "Pembayaran",
+        icon: "/src/assets/admin/dashboard/payment.webp",
+      },
+      {
+        value: String(selectedEvent.slotsLeft ?? 0),
+        label: "Terverifikasi",
+        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+      },
+    );
+  }
 
   const nextEvent = () => {
     setCurrentEvent((prev) => (prev + 1) % events.length);
@@ -127,8 +205,6 @@ export default function AdminDashboard() {
     setCurrentEvent((prev) => (prev - 1 + events.length) % events.length);
   };
 
-  const visibleStats = currentStats;
-
   return (
     <div className="w-full text-white">
       <main className="mx-auto flex w-full max-w-6xl flex-col items-center px-5 pb-0 pt-0 sm:px-8 lg:px-10 lg:pt-12">
@@ -137,18 +213,18 @@ export default function AdminDashboard() {
             className="text-center text-[3rem] font-black uppercase tracking-wide text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.35)] sm:text-[4rem] lg:text-[4.75rem]"
             data-aos="fade-up"
           >
-            {events[currentEvent].name}
+            {selectedEvent.name}
           </h2>
 
           {/* Stats Grid */}
           <div
             className={`mt-10 grid w-full max-w-7xl gap-3 sm:gap-4 ${
-              visibleStats.length === 4 ? "md:grid-cols-4" : "md:grid-cols-3"
+              visibleStats.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"
             }`}
           >
             {visibleStats.map((stat, index) => (
               <div
-                key={stat.value}
+                key={`${index}-${typeof stat.label === "string" ? stat.label : stat.label[0]}`}
                 data-aos="flip-left"
                 data-aos-delay={index * 100}
                 className="h-full"
