@@ -12,6 +12,8 @@ import {
   CalendarX,
   Timer,
   Users,
+  PlayCircle,
+  Lock,
 } from "lucide-react";
 import Pagination from "../pagination";
 import Filter from "../../components/filter/filter";
@@ -19,12 +21,13 @@ import Reset from "../../components/button/reset";
 
 /* ─────────── Types ─────────── */
 
-export type EventStatus = "Active" | "Finished" | "Upcoming";
+export type EventStatus = "Active" | "Finished" | "Upcoming" | "Closed" | "Ongoing";
 
 export type EventRow = {
   id: string;
   name: string;
   category: string;
+  registrationOpen: string;
   date: string;
   status: EventStatus;
   participants: number;
@@ -58,9 +61,20 @@ function getStatusIcon(status: EventStatus) {
   switch (status) {
     case "Active":
       return Timer;
+
+    case "Closed":
+      return Lock;
+
+    case "Ongoing":
+      return PlayCircle;
+
     case "Finished":
       return CalendarCheck;
+
     case "Upcoming":
+      return CalendarX;
+
+    default:
       return CalendarX;
   }
 }
@@ -73,8 +87,17 @@ function getStatusTone(status: EventStatus) {
     case "Upcoming":
       return "bg-[#f6bf14] text-[#231500] shadow-[0_0_12px_rgba(246,191,20,0.35)]";
 
+    case "Closed":
+      return "bg-[#f97316] text-white shadow-[0_0_12px_rgba(249,115,22,0.35)]";
+
+    case "Ongoing":
+      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
+
     case "Finished":
-      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(239,68,68,0.35)]";
+      return "bg-[#6b7280] text-white shadow-[0_0_12px_rgba(107,114,128,0.35)]";
+
+    default:
+      return "bg-white/10 text-white/60";
   }
 }
 
@@ -192,7 +215,7 @@ export default function EventsTable({
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3">
           <Filter
-            options={["Active", "Finished", "Upcoming"]}
+            options={["Active", "Finished", "Upcoming", "Closed", "Ongoing"]}
             selected={statusFilter}
             placeholder="Status"
             onSelect={(value) => setStatusFilter(value)}
@@ -258,7 +281,7 @@ export default function EventsTable({
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Date"
+                      label="Event Date"
                       sortKey="date"
                       currentKey={sortKey}
                       direction={sortDir}

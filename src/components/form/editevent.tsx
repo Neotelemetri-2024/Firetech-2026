@@ -5,9 +5,7 @@ import {
   CalendarClock,
   CalendarDays,
   CalendarPlus,
-  CheckCircle2,
   ChevronDown,
-  FileText,
   Pencil,
   Tag,
   Type as TypeIcon,
@@ -40,16 +38,38 @@ type EventFormProps = {
 type FormState = {
   name: string;
   category: string;
+
+  registrationOpen: string;
+
   date: string;
+
   registrationDeadline: string;
+
   status: EventStatus | "";
+
   maxParticipants: string;
-  description: string;
 };
 
 /* ─────────── Constants ─────────── */
 
-const CATEGORIES = ["Programming", "Design", "Esport", "Skill"];
+const CATEGORIES = [
+  {
+    label: "Programming",
+    value: "programming",
+  },
+  {
+    label: "Design",
+    value: "design",
+  },
+  {
+    label: "Esport",
+    value: "esport",
+  },
+  {
+    label: "Skill",
+    value: "skill",
+  },
+];
 
 const INPUT_CLASS =
   "w-full rounded-2xl border border-white/25 bg-black/20 px-4 py-3 text-sm font-medium text-white outline-none transition placeholder:text-white/40 hover:border-white/40 focus:border-white/60 focus:bg-white/5";
@@ -108,10 +128,21 @@ function getStatusTone(status: EventStatus) {
   switch (status) {
     case "Active":
       return "bg-[#57d11f] text-white shadow-[0_0_12px_rgba(87,209,31,0.35)]";
-    case "Finished":
-      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
+
     case "Upcoming":
       return "bg-[#f6bf14] text-[#231500] shadow-[0_0_12px_rgba(246,191,20,0.35)]";
+
+    case "Closed":
+      return "bg-[#f97316] text-white shadow-[0_0_12px_rgba(249,115,22,0.35)]";
+
+    case "Ongoing":
+      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
+
+    case "Finished":
+      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(107,114,128,0.35)]";
+
+    default:
+      return "bg-white/10 text-white";
   }
 }
 
@@ -120,40 +151,71 @@ function buildInitialForm(initialData?: EventRow): FormState {
     return {
       name: "",
       category: "",
+
+      registrationOpen: "",
+
       date: "",
+
       registrationDeadline: "",
+
       status: "",
+
       maxParticipants: "",
-      description: "",
     };
   }
 
   return {
     name: initialData.name,
+
     category: initialData.category,
+
+    registrationOpen: formatToISO(initialData.registrationOpen),
+
     date: formatToISO(initialData.date),
+
     registrationDeadline: formatToISO(initialData.registrationDeadline),
+
     status: initialData.status,
+
     maxParticipants: String(initialData.maxParticipants),
-    description: "",
   };
 }
 
 function validateForm(form: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
 
-  if (!form.name.trim()) errors.name = "The event name is required.";
-  if (!form.category) errors.category = "Select event category";
-  if (!form.date) errors.date = "The event date field is mandatory.";
+  if (!form.name.trim()) {
+    errors.name = "The event name is required.";
+  }
+
+  if (!form.category) {
+    errors.category = "Select event category";
+  }
+
+  if (!form.registrationOpen) {
+    errors.registrationOpen = "The registration open field is mandatory.";
+  }
+
+  if (!form.date) {
+    errors.date = "The event date field is mandatory.";
+  }
+
   if (!form.registrationDeadline) {
     errors.registrationDeadline =
       "The registration deadline field is mandatory.";
+  } else if (
+    form.registrationOpen &&
+    form.registrationDeadline < form.registrationOpen
+  ) {
+    errors.registrationDeadline =
+      "The registration deadline must be after the registration open date";
   } else if (form.date && form.registrationDeadline > form.date) {
     errors.registrationDeadline =
       "The registration deadline must be before the event date";
   }
 
   const max = Number(form.maxParticipants);
+
   if (!form.maxParticipants.trim()) {
     errors.maxParticipants = "The participant quota field is mandatory.";
   } else if (!Number.isInteger(max) || max < 1) {
@@ -242,7 +304,16 @@ function EventPreview({ form }: { form: FormState }) {
 
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Date
+              Registration Open
+            </p>
+            <p className="mt-1 truncate font-bold text-white/90">
+              {formatIndonesianDate(form.registrationOpen, "-")}
+            </p>
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
+              Event Date
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {formatIndonesianDate(form.date, "-")}
@@ -270,7 +341,7 @@ function EventPreview({ form }: { form: FormState }) {
           </div>
         </div>
 
-        {form.description.trim() && (
+        {/* {form.description.trim() && (
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
               Description
@@ -279,7 +350,7 @@ function EventPreview({ form }: { form: FormState }) {
               {form.description}
             </p>
           </div>
-        )}
+        )} */}
       </div>
     </article>
   );
@@ -300,7 +371,6 @@ export default function EditEvent({
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
   >({});
-  const [submitted, setSubmitted] = useState(false);
 
   const updateField = <K extends keyof FormState>(
     key: K,
@@ -319,20 +389,22 @@ export default function EditEvent({
     onSubmit({
       name: form.name.trim(),
       category: form.category,
-      date: formatIndonesianDate(form.date, form.date),
+
+      registrationOpen: form.registrationOpen,
+
+      date: form.date,
+
       status: form.status as EventStatus,
+
       participants: initialData?.participants ?? 0,
+
       maxParticipants: Number(form.maxParticipants),
-      registrationDeadline: formatIndonesianDate(
-        form.registrationDeadline,
-        form.registrationDeadline,
-      ),
+
+      registrationDeadline: form.registrationDeadline,
     });
 
     setForm(buildInitialForm(initialData));
     setErrors({});
-    setSubmitted(true);
-    window.setTimeout(() => setSubmitted(false), 3000);
   };
 
   const handleReset = () => {
@@ -367,21 +439,6 @@ export default function EditEvent({
           ? "Update the details below to edit this event. Changes will be saved when you click Save Changes."
           : "Fill in the form below to add a new event. Make sure all required fields are completed before submitting."}
       </p>
-
-      {/* Success banner */}
-      {submitted && (
-        <div
-          className="mt-6 flex items-center gap-3 rounded-2xl border border-emerald-400/40 bg-emerald-500/15 px-4 py-3"
-          role="status"
-        >
-          <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-300" />
-          <p className="text-sm font-semibold text-emerald-300">
-            {isEdit
-              ? "Event successfully updated!"
-              : "Event successfully added!"}
-          </p>
-        </div>
-      )}
 
       <form
         onSubmit={handleSubmit}
@@ -438,8 +495,8 @@ export default function EditEvent({
                     <ListboxOptions className="absolute z-50 mt-2 max-h-64 w-full overflow-auto rounded-2xl border border-white/20 bg-[#1b2335]/95 backdrop-blur-xl shadow-2xl">
                       {CATEGORIES.map((category) => (
                         <ListboxOption
-                          key={category}
-                          value={category}
+                          key={category.value}
+                          value={category.value}
                           className={({ active }) =>
                             `cursor-pointer px-5 py-3 font-semibold transition ${
                               active
@@ -450,7 +507,7 @@ export default function EditEvent({
                         >
                           {({ selected }) => (
                             <div className="flex items-center justify-between">
-                              <span>{category}</span>
+                              <span>{category.label}</span>
 
                               {selected && (
                                 <span className="font-black text-emerald-400">
@@ -465,6 +522,23 @@ export default function EditEvent({
                   </Transition>
                 </div>
               </Listbox>
+            </Field>
+
+            <Field
+              label="Registration Open"
+              icon={<CalendarPlus className="h-4 w-4" />}
+              error={errors.registrationOpen}
+            >
+              <input
+                type="date"
+                value={form.registrationOpen}
+                onChange={(e) =>
+                  updateField("registrationOpen", e.target.value)
+                }
+                className={`${INPUT_CLASS} scheme:dark ${
+                  errors.registrationOpen ? "border-red-400/60" : ""
+                }`}
+              />
             </Field>
 
             <Field
@@ -521,7 +595,7 @@ export default function EditEvent({
               </Field>
             </div>
 
-            <div className="sm:col-span-2">
+            {/* <div className="sm:col-span-2">
               <Field
                 label="Description"
                 icon={<FileText className="h-4 w-4" />}
@@ -534,7 +608,7 @@ export default function EditEvent({
                   className={`${INPUT_CLASS} resize-none leading-6`}
                 />
               </Field>
-            </div>
+            </div> */}
           </div>
 
           {/* Actions */}

@@ -29,8 +29,14 @@ function getStatusTone(status: EventStatus | null) {
     case "Upcoming":
       return "bg-[#f6bf14] text-[#231500] shadow-[0_0_12px_rgba(246,191,20,0.35)]";
 
+    case "Closed":
+      return "bg-[#f97316] text-white shadow-[0_0_12px_rgba(239,68,68,0.35)]";
+
+    case "Ongoing":
+      return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
+
     case "Finished":
-      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(239,68,68,0.35)]";
+      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(107,114,128,0.35)]";
 
     default:
       return "bg-white/10 text-white/60";

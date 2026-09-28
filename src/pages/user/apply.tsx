@@ -16,6 +16,7 @@ import EfootballForm from "../../components/apply/efootballform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
+import { registerCompetition } from "../../services/registration.services";
 
 const categoryIcons: Record<Category, LucideIcon> = {
   Hackathon: Code2,
@@ -126,6 +127,58 @@ export default function Apply() {
     console.log("Form valid, ready to submit");
   };
 
+  // Hackathon
+  const buildHackathonPayload = () => {
+    const data = formData.Hackathon;
+
+    const members = [
+      data.namaKetua,
+      data.anggota1,
+      data.anggota2,
+      data.anggota3,
+      data.anggota4,
+    ].filter(Boolean);
+
+    const details = [
+      {
+        field: "team_name",
+        value: data.namaTeam,
+      },
+      {
+        field: "institution",
+        value: data.asalSekolah,
+      },
+    ];
+
+    const payload = new FormData();
+
+    payload.append("details", JSON.stringify(details));
+
+    payload.append("members", JSON.stringify(members));
+
+    payload.append("message", "");
+
+    if (data.ktm) {
+      payload.append("memberIdentities", data.ktm);
+    }
+
+    if (data.paymentProof) {
+      payload.append("paymentProof", data.paymentProof);
+    }
+
+    return payload;
+  };
+
+  const buildPayload = () => {
+    switch (selectedCategory) {
+      case "Hackathon":
+        return buildHackathonPayload();
+
+      default:
+        throw new Error(`${selectedCategory} not implemented`);
+    }
+  };
+
   // Handle submit form submission final
   const handleSubmit = async () => {
     if (isSubmitting) return;
@@ -161,13 +214,16 @@ export default function Apply() {
       }
 
       // API Submit di sini
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const payload = buildPayload();
+
+      await registerCompetition(competitionId, payload);
 
       setToastType("success");
+
       setValidationMessage("Registration submitted successfully!");
+
       setShowValidationToast(true);
 
-      // Tunggu toast tampil sebentar
       setTimeout(() => {
         navigate("/home");
       }, 1500);

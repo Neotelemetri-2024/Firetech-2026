@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import {  X } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { X } from "lucide-react";
 import EventsTable, { type EventRow } from "../../components/events/tableevent";
 import ParticipantsTable, {
   type ParticipantRow,
@@ -7,8 +7,13 @@ import ParticipantsTable, {
 //import AddEvent, { type NewEventData } from "../../components/form/addevent";
 import EditEvent, { type EventFormData } from "../../components/form/editevent";
 import EventDetailModal from "../../components/form/eventdetailmodal";
-import DeleteModal from "../../components/form/delete";
+// import DeleteModal from "../../components/form/delete";
 import Toast from "../../components/ui/toast";
+import {
+  getCompetitions,
+  updateCompetition,
+} from "../../services/competition.services";
+import type { EventStatus } from "../../components/events/tableevent";
 
 /* ── Dummy participant data ── */
 const allParticipants: ParticipantRow[] = [
@@ -104,48 +109,48 @@ const allParticipants: ParticipantRow[] = [
   },
 ];
 
-const DUMMY_EVENTS: EventRow[] = [
-  {
-    id: "1",
-    name: "Hackathon",
-    category: "Programming",
-    date: "20 Agustus 2025",
-    status: "Active",
-    participants: 80,
-    maxParticipants: 100,
-    registrationDeadline: "15 Agustus 2025",
-  },
-  {
-    id: "2",
-    name: "E-Football",
-    category: "Esport",
-    date: "10 Juli 2025",
-    status: "Finished",
-    participants: 64,
-    maxParticipants: 64,
-    registrationDeadline: "5 Juli 2025",
-  },
-  {
-    id: "3",
-    name: "UI/UX Competition",
-    category: "Design",
-    date: "30 Agustus 2025",
-    status: "Active",
-    participants: 32,
-    maxParticipants: 50,
-    registrationDeadline: "25 Agustus 2025",
-  },
-  {
-    id: "4",
-    name: "Informatics Olympiad",
-    category: "Programming",
-    date: "30 Agustus 2025",
-    status: "Active",
-    participants: 32,
-    maxParticipants: 50,
-    registrationDeadline: "25 Agustus 2025",
-  },
-];
+// const DUMMY_EVENTS: EventRow[] = [
+//   {
+//     id: "1",
+//     name: "Hackathon",
+//     category: "Programming",
+//     date: "20 Agustus 2025",
+//     status: "Active",
+//     participants: 80,
+//     maxParticipants: 100,
+//     registrationDeadline: "15 Agustus 2025",
+//   },
+//   {
+//     id: "2",
+//     name: "E-Football",
+//     category: "Esport",
+//     date: "10 Juli 2025",
+//     status: "Finished",
+//     participants: 64,
+//     maxParticipants: 64,
+//     registrationDeadline: "5 Juli 2025",
+//   },
+//   {
+//     id: "3",
+//     name: "UI/UX Competition",
+//     category: "Design",
+//     date: "30 Agustus 2025",
+//     status: "Active",
+//     participants: 32,
+//     maxParticipants: 50,
+//     registrationDeadline: "25 Agustus 2025",
+//   },
+//   {
+//     id: "4",
+//     name: "Informatics Olympiad",
+//     category: "Programming",
+//     date: "30 Agustus 2025",
+//     status: "Active",
+//     participants: 32,
+//     maxParticipants: 50,
+//     registrationDeadline: "25 Agustus 2025",
+//   },
+// ];
 
 export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
@@ -153,13 +158,52 @@ export default function AdminEvent() {
   const [isAdding] = useState(false);
   const [eventRefresh] = useState(0);
   const [editingEvent, setEditingEvent] = useState<EventRow | null>(null);
-  const [events, setEvents] = useState<EventRow[]>(DUMMY_EVENTS);
+  const [events, setEvents] = useState<EventRow[]>([]);
   const eventCards = [...new Set(events.map((event) => event.name))];
   const [viewedEvent, setViewedEvent] = useState<EventRow | null>(null);
-  const [eventToDelete, setEventToDelete] = useState<EventRow | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const [eventToDelete, setEventToDelete] = useState<EventRow | null>(null);
+  // const [isDeleting, setIsDeleting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+
+  const fetchCompetitions = useCallback(async () => {
+    try {
+      const competitions = await getCompetitions();
+
+      const statusMap: Record<string, EventStatus> = {
+        upcoming: "Upcoming",
+        open: "Active",
+        closed: "Closed",
+        ongoing: "Ongoing",
+        finished: "Finished",
+      };
+
+      const mappedEvents: EventRow[] = competitions.map((competition) => ({
+        id: String(competition.id),
+        name: competition.name,
+        category: competition.category,
+        date: competition.eventDate.split("T")[0],
+
+        registrationOpen: competition.registrationOpen?.split("T")[0] ?? "",
+
+        registrationDeadline:
+          competition.registrationClose?.split("T")[0] ?? "",
+
+        status: statusMap[competition.status] ?? "Upcoming",
+
+        participants: competition.slotsUsed ?? 0,
+        maxParticipants: competition.participantQuota ?? 0,
+      }));
+
+      setEvents(mappedEvents);
+    } catch (error) {
+      console.error("Failed fetch competitions:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCompetitions();
+  }, [fetchCompetitions]);
 
   /*const handleAddEvent = (data: NewEventData) => {
     const newEvent: EventRow = {
@@ -178,45 +222,51 @@ export default function AdminEvent() {
     setShowToast(true);
   };*/
 
-  const handleEditEvent = (data: EventFormData) => {
+  const handleEditEvent = async (data: EventFormData) => {
     if (!editingEvent) return;
 
-    const editedName = editingEvent.name;
+    try {
+      await updateCompetition(Number(editingEvent.id), {
+        name: data.name,
+        category: data.category,
+        participantQuota: data.maxParticipants,
 
-    setEvents((prev) =>
-      prev.map((event) =>
-        event.id === editingEvent.id
-          ? {
-              ...event,
-              ...data,
-            }
-          : event,
-      ),
-    );
+        registrationOpen: new Date(data.registrationOpen).toISOString(),
 
-    setEditingEvent(null);
+        eventDate: new Date(data.date).toISOString(),
 
-    setToastMessage(`Event "${editedName}" was successfully updated.`);
-    setShowToast(true);
-  };
+        registrationClose: new Date(data.registrationDeadline).toISOString(),
+      });
 
-  const handleDeleteEvent = () => {
-    if (!eventToDelete) return;
+      await fetchCompetitions();
 
-    const deletedName = eventToDelete.name;
-    setIsDeleting(true);
+      setEditingEvent(null);
 
-    /* Simulate an API delete request, then remove from local state */
-    window.setTimeout(() => {
-      setEvents((prev) =>
-        prev.filter((event) => event.id !== eventToDelete.id),
-      );
-      setIsDeleting(false);
-      setEventToDelete(null);
-      setToastMessage(`Event "${deletedName}" was successfully deleted.`);
+      setToastMessage(`Event "${data.name}" was successfully updated.`);
+
       setShowToast(true);
-    }, 900);
+    } catch (error) {
+      console.error("Failed update competition:", error);
+    }
   };
+
+  // const handleDeleteEvent = () => {
+  //   if (!eventToDelete) return;
+
+  //   const deletedName = eventToDelete.name;
+  //   setIsDeleting(true);
+
+  //   /* Simulate an API delete request, then remove from local state */
+  //   window.setTimeout(() => {
+  //     setEvents((prev) =>
+  //       prev.filter((event) => event.id !== eventToDelete.id),
+  //     );
+  //     setIsDeleting(false);
+  //     setEventToDelete(null);
+  //     setToastMessage(`Event "${deletedName}" was successfully deleted.`);
+  //     setShowToast(true);
+  //   }, 900);
+  // };
 
   const filteredEvents =
     selectedEvent === null
@@ -366,6 +416,14 @@ export default function AdminEvent() {
 
             {!selectedEvent && !isAdding && !editingEvent && (
               <div className="mt-8">
+                <div className="mb-4">
+                  <Toast
+                    open={showToast}
+                    message={toastMessage}
+                    onClose={() => setShowToast(false)}
+                  />
+                </div>
+
                 <EventsTable
                   key={eventRefresh}
                   events={filteredEvents}
@@ -375,9 +433,6 @@ export default function AdminEvent() {
                   }}
                   onEdit={(event) => {
                     setEditingEvent(event);
-                  }}
-                  onDelete={(event) => {
-                    setEventToDelete(event);
                   }}
                 />
               </div>
@@ -413,21 +468,14 @@ export default function AdminEvent() {
       />
 
       {/* DELETE EVENT MODAL */}
-      <DeleteModal
+      {/* <DeleteModal
         open={eventToDelete !== null}
         itemName={eventToDelete?.name}
         itemLabel="event"
         onClose={() => setEventToDelete(null)}
         onConfirm={handleDeleteEvent}
         isDeleting={isDeleting}
-      />
-
-      {/* DELETE SUCCESS TOAST */}
-      <Toast
-        open={showToast}
-        message={toastMessage}
-        onClose={() => setShowToast(false)}
-      />
+      /> */}
     </div>
   );
 }
