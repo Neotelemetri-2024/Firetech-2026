@@ -105,7 +105,7 @@ export default function AdminProfileModal({
 
             <button
               onClick={onClose}
-              className={`rounded-full p-2 transition ${
+              className={`rounded-full p-2 transition cursor-pointer ${
                 darkMode ? "hover:bg-slate-200" : "hover:bg-white/10"
               }`}
             >

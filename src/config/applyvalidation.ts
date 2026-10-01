@@ -4,17 +4,17 @@ import type { Category } from "../types/applysevent";
 // Step index dimulai dari 1.
 export const requiredFieldsConfig: Record<Category, Record<number, string[]>> = {
   Hackathon: {
-    1: ["namaTeam", "namaKetua", "asalSekolah"],
+    1: ["namaTeam", "namaKetua", "asalInstitusi"],
     2: ["anggota1", "anggota2", "ktm"],
     3: ["paymentProof"],
   },
   "UI/UX": {
-    1: ["namaPemain", "asalSekolah"],
+    1: ["namaPemain", "asalInstitusi"],
     2: ["paymentProof"],
     //3: ["portofolioUrl"],
   },
   "E-Football": {
-    1: ["namaPemain", "idGame", "asalSekolah"],
+    1: ["namaPemain", "idGame", "asalInstitusi"],
     2: ["paymentProof"],
   },
   //"Informatics Olympiad": {
@@ -28,7 +28,7 @@ export const requiredFieldsConfig: Record<Category, Record<number, string[]>> = 
 export const fieldLabels: Record<string, string> = {
   namaTeam: "Team Name",
   namaKetua: "Leader Name",
-  asalSekolah: "University of Origin",
+  asalInstitusi: "University of Origin",
   anggota1: "Member 1 Name",
   anggota2: "Member 2 Name",
   anggota3: "Member 3 Name",

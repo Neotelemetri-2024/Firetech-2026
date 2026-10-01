@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Code2, Palette, Gamepad2 } from "lucide-react";
+import axios from "axios";
 
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/applysevent";
@@ -32,10 +33,16 @@ const categories: Category[] = [
   "E-Football",
 ];
 
+const competitionIdMap: Record<Category, number> = {
+  Hackathon: 1,
+  "UI/UX": 2,
+  "E-Football": 3,
+};
+
 export default function Apply() {
   const { darkMode } = useTheme();
   const location = useLocation();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const initialCategory =
     (location.state?.category as Category | undefined) ?? "Hackathon";
   const [selectedCategory, setSelectedCategory] =
@@ -56,8 +63,8 @@ export default function Apply() {
     const eventMap: Record<Category, string> = {
       Hackathon: "hackathon",
       //"Informatics Olympiad": "informaticsolympiad",
-      "E-Football": "ef",
-      "UI/UX": "uiux",
+      "E-Football": "e-football",
+      "UI/UX": "ui-ux-competition",
     };
 
     const eventId = eventMap[category];
@@ -139,20 +146,15 @@ export default function Apply() {
       data.anggota4,
     ].filter(Boolean);
 
-    const details = [
-      {
-        field: "team_name",
-        value: data.namaTeam,
-      },
-      {
-        field: "institution",
-        value: data.asalSekolah,
-      },
-    ];
-
     const payload = new FormData();
 
-    payload.append("details", JSON.stringify(details));
+    payload.append(
+      "fields",
+      JSON.stringify({
+        teamName: data.namaTeam,
+        institution: data.asalInstitusi,
+      }),
+    );
 
     payload.append("members", JSON.stringify(members));
 
@@ -169,10 +171,62 @@ export default function Apply() {
     return payload;
   };
 
+  const buildUiUxPayload = () => {
+    const data = formData["UI/UX"];
+
+    const payload = new FormData();
+
+    payload.append(
+      "fields",
+      JSON.stringify({
+        institution: data.asalInstitusi,
+      }),
+    );
+
+    payload.append("members", JSON.stringify([data.namaPemain]));
+
+    payload.append("message", "");
+
+    if (data.paymentProof) {
+      payload.append("paymentProof", data.paymentProof);
+    }
+
+    return payload;
+  };
+  const buildEfootballPayload = () => {
+    const data = formData["E-Football"];
+
+    const payload = new FormData();
+
+    payload.append(
+      "fields",
+      JSON.stringify({
+        institution: data.asalInstitusi,
+        efootballId: data.idGame,
+      }),
+    );
+
+    payload.append("members", JSON.stringify([data.namaPemain]));
+
+    payload.append("message", "");
+
+    if (data.paymentProof) {
+      payload.append("paymentProof", data.paymentProof);
+    }
+
+    return payload;
+  };
+
   const buildPayload = () => {
     switch (selectedCategory) {
       case "Hackathon":
         return buildHackathonPayload();
+
+      case "UI/UX":
+        return buildUiUxPayload();
+
+      case "E-Football":
+        return buildEfootballPayload();
 
       default:
         throw new Error(`${selectedCategory} not implemented`);
@@ -213,24 +267,40 @@ export default function Apply() {
         return;
       }
 
-      // API Submit di sini
       const payload = buildPayload();
 
-      await registerCompetition(competitionId, payload);
+      const competitionId = competitionIdMap[selectedCategory];
+
+      if (!competitionId) {
+        throw new Error(`Competition ID not found for ${selectedCategory}`);
+      }
+
+      const response = await registerCompetition(competitionId, payload);
+
+      console.log("REGISTER SUCCESS:", response);
+
+      setFormData(initialApplyFormData);
+
+      setCurrentStep(1);
 
       setToastType("success");
 
       setValidationMessage("Registration submitted successfully!");
 
       setShowValidationToast(true);
+    } catch (error: unknown) {
+      console.error("REGISTER ERROR:", error);
 
-      setTimeout(() => {
-        navigate("/home");
-      }, 1500);
-    } catch {
+      let errorMessage = "Failed to submit registration.";
+
+      if (axios.isAxiosError(error)) {
+        errorMessage =
+          error.response?.data?.message || "Failed to submit registration.";
+      }
+
       setToastType("error");
 
-      setValidationMessage("Failed to submit registration.");
+      setValidationMessage(errorMessage);
 
       setShowValidationToast(true);
     } finally {

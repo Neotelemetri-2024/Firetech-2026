@@ -185,43 +185,42 @@ function validateForm(form: FormState) {
   const errors: Partial<Record<keyof FormState, string>> = {};
 
   if (!form.name.trim()) {
-    errors.name = "The event name is required.";
+    errors.name = "Nama acara wajib diisi.";
   }
 
   if (!form.category) {
-    errors.category = "Select event category";
+    errors.category = "Pilih kategori acara";
   }
 
   if (!form.registrationOpen) {
-    errors.registrationOpen = "The registration open field is mandatory.";
+    errors.registrationOpen = "Tanggal pembukaan pendaftaran wajib diisi.";
   }
 
   if (!form.date) {
-    errors.date = "The event date field is mandatory.";
+    errors.date = "Tanggal acara wajib diisi.";
   }
 
   if (!form.registrationDeadline) {
-    errors.registrationDeadline =
-      "The registration deadline field is mandatory.";
+    errors.registrationDeadline = "Batas waktu pendaftaran wajib diisi.";
   } else if (
     form.registrationOpen &&
     form.registrationDeadline < form.registrationOpen
   ) {
     errors.registrationDeadline =
-      "The registration deadline must be after the registration open date";
+      "Batas waktu pendaftaran harus setelah tanggal pembukaan pendaftaran";
   } else if (form.date && form.registrationDeadline > form.date) {
     errors.registrationDeadline =
-      "The registration deadline must be before the event date";
+      "Batas waktu pendaftaran harus sebelum tanggal acara";
   }
 
   const max = Number(form.maxParticipants);
 
   if (!form.maxParticipants.trim()) {
-    errors.maxParticipants = "The participant quota field is mandatory.";
+    errors.maxParticipants = "Kolom kuota peserta wajib diisi.";
   } else if (!Number.isInteger(max) || max < 1) {
-    errors.maxParticipants = "Minimum quota of 1 participant";
+    errors.maxParticipants = "Kuota minimum 1 peserta";
   } else if (max > MAX_QUOTA) {
-    errors.maxParticipants = `Maximum quota of ${MAX_QUOTA} participants`;
+    errors.maxParticipants = `Kuota maksimum ${MAX_QUOTA} peserta`;
   }
 
   return errors;
@@ -262,7 +261,7 @@ function EventPreview({ form }: { form: FormState }) {
       <div className="flex items-center justify-between border-b border-white/15 bg-black/20 px-5 py-4">
         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.25em] text-white/70">
           <CalendarDays className="h-4 w-4 text-white/50" />
-          Event Preview
+          Pratinjau Acara
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1 text-[0.65rem] font-black uppercase tracking-widest text-emerald-300">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
@@ -274,7 +273,7 @@ function EventPreview({ form }: { form: FormState }) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Name
+              Nama Event
             </p>
             <p className="mt-1 -wrap-break-word text-lg font-black leading-tight text-white">
               {form.name.trim() || "Nama Event"}
@@ -295,7 +294,7 @@ function EventPreview({ form }: { form: FormState }) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Category
+              Kategori
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {form.category || "-"}
@@ -304,7 +303,7 @@ function EventPreview({ form }: { form: FormState }) {
 
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Registration Open
+              Pendaftaran dibuka
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {formatIndonesianDate(form.registrationOpen, "-")}
@@ -313,7 +312,7 @@ function EventPreview({ form }: { form: FormState }) {
 
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Event Date
+              Tanggal Event
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {formatIndonesianDate(form.date, "-")}
@@ -322,7 +321,7 @@ function EventPreview({ form }: { form: FormState }) {
 
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Registration Deadline
+              Batas Waktu Pendaftaran
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {formatIndonesianDate(form.registrationDeadline, "-")}
@@ -331,7 +330,7 @@ function EventPreview({ form }: { form: FormState }) {
 
           <div className="min-w-0">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/45">
-              Participant Quota
+              Kuota Peserta
             </p>
             <p className="mt-1 truncate font-bold text-white/90">
               {form.maxParticipants
@@ -436,8 +435,8 @@ export default function EditEvent({
 
       <p className="mt-3 max-w-2xl text-sm leading-6 text-white/75 sm:text-base">
         {isEdit
-          ? "Update the details below to edit this event. Changes will be saved when you click Save Changes."
-          : "Fill in the form below to add a new event. Make sure all required fields are completed before submitting."}
+          ? "Perbarui detail di bawah ini untuk mengedit acara ini. Perubahan akan disimpan saat Anda mengeklik Simpan Perubahan."
+          : "Isi formulir di bawah ini untuk menambahkan acara baru. Pastikan semua kolom yang wajib diisi telah dilengkapi sebelum mengirimkannya."}
       </p>
 
       <form
@@ -450,7 +449,7 @@ export default function EditEvent({
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <Field
-                label="Name"
+                label="Nama Event"
                 icon={<TypeIcon className="h-4 w-4" />}
                 error={errors.name}
               >
@@ -525,7 +524,7 @@ export default function EditEvent({
             </Field>
 
             <Field
-              label="Registration Open"
+              label="Pendaftaran Dibuka"
               icon={<CalendarPlus className="h-4 w-4" />}
               error={errors.registrationOpen}
             >
@@ -542,7 +541,7 @@ export default function EditEvent({
             </Field>
 
             <Field
-              label="Event Date"
+              label="Tanggal Event"
               icon={<CalendarDays className="h-4 w-4" />}
               error={errors.date}
             >
@@ -557,7 +556,7 @@ export default function EditEvent({
             </Field>
 
             <Field
-              label="Registration Deadline"
+              label="Batas Waktu Pendaftaran"
               icon={<CalendarClock className="h-4 w-4" />}
               error={errors.registrationDeadline}
             >
@@ -575,7 +574,7 @@ export default function EditEvent({
 
             <div className="sm:col-span-2">
               <Field
-                label="Participant Quota"
+                label="Kuota Peserta"
                 icon={<Users className="h-4 w-4" />}
                 error={errors.maxParticipants}
               >
@@ -619,7 +618,7 @@ export default function EditEvent({
                 onClick={onCancel}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/25 bg-white/5 px-6 py-3 text-sm font-bold text-white/80 transition hover:-translate-y-0.5 hover:bg-white/10 hover:text-white cursor-pointer"
               >
-                Cancel
+                Batal
               </button>
             )}
 
@@ -640,7 +639,7 @@ export default function EditEvent({
               ) : (
                 <CalendarPlus className="h-5 w-5" />
               )}
-              {isEdit ? "Save Changes" : "Submit"}
+              {isEdit ? "Simpan Perubahan" : "Submit"}
             </button>
           </div>
         </div>

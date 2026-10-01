@@ -40,9 +40,9 @@ export default function HackathonForm({
         />
         <FormField
           label="University of Origin"
-          name="asalSekolah"
+          name="asalInstitusi"
           placeholder="University of Origin"
-          value={formData.asalSekolah}
+          value={formData.asalInstitusi}
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"

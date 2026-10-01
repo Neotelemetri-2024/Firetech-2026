@@ -12,11 +12,19 @@ import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
 //import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { headingVariants } from "../../animations/headingvariants";
+import { getCompetitions } from "../../../services/competition.services";
 
+type CompetitionStatus =
+  | "open"
+  | "upcoming"
+  | "closed"
+  | "ongoing"
+  | "finished";
 
 const events = [
   {
     id: "01",
+    slug: "hackathon",
     title: "Hackathon",
     tagline: "Build. Innovate. Compete.",
     description:
@@ -30,11 +38,12 @@ const events = [
   //   tagline: "Think Fast. Solve Smart.",
   //   description:
   //     "Uji pemikiran algoritmik dan keterampilan pemrograman Anda melalui serangkaian masalah menantang. Berkompetisi melawan pikiran terbaik dalam logika, efisiensi, dan penyelesaian masalah.",
-   //   image: informaticsImg,
-    //color: "#f59e0b",
+  //   image: informaticsImg,
+  //color: "#f59e0b",
   //},
   {
     id: "02",
+    slug: "ui-ux-competition",
     title: "UI/UX",
     tagline: "Design the Future.",
     description:
@@ -44,6 +53,7 @@ const events = [
   },
   {
     id: "03",
+    slug: "e-football",
     title: "E-Football",
     tagline: "Play Beyond Limits.",
     description:
@@ -53,6 +63,7 @@ const events = [
   },
   {
     id: "04",
+    slug: "ft",
     title: "Fast Typing",
     tagline: "Speed Meets Precision.",
     description:
@@ -70,6 +81,40 @@ export default function Event() {
   >(null);
   const TRACK_OFFSET = 0;
   const totalPanels = events.length + 1;
+  const [competitionStatuses, setCompetitionStatuses] = useState<
+    Record<string, CompetitionStatus>
+  >({});
+
+  const [competitionFullMap, setCompetitionFullMap] = useState<
+    Record<string, boolean>
+  >({});
+
+  useEffect(() => {
+    const fetchCompetitionStatuses = async () => {
+      try {
+        const competitions = await getCompetitions();
+
+        const statusMap: Record<string, CompetitionStatus> = {};
+        const fullMap: Record<string, boolean> = {};
+
+        competitions.forEach((competition) => {
+          statusMap[competition.slug] = competition.status;
+          fullMap[competition.slug] = competition.isFull;
+        });
+
+        // Fast Typing selalu aktif
+        statusMap["ft"] = "open";
+        fullMap["ft"] = false;
+
+        setCompetitionStatuses(statusMap);
+        setCompetitionFullMap(fullMap);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCompetitionStatuses();
+  }, []);
 
   useEffect(() => {
     if (window.innerWidth < 1024) return;
@@ -241,12 +286,15 @@ export default function Event() {
             "
             >
               <EventSlide
+                key={event.id}
                 id={event.id}
                 title={event.title}
                 tagline={event.tagline}
                 description={event.description}
                 image={event.image}
                 color={event.color}
+                status={competitionStatuses[event.slug] ?? "upcoming"}
+                isFull={competitionFullMap[event.slug] ?? false}
               />
             </div>
           ))}

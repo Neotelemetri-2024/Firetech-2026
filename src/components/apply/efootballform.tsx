@@ -36,12 +36,12 @@ export default function EfootballForm({
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
           required
-        />
+        /> 
         <FormField
           label="School/University of Origin"
-          name="asalSekolah"
+          name="asalInstitusi"
           placeholder="School/University of Origin"
-          value={formData.asalSekolah}
+          value={formData.asalInstitusi}
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"

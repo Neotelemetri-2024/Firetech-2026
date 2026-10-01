@@ -91,6 +91,8 @@ export default function ParticipantsTable({
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const showTeamColumn =
+    selectedEvent === "Hackathon" || selectedEvent === null;
 
   /* ── Filter participants by selected event ── */
   const filtered = useMemo(() => {
@@ -164,7 +166,7 @@ export default function ParticipantsTable({
             {selectedEvent ? (
               <>
                 <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/50">
-                  Participants
+                  Partisipan
                 </p>
                 <h2 className="text-xl font-black tracking-tight text-white">
                   {selectedEvent}
@@ -173,10 +175,10 @@ export default function ParticipantsTable({
             ) : (
               <>
                 <p className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/50">
-                  All Participants
+                  Semua Partisipan
                 </p>
                 <h2 className="text-xl font-black tracking-tight text-white">
-                  {participants.length} Participants
+                  {participants.length} Partisipan
                 </h2>
               </>
             )}
@@ -208,7 +210,7 @@ export default function ParticipantsTable({
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Find participants..."
+            placeholder="Cari Partisipan..."
             className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-2.5 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
           />
 
@@ -216,7 +218,7 @@ export default function ParticipantsTable({
             <button
               type="button"
               onClick={() => setSearch("")}
-              aria-label="Clear search"
+              aria-label="Hapus pencarian"
               className="absolute right-12 top-1/2 -translate-y-1/2 cursor-pointer text-white/80 transition-all hover:scale-110 hover:text-white"
             >
               <X className="h-4 w-4" />
@@ -252,20 +254,22 @@ export default function ParticipantsTable({
                       direction={sortDir}
                       onSort={handleSort}
                     />
-                    <SortTh
+                    {/* <SortTh
                       label="Event"
                       sortKey="eventName"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
-                    />
-                    <SortTh
-                      label="Team"
-                      sortKey="team"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    />
+                    /> */}
+                    {showTeamColumn && (
+                      <SortTh
+                        label="Team"
+                        sortKey="team"
+                        currentKey={sortKey}
+                        direction={sortDir}
+                        onSort={handleSort}
+                      />
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -304,24 +308,26 @@ export default function ParticipantsTable({
                       </td>
 
                       {/* Event Name */}
-                      <td className="px-4 py-4">
+                      {/* <td className="px-4 py-4">
                         <span className="inline-flex items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-3 py-1 text-xs font-bold text-white/85">
                           {participant.eventName}
                         </span>
-                      </td>
+                      </td> */}
 
                       {/* Team */}
-                      <td className="px-4 py-4">
-                        {participant.team ? (
-                          <span className="font-semibold text-white/80">
-                            {participant.team}
-                          </span>
-                        ) : (
-                          <span className="text-xs italic text-white/40">
-                            —
-                          </span>
-                        )}
-                      </td>
+                      {showTeamColumn && (
+                        <td className="px-4 py-4">
+                          {participant.team ? (
+                            <span className="font-semibold text-white/80">
+                              {participant.team}
+                            </span>
+                          ) : (
+                            <span className="text-xs italic text-white/40">
+                              —
+                            </span>
+                          )}
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -345,11 +351,11 @@ export default function ParticipantsTable({
           <p className="max-w-md text-sm text-white/60">
             {selectedEvent
               ? search
-                ? `No participant "${search}" found for event ${selectedEvent}.`
-                : `There are no registered participants for the event "${selectedEvent}".`
+                ? `Tidak ada peserta "${search}" yang ditemukan untuk acara ${selectedEvent}.`
+                : `Tidak ada peserta yang terdaftar untuk event "${selectedEvent}".`
               : search
-                ? `No participants found matching the keyword "${search}".`
-                : "No participants have registered yet."}
+                ? `Tidak ada peserta yang cocok dengan kata kunci "${search}".`
+                : "Belum ada peserta yang mendaftar."}
           </p>
         </div>
       )}

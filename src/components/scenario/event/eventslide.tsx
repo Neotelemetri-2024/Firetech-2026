@@ -9,6 +9,8 @@ type EventSlideProps = {
   description: string;
   image: string;
   color: string;
+  status: "upcoming" | "open" | "closed" | "ongoing" | "finished";
+  isFull: boolean;
 };
 export default function EventSlide({
   id,
@@ -17,17 +19,21 @@ export default function EventSlide({
   description,
   image,
   color,
+  status,
+  isFull,
 }: EventSlideProps) {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
 
   const handleExploreChallenge = () => {
+    if (!canRegister) return;
+
     const eventMap: Record<string, string> = {
       Hackathon: "hackathon",
       //"Informatics Olympiad": "informaticsolympiad",
       "Fast Typing": "ft",
-      "E-Football": "ef",
-      "UI/UX": "uiux",
+      "E-Football": "e-football",
+      "UI/UX": "ui-ux-competition",
     };
 
     const selectedEvent = eventMap[title] ?? "hackathon";
@@ -55,6 +61,20 @@ export default function EventSlide({
       },
     });
   };
+
+  const canRegister = status === "open" && !isFull;
+
+  const buttonLabel = isFull
+    ? "Quota Full"
+    : status === "open"
+      ? "Register"
+      : status === "upcoming"
+        ? "Coming Soon"
+        : status === "closed"
+          ? "Registration Closed"
+          : status === "ongoing"
+            ? "Competition Ongoing"
+            : "Event Finished";
 
   return (
     <section
@@ -242,7 +262,11 @@ export default function EventSlide({
               </p>
 
               <button
-                onClick={handleExploreChallenge}
+                disabled={!canRegister}
+                onClick={() => {
+                  if (!canRegister) return;
+                  handleExploreChallenge();
+                }}
                 className={`
                 mt-10
                 inline-flex
@@ -253,19 +277,20 @@ export default function EventSlide({
                 px-8
                 py-4
                 font-medium
-                cursor-pointer
                 transition-all
                 duration-500
-                hover:scale-105
+
                 ${
-                  darkMode
-                    ? "bg-linear-to-br from-blue-600 to-red-600 text-white"
-                    : "bg-linear-to-br from-red-600 to-blue-600 text-white"
+                  canRegister
+                    ? darkMode
+                      ? "bg-linear-to-br from-blue-600 to-red-600 text-white hover:scale-105 cursor-pointer"
+                      : "bg-linear-to-br from-red-600 to-blue-600 text-white hover:scale-105 cursor-pointer"
+                    : "bg-gray-700 text-gray-400 cursor-not-allowed opacity-70"
                 }
               `}
               >
-                Register
-                <span>→</span>
+                {buttonLabel}
+                {canRegister && <span>→</span>}
               </button>
             </div>
           </div>

@@ -10,7 +10,7 @@ export type HackathonFormData = {
   // Step 1
   namaTeam: string;
   namaKetua: string;
-  asalSekolah: string;
+  asalInstitusi: string;
 
   // Step 2
   anggota1: string;
@@ -25,8 +25,8 @@ export type HackathonFormData = {
 export type UiUxFormData = {
   // Step 1
   namaPemain: string;
-  asalSekolah: string;
-  portofolioUrl: string;
+  asalInstitusi: string;
+  //portofolioUrl: string;
 
   // Upload
   ktm: File | null;
@@ -36,7 +36,7 @@ export type UiUxFormData = {
 export type EfootballFormData = {
   namaPemain: string;
   idGame: string;
-  asalSekolah: string;
+  asalInstitusi: string;
   paymentProof: File | null;
 };
 

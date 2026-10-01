@@ -332,7 +332,7 @@ export default function NavbarAdmin() {
           email: user.email,
           phone: user.phone,
 
-          role: "Super Admin",
+          role: "Admin",
           department: "Firetech Committee",
         }}
       />

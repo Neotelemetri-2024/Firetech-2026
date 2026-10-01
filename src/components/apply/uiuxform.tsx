@@ -26,9 +26,9 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
 
         <FormField
           label="School/University of Origin"
-          name="asalSekolah"
+          name="asalInstitusi"
           placeholder="School/University of Origin"
-          value={formData.asalSekolah}
+          value={formData.asalInstitusi}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"

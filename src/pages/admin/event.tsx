@@ -13,101 +13,105 @@ import {
   getCompetitions,
   updateCompetition,
 } from "../../services/competition.services";
+import {
+  getRegistrations,
+  type Registration,
+} from "../../services/registration.services";
 import type { EventStatus } from "../../components/events/tableevent";
 
 /* ── Dummy participant data ── */
-const allParticipants: ParticipantRow[] = [
-  {
-    id: "p1",
-    name: "Wonwoo",
-    email: "jeonwonwoo@gmail.com",
-    eventName: "Hackathon",
-    registeredAt: "10 Agustus 2025",
-    team: "Firestorm Alpha",
-  },
-  {
-    id: "p2",
-    name: "Jeonghan",
-    email: "jeonghan@gmail.com",
-    eventName: "Hackathon",
-    registeredAt: "11 Agustus 2025",
-    team: "Firestorm Alpha",
-  },
-  {
-    id: "p3",
-    name: "Mingyu",
-    email: "kiming@gmail.com",
-    eventName: "Hackathon",
-    registeredAt: "12 Agustus 2025",
-    team: "Byte Brigade",
-  },
-  {
-    id: "p4",
-    name: "Abdul",
-    email: "abdull@gmail.com",
-    eventName: "Hackathon",
-    registeredAt: "12 Agustus 2025",
-    team: "Byte Brigade",
-  },
-  {
-    id: "p5",
-    name: "Sakura",
-    email: "sakura@gmail.com",
-    eventName: "UI/UX Competition",
-    registeredAt: "20 Agustus 2025",
-  },
-  {
-    id: "p6",
-    name: "Rizky",
-    email: "rizky@gmail.com",
-    eventName: "Informatics Olympiad",
-    registeredAt: "21 Agustus 2025",
-  },
-  {
-    id: "p7",
-    name: "Budi",
-    email: "budi@gmail.com",
-    eventName: "E-Football",
-    registeredAt: "19 Agustus 2025",
-  },
-  {
-    id: "p8",
-    name: "Siti",
-    email: "siti@gmail.com",
-    eventName: "E-Football",
-    registeredAt: "5 Juli 2025",
-    team: "Garuda FC",
-  },
-  {
-    id: "p9",
-    name: "Joko",
-    email: "joko@gmail.com",
-    eventName: "E-Football",
-    registeredAt: "6 Juli 2025",
-    team: "Garuda FC",
-  },
-  {
-    id: "p10",
-    name: "Dewi",
-    email: "dewi@gmail.com",
-    eventName: "UI/UX Competition",
-    registeredAt: "25 Agustus 2025",
-  },
-  {
-    id: "p11",
-    name: "Alex",
-    email: "alex@gmail.com",
-    eventName: "UI/UX Competition",
-    registeredAt: "26 Agustus 2025",
-  },
-  {
-    id: "p12",
-    name: "Maya",
-    email: "maya@gmail.com",
-    eventName: "UI/UX Competition",
-    registeredAt: "27 Agustus 2025",
-  },
-];
+// const allParticipants: ParticipantRow[] = [
+//   {
+//     id: "p1",
+//     name: "Wonwoo",
+//     email: "jeonwonwoo@gmail.com",
+//     eventName: "Hackathon",
+//     registeredAt: "10 Agustus 2025",
+//     team: "Firestorm Alpha",
+//   },
+//   {
+//     id: "p2",
+//     name: "Jeonghan",
+//     email: "jeonghan@gmail.com",
+//     eventName: "Hackathon",
+//     registeredAt: "11 Agustus 2025",
+//     team: "Firestorm Alpha",
+//   },
+//   {
+//     id: "p3",
+//     name: "Mingyu",
+//     email: "kiming@gmail.com",
+//     eventName: "Hackathon",
+//     registeredAt: "12 Agustus 2025",
+//     team: "Byte Brigade",
+//   },
+//   {
+//     id: "p4",
+//     name: "Abdul",
+//     email: "abdull@gmail.com",
+//     eventName: "Hackathon",
+//     registeredAt: "12 Agustus 2025",
+//     team: "Byte Brigade",
+//   },
+//   {
+//     id: "p5",
+//     name: "Sakura",
+//     email: "sakura@gmail.com",
+//     eventName: "UI/UX Competition",
+//     registeredAt: "20 Agustus 2025",
+//   },
+//   {
+//     id: "p6",
+//     name: "Rizky",
+//     email: "rizky@gmail.com",
+//     eventName: "Informatics Olympiad",
+//     registeredAt: "21 Agustus 2025",
+//   },
+//   {
+//     id: "p7",
+//     name: "Budi",
+//     email: "budi@gmail.com",
+//     eventName: "E-Football",
+//     registeredAt: "19 Agustus 2025",
+//   },
+//   {
+//     id: "p8",
+//     name: "Siti",
+//     email: "siti@gmail.com",
+//     eventName: "E-Football",
+//     registeredAt: "5 Juli 2025",
+//     team: "Garuda FC",
+//   },
+//   {
+//     id: "p9",
+//     name: "Joko",
+//     email: "joko@gmail.com",
+//     eventName: "E-Football",
+//     registeredAt: "6 Juli 2025",
+//     team: "Garuda FC",
+//   },
+//   {
+//     id: "p10",
+//     name: "Dewi",
+//     email: "dewi@gmail.com",
+//     eventName: "UI/UX Competition",
+//     registeredAt: "25 Agustus 2025",
+//   },
+//   {
+//     id: "p11",
+//     name: "Alex",
+//     email: "alex@gmail.com",
+//     eventName: "UI/UX Competition",
+//     registeredAt: "26 Agustus 2025",
+//   },
+//   {
+//     id: "p12",
+//     name: "Maya",
+//     email: "maya@gmail.com",
+//     eventName: "UI/UX Competition",
+//     registeredAt: "27 Agustus 2025",
+//   },
+// ];
 
 // const DUMMY_EVENTS: EventRow[] = [
 //   {
@@ -154,6 +158,7 @@ const allParticipants: ParticipantRow[] = [
 
 export default function AdminEvent() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const participantsRef = useRef<HTMLDivElement | null>(null);
   const [isAdding] = useState(false);
   const [eventRefresh] = useState(0);
@@ -204,6 +209,20 @@ export default function AdminEvent() {
   useEffect(() => {
     fetchCompetitions();
   }, [fetchCompetitions]);
+
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      try {
+        const data = await getRegistrations();
+
+        setRegistrations(data);
+      } catch (error) {
+        console.error("Failed to fetch registrations:", error);
+      }
+    };
+
+    fetchRegistrations();
+  }, []);
 
   /*const handleAddEvent = (data: NewEventData) => {
     const newEvent: EventRow = {
@@ -273,6 +292,24 @@ export default function AdminEvent() {
       ? events
       : events.filter((event) => event.name === selectedEvent);
 
+  const allParticipants: ParticipantRow[] = registrations.flatMap(
+    (registration) =>
+      registration.members.map((member, index) => ({
+        id: `${registration.id}-${member.id}`,
+        name: member.name,
+
+        email: index === 0 ? registration.user.email : "-",
+
+        eventName:
+          events.find(
+            (event) => event.id === String(registration.competitionId),
+          )?.name ?? "Unknown Event",
+
+        registeredAt: registration.submittedAt,
+        team: registration.teamName ?? undefined,
+      })),
+  );
+
   return (
     <div className="min-h-screen overflow-hidden text-white">
       <div className="min-h-screen">
@@ -294,7 +331,7 @@ export default function AdminEvent() {
             {/* TOOLBAR */}
             <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               {/* EVENT FILTER */}
-              <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {eventCards.map((event) => {
                   const isActive = selectedEvent === event;
 

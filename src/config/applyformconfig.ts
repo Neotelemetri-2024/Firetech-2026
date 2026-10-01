@@ -11,7 +11,7 @@ export const initialApplyFormData: ApplyFormDataMap = {
     // Step 1
     namaTeam: "",
     namaKetua: "",
-    asalSekolah: "",
+    asalInstitusi: "",
 
     // Step 2
     anggota1: "",
@@ -27,8 +27,8 @@ export const initialApplyFormData: ApplyFormDataMap = {
   "UI/UX": {
     // Step 1
     namaPemain: "",
-    asalSekolah: "",
-    portofolioUrl: "",
+    asalInstitusi: "",
+    //portofolioUrl: "",
 
     // Upload
     ktm: null,
@@ -38,7 +38,7 @@ export const initialApplyFormData: ApplyFormDataMap = {
   "E-Football": {
     namaPemain: "",
     idGame: "",
-    asalSekolah: "",
+    asalInstitusi: "",
     paymentProof: null,
   },
 
@@ -71,7 +71,7 @@ export const applyFormConfig: {
     Component: HackathonForm,
   },
   "UI/UX": {
-    steps: ["Personal Information", "Payment", "Submmission"],
+    steps: ["Personal Information", "Payment"],
     Component: UiUxForm,
   },
   "E-Football": {

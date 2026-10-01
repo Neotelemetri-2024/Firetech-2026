@@ -309,7 +309,7 @@ export default function EditProfile({
                   ) : (
                     <>
                       <Pencil size={18} />
-                      Save Changes
+                      Simpan Perubahan
                     </>
                   )}
                 </button>

@@ -629,7 +629,7 @@ export default function EditUser({
                 ) : (
                   <>
                     <Pencil className="h-4 w-4" />
-                    Save Changes
+                    Simpan Perubahan
                   </>
                 )}
               </button>

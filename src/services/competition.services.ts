@@ -1,22 +1,31 @@
 import api from "../services/api";
 
+export type CompetitionStatus =
+  | "open"
+  | "upcoming"
+  | "closed"
+  | "ongoing"
+  | "finished";
+
 export interface Competition {
   id: number;
   slug: string;
   name: string;
   category: string;
   description: string;
-  status: string;
+
+  status: CompetitionStatus;
 
   participantQuota: number;
   slotsUsed: number;
   slotsLeft: number;
-
   totalRegistrations?: number;
 
   registrationOpen: string;
   eventDate: string;
   registrationClose: string;
+
+  isFull: boolean;
 }
 
 export interface UpdateCompetitionPayload {

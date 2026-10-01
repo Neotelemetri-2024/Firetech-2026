@@ -94,7 +94,7 @@ function getStatusTone(status: EventStatus) {
       return "bg-[#3b82f6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]";
 
     case "Finished":
-      return "bg-[#6b7280] text-white shadow-[0_0_12px_rgba(107,114,128,0.35)]";
+      return "bg-[#ef4444] text-white shadow-[0_0_12px_rgba(107,114,128,0.35)]";
 
     default:
       return "bg-white/10 text-white/60";
@@ -239,7 +239,7 @@ export default function EventsTable({
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Find event..."
+            placeholder="Cari Event..."
             className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-2.5 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
           />
 
@@ -247,7 +247,7 @@ export default function EventsTable({
             <button
               type="button"
               onClick={() => setSearch("")}
-              aria-label="Clear search"
+              aria-label="Hapus pencarian"
               className="absolute right-12 top-1/2 -translate-y-1/2 cursor-pointer text-white/80 transition-all hover:scale-110 hover:text-white"
             >
               <X className="h-4 w-4" />
@@ -267,21 +267,21 @@ export default function EventsTable({
                 <thead>
                   <tr className="border-b border-white/15 bg-black/20">
                     <SortTh
-                      label="Name"
+                      label="Nama"
                       sortKey="name"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Category"
+                      label="Kategori"
                       sortKey="category"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Event Date"
+                      label="Tanggal Event"
                       sortKey="date"
                       currentKey={sortKey}
                       direction={sortDir}
@@ -295,14 +295,14 @@ export default function EventsTable({
                       onSort={handleSort}
                     />
                     <SortTh
-                      label="Participants"
+                      label="Partisipan"
                       sortKey="participants"
                       currentKey={sortKey}
                       direction={sortDir}
                       onSort={handleSort}
                     />
                     <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-[0.2em] text-white/70">
-                      Actions
+                      Aksi
                     </th>
                   </tr>
                 </thead>
