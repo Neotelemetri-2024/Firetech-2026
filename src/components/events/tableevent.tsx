@@ -337,7 +337,7 @@ export default function EventsTable({
                           {event.date}
                         </td>
 
-                        {/* Status */}
+                        {/* Status1 */}
                         <td className="px-4 py-4">
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${getStatusTone(event.status)}`}
