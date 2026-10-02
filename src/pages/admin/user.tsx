@@ -33,9 +33,13 @@ import type {
 
 import { getStatusColor } from "../../utils/status";
 import { getRegistrations } from "../../services/registration.services";
+import type { Registration } from "../../services/registration.services";
 import { getUsers } from "../../services/user.services";
-import { getCompetitions } from "../../services/competition.services";
 import { EVENTS } from "../../constants/event";
+
+/** Nama lomba sudah ikut di tiap pendaftaran dari backend, tidak perlu request terpisah. */
+const getCompetitionName = (registration: Registration) =>
+  registration.competition?.name ?? "Competition";
 
 function UserTag({ children }: { children: ReactNode }) {
   return (
@@ -354,9 +358,10 @@ export default function AdminUser() {
     setCurrentPage(page);
   };
 
+  // Nilai paymentStatus dari backend: unpaid | waiting_verification | paid | rejected.
   const mapPaymentStatus = (status: string): PaymentStatus => {
     switch (status) {
-      case "approved":
+      case "paid":
         return "Paid";
 
       case "rejected":
@@ -385,21 +390,20 @@ export default function AdminUser() {
       try {
         setLoading(true);
 
-        const [users, registrations, competitions] = await Promise.all([
+        const [users, registrations] = await Promise.all([
           getUsers(),
           getRegistrations(),
-          getCompetitions(),
         ]);
-
-        const competitionMap = new Map(
-          competitions.map((competition) => [competition.id, competition.name]),
-        );
 
         const mergedUsers: UserItem[] = users.map((user) => {
           const userRegistrations = registrations.filter(
             (registration) =>
               registration.user?.id === user.id ||
               registration.user?.email === user.email,
+          );
+
+          const payments = userRegistrations.map((registration) =>
+            mapPaymentStatus(registration.paymentStatus),
           );
 
           return {
@@ -413,16 +417,11 @@ export default function AdminUser() {
 
             school: userRegistrations[0]?.institution ?? "-",
 
-            eventTags: userRegistrations.map(
-              (registration) =>
-                competitionMap.get(registration.competitionId) ?? "Competition",
-            ),
+            eventTags: userRegistrations.map(getCompetitionName),
 
-            paymentStatus: userRegistrations.some(
-              (r) => r.paymentStatus === "approved",
-            )
+            paymentStatus: payments.includes("Paid")
               ? "Paid"
-              : userRegistrations.some((r) => r.paymentStatus === "rejected")
+              : payments.includes("Declined")
                 ? "Declined"
                 : "Pending",
 
@@ -437,9 +436,7 @@ export default function AdminUser() {
             competitions:
               userRegistrations.length > 0
                 ? userRegistrations.map((registration) => {
-                    const competitionName =
-                      competitionMap.get(registration.competitionId) ??
-                      "Competition";
+                    const competitionName = getCompetitionName(registration);
 
                     const paymentProofFile =
                       registration.files?.find(
@@ -448,14 +445,6 @@ export default function AdminUser() {
                       registration.members
                         ?.flatMap((member) => member.files ?? [])
                         .find((file) => file.kind === "payment_proof");
-
-                    const API_URL = import.meta.env.VITE_API_URL;
-
-                    const paymentProofUrl = paymentProofFile
-                      ? `${API_URL}/api/registrations/${registration.id}/files/${paymentProofFile.id}`
-                      : undefined;
-
-                    console.log(paymentProofFile);
 
                     return {
                       registrationId: registration.id,
@@ -470,7 +459,15 @@ export default function AdminUser() {
 
                       submission: mapSubmissionStatus(registration.status),
 
-                      paymentProof: paymentProofUrl,
+                      // Isinya diambil modal lewat endpoint berkas (butuh token),
+                      // jadi yang disimpan di sini hanya rujukannya.
+                      paymentProofFile: paymentProofFile
+                        ? {
+                            id: paymentProofFile.id,
+                            mimeType: paymentProofFile.mimeType,
+                            originalName: paymentProofFile.originalName,
+                          }
+                        : undefined,
 
                       //submissionLink,
 

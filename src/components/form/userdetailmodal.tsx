@@ -1,12 +1,19 @@
 import { X, Eye } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   UserCompetition,
   PaymentStatus,
   SubmissionStatus,
 } from "../../types/user";
+import { downloadRegistrationFile } from "../../services/registration.services";
+
+/** Keadaan lightbox bukti pembayaran; null berarti tertutup. */
+type ProofView =
+  | { status: "loading" }
+  | { status: "error" }
+  | { status: "ready"; url: string; isImage: boolean; fileName: string };
 
 const gradientStyle = {
   backgroundImage:
@@ -121,13 +128,84 @@ export default function UserDetailModal({
   school,
   competitions,
 }: UserDetailModalProps) {
-  const [selectedProof, setSelectedProof] = useState<string | null>(null);
-  const openPaymentProof = (image?: string) => {
-    console.log("PAYMENT URL:", image);
+  const [proof, setProof] = useState<ProofView | null>(null);
 
-    if (!image) return;
-    setSelectedProof(image);
+  // URL blob yang sedang ditampilkan, supaya bisa dilepas dari memori.
+  const objectUrlRef = useRef<string | null>(null);
+  // Nomor permintaan terakhir: unduhan yang selesai setelah lightbox ditutup
+  // (atau diganti) tidak boleh menampilkan apa pun.
+  const requestRef = useRef(0);
+
+  const releaseObjectUrl = () => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
   };
+
+  const closeProof = () => {
+    requestRef.current += 1;
+    releaseObjectUrl();
+    setProof(null);
+  };
+
+  /**
+   * Bukti dari backend tidak bisa dipasang langsung sebagai `<img src>`: endpoint
+   * berkasnya butuh header Authorization, yang tidak dikirim oleh `<img>`.
+   * Jadi berkasnya diunduh dulu lewat axios, lalu ditampilkan dari URL blob.
+   */
+  const openPaymentProof = async (competition: UserCompetition) => {
+    const { paymentProofFile, registrationId, paymentProof } = competition;
+
+    if (!paymentProofFile || registrationId === undefined) {
+      // Data dummy: sudah berupa URL gambar biasa.
+      if (paymentProof) {
+        setProof({
+          status: "ready",
+          url: paymentProof,
+          isImage: true,
+          fileName: "bukti-pembayaran",
+        });
+      }
+      return;
+    }
+
+    releaseObjectUrl();
+    requestRef.current += 1;
+    const requestId = requestRef.current;
+
+    setProof({ status: "loading" });
+
+    try {
+      const blob = await downloadRegistrationFile(
+        registrationId,
+        paymentProofFile.id,
+      );
+
+      if (requestId !== requestRef.current) return;
+
+      const url = URL.createObjectURL(blob);
+      objectUrlRef.current = url;
+
+      setProof({
+        status: "ready",
+        url,
+        isImage: blob.type.startsWith("image/"),
+        fileName:
+          paymentProofFile.originalName ??
+          `bukti-pembayaran-${paymentProofFile.id}`,
+      });
+    } catch {
+      if (requestId === requestRef.current) setProof({ status: "error" });
+    }
+  };
+
+  useEffect(
+    () => () => {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -160,7 +238,7 @@ export default function UserDetailModal({
         <div className="pointer-events-none absolute -left-16 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-10 bottom-2 h-44 w-44 rounded-full bg-[#5b7cff]/20 blur-3xl" />
 
-        {!selectedProof && (
+        {!proof && (
           <button
             type="button"
             onClick={onClose}
@@ -279,12 +357,11 @@ export default function UserDetailModal({
                             {competition.payment}
                           </StatusPill>
 
-                          {competition.paymentProof ? (
+                          {competition.paymentProofFile ||
+                          competition.paymentProof ? (
                             <button
                               type="button"
-                              onClick={() =>
-                                openPaymentProof(competition.paymentProof)
-                              }
+                              onClick={() => openPaymentProof(competition)}
                               className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition  hover:-translate-y-0.5 cursor-pointer"
                             >
                               <Eye size={16} />
@@ -351,11 +428,11 @@ export default function UserDetailModal({
               </SectionCard>
             </div>
           </div>
-          {selectedProof && (
+          {proof && (
             <div
               className="fixed inset-0 z-60 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
               style={{ animation: "proof-fade-in 0.25s ease-out" }}
-              onClick={() => setSelectedProof(null)}
+              onClick={closeProof}
             >
               <div
                 className="group relative max-w-4xl"
@@ -384,7 +461,7 @@ export default function UserDetailModal({
                   type="button"
                   aria-label="Tutup Bukti Pembayaran"
                   title="Tutup"
-                  onClick={() => setSelectedProof(null)}
+                  onClick={closeProof}
                   className="absolute -right-4 -top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-2xl backdrop-blur-xl transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
                   style={{
                     animation:
@@ -405,12 +482,48 @@ export default function UserDetailModal({
                   {/* Glass reflection overlay */}
                   <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/5 to-transparent" />
 
-                  <img
-                    src={selectedProof}
-                    alt="Proof of payment"
-                    loading="lazy"
-                    className="max-h-[78vh] max-w-[90vw] object-contain sm:max-w-[85vw]"
-                  />
+                  {proof.status === "loading" && (
+                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-3 text-white/70">
+                      <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+                      <p className="text-sm">Memuat bukti pembayaran...</p>
+                    </div>
+                  )}
+
+                  {proof.status === "error" && (
+                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-2 px-6 text-center text-white/80">
+                      <p className="font-semibold">
+                        Bukti pembayaran gagal dimuat
+                      </p>
+                      <p className="text-sm text-white/60">
+                        Berkas tidak ditemukan atau sesi Anda sudah berakhir.
+                        Coba muat ulang halaman.
+                      </p>
+                    </div>
+                  )}
+
+                  {proof.status === "ready" && proof.isImage && (
+                    <img
+                      src={proof.url}
+                      alt="Proof of payment"
+                      className="max-h-[78vh] max-w-[90vw] object-contain sm:max-w-[85vw]"
+                    />
+                  )}
+
+                  {proof.status === "ready" && !proof.isImage && (
+                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-4 px-6 text-center text-white/80">
+                      <p className="text-sm">
+                        Berkas ini bukan gambar sehingga tidak bisa
+                        ditampilkan di sini.
+                      </p>
+                      <a
+                        href={proof.url}
+                        download={proof.fileName}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+                      >
+                        Unduh berkas
+                      </a>
+                    </div>
+                  )}
 
                   {/* Bottom gradient fade */}
                   <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-linear-to-t from-black/40 to-transparent" />

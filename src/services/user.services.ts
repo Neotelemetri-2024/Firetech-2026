@@ -1,6 +1,6 @@
 // services/user.services.ts
 
-import api from "./api";
+import { fetchAllPages } from "./pagination";
 
 export interface AdminUser {
   id: number;
@@ -11,8 +11,5 @@ export interface AdminUser {
   totalRegistrations: number;
 }
 
-export const getUsers = async (): Promise<AdminUser[]> => {
-  const response = await api.get("/admin/users");
-
-  return response.data.data.users;
-};
+export const getUsers = (): Promise<AdminUser[]> =>
+  fetchAllPages<AdminUser>("/admin/users", "users");

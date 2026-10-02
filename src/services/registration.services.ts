@@ -1,10 +1,11 @@
 import api from "./api";
+import { fetchAllPages } from "./pagination";
 
 export interface RegistrationFile {
   id: number;
   kind: string;
   storageKey: string;
-  originalName: string;
+  originalName: string | null;
   mimeType: string;
   sizeBytes?: number;
   uploadedAt?: string;
@@ -28,10 +29,19 @@ export interface RegistrationMember {
   files?: RegistrationFile[];
 }
 
+/** Ringkasan lomba yang ikut menempel di tiap pendaftaran dari backend. */
+export interface RegistrationCompetition {
+  id: number;
+  name: string;
+  type?: string;
+  requiresPayment?: boolean;
+}
+
 export interface Registration {
   id: number;
   userId: number;
   competitionId: number;
+  competition?: RegistrationCompetition;
   submittedAt: string;
   status: string;
   paymentStatus: string;
@@ -145,11 +155,8 @@ export const downloadRegistrationFile = async (
    ADMIN
 =========================== */
 
-export const getRegistrations = async (): Promise<Registration[]> => {
-  const response = await api.get("/admin/registrations");
-
-  return response.data.data.registrations;
-};
+export const getRegistrations = (): Promise<Registration[]> =>
+  fetchAllPages<Registration>("/admin/registrations", "registrations");
 
 export const getRegistrationById = async (
   registrationId: number,

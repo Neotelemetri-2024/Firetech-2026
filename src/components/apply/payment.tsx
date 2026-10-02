@@ -42,6 +42,9 @@ export default function Payment({ paymentProof, onChange }: PaymentProps) {
                 label="Upload Payment Proof"
                 name="paymentProof"
                 file={paymentProof}
+                // Bukti pembayaran hanya gambar; backend menolak PDF dengan 400.
+                accept=".jpg,.jpeg,.png"
+                hint="JPG, PNG • Max 5 MB"
                 required
                 onChange={onChange}
                 onDelete={() =>

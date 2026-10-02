@@ -9,6 +9,13 @@ export type UserCompetitionMember = {
   institution: string;
 };
 
+/** Berkas bukti pembayaran di backend; isinya diambil lewat endpoint berkas yang butuh token. */
+export type PaymentProofFile = {
+  id: number;
+  mimeType: string;
+  originalName: string | null;
+};
+
 export type UserCompetition = {
   registrationId?: number;
 
@@ -19,7 +26,10 @@ export type UserCompetition = {
   payment: PaymentStatus;
   submission: SubmissionStatus;
 
+  /** URL gambar yang bisa langsung dipakai `<img>` (hanya data dummy). */
   paymentProof?: string;
+  /** Bukti dari backend. Tidak bisa dipakai sebagai `<img src>` karena butuh header Authorization. */
+  paymentProofFile?: PaymentProofFile;
   submissionLink?: string;
 
   members?: UserCompetitionMember[];
