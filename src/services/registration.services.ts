@@ -2,8 +2,13 @@ import api from "./api";
 
 export interface RegistrationFile {
   id: number;
-  type?: string;
-  url?: string;
+  kind: string;
+  storageKey: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes?: number;
+  uploadedAt?: string;
+  memberId?: number;
 }
 
 export interface RegistrationUser {
@@ -27,21 +32,18 @@ export interface Registration {
   id: number;
   userId: number;
   competitionId: number;
-
   submittedAt: string;
   status: string;
   paymentStatus: string;
-
   teamName: string | null;
   institution: string;
-
   message: string | null;
-
   createdAt: string;
   updatedAt: string;
 
-  members: RegistrationMember[];
+  files?: RegistrationFile[];
 
+  members: RegistrationMember[];
   user: RegistrationUser;
 }
 

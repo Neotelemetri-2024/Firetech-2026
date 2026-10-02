@@ -7,7 +7,7 @@ import { logout } from "../services/auth.services";
 import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
 import Badge from "./ui/badge";
-import { users } from "../data/user";
+// import { users } from "../data/user";
 import AdminFileButton from "../components/navbar/adminprofilebutton";
 import AdminProfileModal from "../components/form/adminprofilemodal";
 import { useUserProfile } from "../hooks/useUserProfile";
@@ -18,11 +18,11 @@ type NavItem = {
   badge?: number;
 };
 
-const totalUsers = users.length;
+// const totalUsers = users.length;
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin" },
-  { label: "User", href: "/admin/users", badge: totalUsers },
+  { label: "User", href: "/admin/users" },
   { label: "Event", href: "/admin/event" },
 ];
 

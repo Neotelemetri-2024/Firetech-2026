@@ -2,26 +2,15 @@ import { X, Eye } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import type {
+  UserCompetition,
+  PaymentStatus,
+  SubmissionStatus,
+} from "../../types/user";
 
 const gradientStyle = {
   backgroundImage:
     "radial-gradient(circle at 30% 20%, rgba(185, 28, 28, 0.6) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.6) 0%, transparent 50%), linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
-};
-
-type PaymentStatus = "Paid" | "Pending" | "Declined";
-
-type SubmissionStatus = "Submitted" | "Pending" | "Rejected";
-
-type CompetitionCard = {
-  title: string;
-  team: string;
-  payment: PaymentStatus;
-  paymentProof?: string;
-
-  role: string;
-
-  submission: SubmissionStatus;
-  submissionLink?: string;
 };
 
 export type UserDetailModalProps = {
@@ -31,7 +20,7 @@ export type UserDetailModalProps = {
   email: string;
   phone: string;
   school: string;
-  competitions: CompetitionCard[];
+  competitions: UserCompetition[];
 };
 
 type StatusTone = "success" | "warning" | "danger";
@@ -56,16 +45,16 @@ function getSubmissionTone(status: SubmissionStatus): StatusTone {
   return submissionToneMap[status];
 }
 
-function getSubmissionButton(competition: CompetitionCard) {
+function getSubmissionButton(competition: UserCompetition) {
   switch (competition.title) {
     case "Hackathon":
       return {
-        label: "View Repository",
+        label: "Lihat Repositori",
       };
 
     case "UI/UX Competition":
       return {
-        label: "View Design",
+        label: "Lihat Desain",
       };
 
     default:
@@ -133,6 +122,12 @@ export default function UserDetailModal({
   competitions,
 }: UserDetailModalProps) {
   const [selectedProof, setSelectedProof] = useState<string | null>(null);
+  const openPaymentProof = (image?: string) => {
+    console.log("PAYMENT URL:", image);
+
+    if (!image) return;
+    setSelectedProof(image);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -144,11 +139,6 @@ export default function UserDetailModal({
       document.body.style.overflow = previousOverflow;
     };
   }, [open]);
-
-  const openPaymentProof = (image?: string) => {
-    if (!image) return;
-    setSelectedProof(image);
-  };
 
   if (!open) return null;
 
@@ -199,7 +189,7 @@ export default function UserDetailModal({
               id="user-detail-title"
               className="text-2xl font-black uppercase tracking-wide sm:text-[2.1rem]"
             >
-              User Detail
+              Detail User
             </h2>
           </div>
 
@@ -239,13 +229,13 @@ export default function UserDetailModal({
                   className="mt-6 flex flex-wrap items-center gap-3"
                   style={{ animation: "proof-fade-in 0.3s 0.3s ease-out both" }}
                 >
-                  <StatusPill tone="success">Finalist</StatusPill>
+                  <StatusPill tone="success">Finalis</StatusPill>
 
                   <button
                     type="button"
                     className="inline-flex min-h-11 items-center rounded-full border border-white/85 bg-white px-4 text-sm font-black text-[#111] shadow-[0_8px_18px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_22px_rgba(0,0,0,0.2)] cursor-pointer"
                   >
-                    Certificate
+                    Sertifikat
                   </button>
                 </div>
               </SectionCard>
@@ -271,14 +261,16 @@ export default function UserDetailModal({
                       </h4>
 
                       <div className="mt-4 space-y-3 text-[1rem] sm:text-[1.02rem]">
-                        <p className="flex flex-wrap gap-2">
-                          <span className="font-bold">Team</span>
-                          <span>:</span>
-                          <span>{competition.team}</span>
-                        </p>
+                        {competition.title === "Hackathon" && (
+                          <p className="flex flex-wrap gap-2">
+                            <span className="font-bold">Tim</span>
+                            <span>:</span>
+                            <span>{competition.team}</span>
+                          </p>
+                        )}
 
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Payment</p>
+                          <p className="font-bold">Pembayaran</p>
                           <span>:</span>
 
                           <StatusPill
@@ -300,19 +292,22 @@ export default function UserDetailModal({
                             </button>
                           ) : (
                             <span className="text-sm text-white/50">
-                              Proof not yet uploaded
+                              Bukti belum diunggah
                             </span>
                           )}
                         </div>
 
-                        <p className="flex flex-wrap gap-2">
-                          <span className="font-bold">Role</span>
-                          <span>:</span>
-                          <span>{competition.role}</span>
-                        </p>
+                        {competition.title === "Hackathon" &&
+                          competition.role && (
+                            <p className="flex flex-wrap gap-2">
+                              <span className="font-bold">Role</span>
+                              <span>:</span>
+                              <span>{competition.role}</span>
+                            </p>
+                          )}
 
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Submission</p>
+                          <p className="font-bold">Pengumpulan</p>
                           <span>:</span>
 
                           <StatusPill
@@ -331,7 +326,7 @@ export default function UserDetailModal({
                             ) {
                               return action ? (
                                 <span className="text-sm text-white/50">
-                                  Submission not available
+                                  Pengumpulan tidak tersedia
                                 </span>
                               ) : null;
                             }
@@ -379,7 +374,7 @@ export default function UserDetailModal({
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                     <span className="text-sm font-semibold tracking-wide text-white/90">
-                      Proof of payment
+                      Bukti Pembayaran
                     </span>
                   </div>
                 </div>
@@ -387,7 +382,7 @@ export default function UserDetailModal({
                 {/* Close button */}
                 <button
                   type="button"
-                  aria-label="Close proof of payment"
+                  aria-label="Tutup Bukti Pembayaran"
                   title="Tutup"
                   onClick={() => setSelectedProof(null)}
                   className="absolute -right-4 -top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-2xl backdrop-blur-xl transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
@@ -430,7 +425,7 @@ export default function UserDetailModal({
                 >
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-medium text-white/60 backdrop-blur-xl">
                     <Eye size={14} className="text-white/40" />
-                    Click outside the image to close
+                    Klik di luar gambar untuk menutup
                   </span>
                 </div>
               </div>

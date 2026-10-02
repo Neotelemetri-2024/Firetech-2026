@@ -23,10 +23,10 @@ export type DeleteModalProps = {
 
 /* ─────────── Constants ─────────── */
 
-const DEFAULT_TITLE = "Delete Confirmation";
+const DEFAULT_TITLE = "Konfirmasi Penghapusan";
 
 const DEFAULT_DESCRIPTION =
-  "Are you sure you want to delete this item? This action cannot be undone.";
+  "Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan.";
 
 const dangerGradient = {
   backgroundImage:
@@ -43,7 +43,7 @@ export default function DeleteModal({
   itemLabel,
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
-  confirmLabel = "Delete",
+  confirmLabel = "Hapus",
   isDeleting = false,
 }: DeleteModalProps) {
   const confirmRef = useRef<HTMLButtonElement>(null);
@@ -117,7 +117,7 @@ export default function DeleteModal({
           >
             <p className="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-500/15 px-3 py-1 text-xs font-black uppercase tracking-[0.28em] text-red-300">
               <TriangleAlert className="h-3.5 w-3.5" />
-              Warning
+              Peringatan
             </p>
           </div>
 
@@ -151,12 +151,12 @@ export default function DeleteModal({
             >
               {itemName ? (
                 <>
-                  Are you sure you want to delete{" "}
+                  Apakah Anda yakin ingin menghapus{" "}
                   <span className="rounded-md bg-red-500/15 px-1.5 py-0.5 font-black text-red-300">
                     {itemName}
                   </span>
                   ?<br />
-                  This action cannot be undone.
+                  Tindakan ini tidak dapat dibatalkan.
                 </>
               ) : (
                 description
@@ -190,7 +190,7 @@ export default function DeleteModal({
               {isDeleting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Deleting {noun}...
+                  Menghapus {noun}...
                 </>
               ) : (
                 <>

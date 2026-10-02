@@ -15,7 +15,7 @@ import {
 
 import type { ReactNode } from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import UserDetail from "../../components/form/userdetailmodal";
 import DeleteModal from "../../components/form/delete";
@@ -32,7 +32,9 @@ import type {
 } from "../../types/user";
 
 import { getStatusColor } from "../../utils/status";
-import { users } from "../../data/user";
+import { getRegistrations } from "../../services/registration.services";
+import { getUsers } from "../../services/user.services";
+import { getCompetitions } from "../../services/competition.services";
 import { EVENTS } from "../../constants/event";
 
 function UserTag({ children }: { children: ReactNode }) {
@@ -125,10 +127,6 @@ function UserCard({
             <h3 className="text-xl font-black leading-tight text-white truncate">
               {user.name}
             </h3>
-
-            <span className="rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-2.5 py-1 text-[0.7rem] font-black uppercase tracking-[0.18em] text-white">
-              Member
-            </span>
           </div>
 
           <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-black">
@@ -142,13 +140,13 @@ function UserCard({
           <div className="mt-4 flex flex-wrap items-center gap-4">
             <StatusBadge
               icon={CreditCard}
-              label="Payment"
+              label="Pembayaran"
               status={user.paymentStatus}
             />
 
             <StatusBadge
               icon={FileCheck}
-              label="Submission"
+              label="Pengumpulan"
               status={user.submissionStatus}
             />
           </div>
@@ -185,7 +183,7 @@ function UserCard({
             <button
               type="button"
               onClick={onDelete}
-              aria-label={`Delete ${user.name}`}
+              aria-label={`Hapus ${user.name}`}
               className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
             >
               <Trash2 className="h-4 w-4" />
@@ -227,7 +225,9 @@ export default function AdminUser() {
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userList, setUserList] = useState<UserItem[]>(users);
+  const [userList, setUserList] = useState<UserItem[]>([]);
+
+  const [loading, setLoading] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -241,9 +241,20 @@ export default function AdminUser() {
   const [submissionFilter, setSubmissionFilter] = useState<string | null>(null);
   const [teamFilter, setTeamFilter] = useState<string | null>(null);
 
-  const teamOptions = Array.from(
-    new Set(userList.flatMap((user) => user.competitions.map((c) => c.team))),
-  ).sort((a, b) => a.localeCompare(b));
+  const teamOptions =
+    eventFilter === "Hackathon"
+      ? Array.from(
+          new Set(
+            userList.flatMap((user) =>
+              user.competitions
+                .filter((c) => c.title === eventFilter)
+                .map((c) => c.team),
+            ),
+          ),
+        )
+          .filter((team) => team && team !== "-")
+          .sort((a, b) => a.localeCompare(b))
+      : [];
 
   const stats = [
     {
@@ -343,6 +354,158 @@ export default function AdminUser() {
     setCurrentPage(page);
   };
 
+  const mapPaymentStatus = (status: string): PaymentStatus => {
+    switch (status) {
+      case "approved":
+        return "Paid";
+
+      case "rejected":
+        return "Declined";
+
+      default:
+        return "Pending";
+    }
+  };
+
+  const mapSubmissionStatus = (status: string): SubmissionStatus => {
+    switch (status) {
+      case "approved":
+        return "Submitted";
+
+      case "rejected":
+        return "Rejected";
+
+      default:
+        return "Pending";
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const [users, registrations, competitions] = await Promise.all([
+          getUsers(),
+          getRegistrations(),
+          getCompetitions(),
+        ]);
+
+        const competitionMap = new Map(
+          competitions.map((competition) => [competition.id, competition.name]),
+        );
+
+        const mergedUsers: UserItem[] = users.map((user) => {
+          const userRegistrations = registrations.filter(
+            (registration) =>
+              registration.user?.id === user.id ||
+              registration.user?.email === user.email,
+          );
+
+          return {
+            id: user.id,
+
+            name: user.name,
+
+            email: user.email,
+
+            phone: userRegistrations[0]?.members?.[0]?.phone ?? "-",
+
+            school: userRegistrations[0]?.institution ?? "-",
+
+            eventTags: userRegistrations.map(
+              (registration) =>
+                competitionMap.get(registration.competitionId) ?? "Competition",
+            ),
+
+            paymentStatus: userRegistrations.some(
+              (r) => r.paymentStatus === "approved",
+            )
+              ? "Paid"
+              : userRegistrations.some((r) => r.paymentStatus === "rejected")
+                ? "Declined"
+                : "Pending",
+
+            submissionStatus: userRegistrations.some(
+              (r) => r.status === "approved",
+            )
+              ? "Submitted"
+              : userRegistrations.some((r) => r.status === "rejected")
+                ? "Rejected"
+                : "Pending",
+
+            competitions:
+              userRegistrations.length > 0
+                ? userRegistrations.map((registration) => {
+                    const competitionName =
+                      competitionMap.get(registration.competitionId) ??
+                      "Competition";
+
+                    const paymentProofFile =
+                      registration.files?.find(
+                        (file) => file.kind === "payment_proof",
+                      ) ??
+                      registration.members
+                        ?.flatMap((member) => member.files ?? [])
+                        .find((file) => file.kind === "payment_proof");
+
+                    const API_URL = import.meta.env.VITE_API_URL;
+
+                    const paymentProofUrl = paymentProofFile
+                      ? `${API_URL}/api/registrations/${registration.id}/files/${paymentProofFile.id}`
+                      : undefined;
+
+                    console.log(paymentProofFile);
+
+                    return {
+                      registrationId: registration.id,
+
+                      title: competitionName,
+
+                      team: registration.teamName ?? "-",
+
+                      role: competitionName === "Hackathon" ? "Ketua" : "",
+
+                      payment: mapPaymentStatus(registration.paymentStatus),
+
+                      submission: mapSubmissionStatus(registration.status),
+
+                      paymentProof: paymentProofUrl,
+
+                      //submissionLink,
+
+                      members:
+                        registration.members?.map((member) => ({
+                          name: member.name,
+                          email: member.email,
+                          phone: member.phone,
+                          institution: member.institution,
+                        })) ?? [],
+                    };
+                  })
+                : [
+                    {
+                      title: "Belum Ada Event",
+                      team: "-",
+                      role: "-",
+                      payment: "Pending",
+                      submission: "Pending",
+                    },
+                  ],
+          };
+        });
+
+        setUserList(mergedUsers);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="min-h-screen overflow-hidden text-white">
       <div className="min-h-screen">
@@ -350,8 +513,8 @@ export default function AdminUser() {
           <section className="min-h-screen rounded-4xl border border-white/15 bg-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-5 sm:px-6 sm:py-6">
             <div className="flex min-h-187.5 flex-col gap-5">
               <SectionTitle
-                title="User Management"
-                subtitle="Review registered participants, filter their status, and scan event participation."
+                title="Managemen User"
+                subtitle="Tinjau peserta yang terdaftar, filter status mereka, dan pindai partisipasi acara."
               />
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {stats.map((stat) => (
@@ -375,26 +538,28 @@ export default function AdminUser() {
                   <Filter
                     options={["Paid", "Declined", "Pending"]}
                     selected={paymentFilter}
-                    placeholder="Payment"
+                    placeholder="Pembayaran"
                     onSelect={(value) => setPaymentFilter(value)}
                   />
 
                   <Filter
                     options={["Submitted", "Rejected", "Pending"]}
                     selected={submissionFilter}
-                    placeholder="Submission"
+                    placeholder="Pengumpulan"
                     onSelect={(value) => setSubmissionFilter(value)}
                   />
 
-                  <Filter
-                    options={teamOptions}
-                    selected={teamFilter}
-                    placeholder="Team"
-                    onSelect={(value) => {
-                      setTeamFilter(value);
-                      setCurrentPage(1);
-                    }}
-                  />
+                  {eventFilter === "Hackathon" && (
+                    <Filter
+                      options={teamOptions}
+                      selected={teamFilter}
+                      placeholder="Tim"
+                      onSelect={(value) => {
+                        setTeamFilter(value);
+                        setCurrentPage(1);
+                      }}
+                    />
+                  )}
                   {(eventFilter ||
                     paymentFilter ||
                     submissionFilter ||
@@ -419,7 +584,7 @@ export default function AdminUser() {
                       setSearch(e.target.value);
                       setCurrentPage(1);
                     }}
-                    placeholder="Search by name or email"
+                    placeholder="Cari berdasarkan nama atau email"
                     className="w-full rounded-2xl border border-white/35 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_38%)] px-4 py-3 pr-24 text-sm font-medium text-white/95 outline-none transition hover:-translate-y-0.5 placeholder:text-white/45"
                   />
 
@@ -430,7 +595,7 @@ export default function AdminUser() {
                         setSearch("");
                         setCurrentPage(1);
                       }}
-                      aria-label="Clear search"
+                      aria-label="Hapus pencarian"
                       className="absolute right-12 top-1/2 -translate-y-1/2 cursor-pointer text-white/80 transition-all hover:scale-110 hover:text-white"
                     >
                       <X className="h-4 w-4" />
@@ -442,7 +607,15 @@ export default function AdminUser() {
               </div>
 
               <div className="flex-1">
-                {filteredUsers.length > 0 ? (
+                {loading ? (
+                  <div className="flex min-h-80 flex-col items-center justify-center text-center">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+
+                    <p className="mt-4 text-sm text-white/60">
+                      Memuat data peserta...
+                    </p>
+                  </div>
+                ) : filteredUsers.length > 0 ? (
                   <div className="grid gap-4">
                     {paginatedUsers.map((user, index) => (
                       <UserCard
@@ -472,8 +645,8 @@ export default function AdminUser() {
 
                     <p className="mt-2 max-w-md text-sm text-white/60">
                       {search
-                        ? `No participants found with the keyword "${search}".`
-                        : "No participants match the selected filters."}
+                        ? `Tidak ada peserta yang ditemukan dengan kata kunci "${search}".`
+                        : "Tidak ada peserta yang sesuai dengan filter yang dipilih."}
                     </p>
                   </div>
                 )}
