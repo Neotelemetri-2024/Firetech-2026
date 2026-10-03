@@ -2,18 +2,11 @@ import hackathonImg from "../../../assets/gallery/gallery1.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
-//import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
 import { EVENT_LAYOUT } from "../../../constants/layout";
 const events = [
   { id: "01", title: "Hackathon", image: hackathonImg, color: "#ef4444" },
-  //{
-    //id: "02",
-    //title: "Informatics Olympiad",
-    //image: informaticsImg,
-    //color: "#f59e0b",
-  //},
   { id: "02", title: "UI/UX Competition", image: uiuxImg, color: "#06b6d4" },
   { id: "03", title: "E-Football", image: efootballImg, color: "#22c55e" },
   { id: "04", title: "Fast Typing", image: fasttypingImg, color: "#8b5cf6" },

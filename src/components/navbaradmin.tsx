@@ -8,9 +8,6 @@ import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
 import Badge from "./ui/badge";
 // import { users } from "../data/user";
-import AdminFileButton from "../components/navbar/adminprofilebutton";
-import AdminProfileModal from "../components/form/adminprofilemodal";
-import { useUserProfile } from "../hooks/useUserProfile";
 
 type NavItem = {
   label: string;
@@ -40,9 +37,6 @@ export default function NavbarAdmin() {
   const location = useLocation();
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [isAdminProfileOpen, setIsAdminProfileOpen] = useState(false);
-
-  const { user } = useUserProfile();
 
   const aosAttrs = (delay: number) => ({
     "data-aos": "fade-down" as const,
@@ -237,25 +231,19 @@ export default function NavbarAdmin() {
                 )}
               </button>
 
-              <AdminFileButton
-                count={0}
-                darkMode={false}
-                onClick={() => setIsAdminProfileOpen(true)}
-              />
-
               <Tooltip text="Logout">
                 <LogoutButton
                   onClick={handleLogout}
                   className="
-              border-red-400/40
-              bg-red-500/10
-              text-red-300
-              shadow-[0_10px_24px_rgba(0,0,0,0.22)]
-              hover:-translate-y-0.5
-              hover:bg-red-500/20
-              hover:text-red-200
-              hover:shadow-[0_14px_28px_rgba(239,68,68,0.28)]
-            "
+                border-red-400/40
+                bg-red-500/10
+                text-red-300
+                shadow-[0_10px_24px_rgba(0,0,0,0.22)]
+                hover:-translate-y-0.5
+                hover:bg-red-500/20
+                hover:text-red-200
+                hover:shadow-[0_14px_28px_rgba(239,68,68,0.28)]
+              "
                 />
               </Tooltip>
 
@@ -318,24 +306,6 @@ export default function NavbarAdmin() {
           </div>
         </div>
       </header>
-      <AdminProfileModal
-        open={isAdminProfileOpen}
-        onClose={() => setIsAdminProfileOpen(false)}
-        onLogout={handleLogout}
-        onLogin={() => navigate("/login")}
-        onEdit={() => {
-          console.log("Edit Admin Profile");
-        }}
-        user={{
-          avatarUrl: user.avatarUrl,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-
-          role: "Admin",
-          department: "Firetech Committee",
-        }}
-      />
     </>
   );
 }

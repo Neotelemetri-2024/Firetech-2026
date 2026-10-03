@@ -30,7 +30,6 @@ export default function EventSlide({
 
     const eventMap: Record<string, string> = {
       Hackathon: "hackathon",
-      //"Informatics Olympiad": "informaticsolympiad",
       "Fast Typing": "ft",
       "E-Football": "e-football",
       "UI/UX": "ui-ux-competition",
