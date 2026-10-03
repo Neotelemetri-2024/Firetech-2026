@@ -410,10 +410,10 @@ export default function AdminUser() {
                 : "Pending",
 
             submissionStatus: userRegistrations.some(
-              (r) => r.status === "approved",
+              (r) => r.ktmStatus === "approved",
             )
               ? "Submitted"
-              : userRegistrations.some((r) => r.status === "rejected")
+              : userRegistrations.some((r) => r.ktmStatus === "rejected")
                 ? "Rejected"
                 : "Pending",
 
@@ -441,7 +441,7 @@ export default function AdminUser() {
 
                       payment: mapPaymentStatus(registration.paymentStatus),
 
-                      submission: mapSubmissionStatus(registration.status),
+                      submission: mapSubmissionStatus(registration.ktmStatus),
 
                       // Isinya diambil modal lewat endpoint berkas (butuh token),
                       // jadi yang disimpan di sini hanya rujukannya.
@@ -649,7 +649,7 @@ export default function AdminUser() {
             {/* DELETE USER MODAL */}
             <DeleteModal
               open={userToDelete !== null}
-              description={`User ${userToDelete?.name ?? "ini"} akan dihapus dari tampilan Admin User. Perubahan ini belum tersimpan ke backend.`}
+              description={`User ${userToDelete?.name ?? "ini"} akan dihapus dari sistem. Apakah anda yakin ingin melanjutkan?`}
               itemLabel="user"
               onClose={() => setUserToDelete(null)}
               onConfirm={handleDeleteUser}

@@ -3,7 +3,7 @@ import FileUpload from "../ui/fileupload";
 
 type AddMemberProps = {
   maxAdditionalMembers?: 2 | 4;
-  requiredAdditionalMembers?: 1 | 2;
+  requiredAdditionalMembers?: 1 | 2 | 3;
   formData: {
     anggota1: string;
     anggota2: string;
@@ -54,6 +54,7 @@ export default function AddMember({
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.3s"
+          required={requiredAdditionalMembers >= 3}
         />
 
         <FormField

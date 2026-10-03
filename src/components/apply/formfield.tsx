@@ -10,6 +10,7 @@ type FormFieldProps = {
   animationClass?: string;
   animationDelay?: string;
   required?: boolean;
+  maxLength?: number;
 };
 
 export default function FormField({
@@ -21,6 +22,7 @@ export default function FormField({
   animationClass = "animate-slideInLeft",
   animationDelay = "0s",
   required = false,
+  maxLength,
 }: FormFieldProps) {
   const { darkMode } = useTheme();
 
@@ -48,6 +50,8 @@ export default function FormField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          maxLength={maxLength}
+          required={required}
           className={`peer relative z-10 w-full rounded-xl border-2 px-4 py-3 transition-all duration-300 focus:outline-none focus:ring-0 ${
             darkMode
               ? "border-slate-300 bg-white text-slate-800 placeholder-slate-400 hover:border-blue-600  focus:shadow-lg focus:shadow-blue-600/30"

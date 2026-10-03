@@ -7,6 +7,7 @@ import ParticipantsTable, {
 import EditEvent, { type EventFormData } from "../../components/form/editevent";
 import EventDetailModal from "../../components/form/eventdetailmodal";
 import DeleteModal from "../../components/form/delete";
+import RegistrationToggleModal from "../../components/form/registrationtogglemodal";
 import type { RegistrationVerificationAction } from "../../components/form/userdetailmodal";
 import Toast from "../../components/ui/toast";
 import {
@@ -14,9 +15,8 @@ import {
   updateCompetition,
 } from "../../services/competition.services";
 import {
-  approveRegistration,
   getRegistrations,
-  rejectRegistration,
+  verifyKtm,
   verifyPayment,
   type Registration,
 } from "../../services/registration.services";
@@ -32,6 +32,8 @@ export default function AdminEvent() {
   const [events, setEvents] = useState<EventRow[]>([]);
   const eventCards = [...new Set(events.map((event) => event.name))];
   const [viewedEvent, setViewedEvent] = useState<EventRow | null>(null);
+  const [registrationToToggle, setRegistrationToToggle] =
+    useState<EventRow | null>(null);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -55,6 +57,12 @@ export default function AdminEvent() {
         name: competition.name,
         category: competition.category,
         date: competition.eventDate.split("T")[0],
+        type: competition.type,
+        minTeamSize: competition.minTeamSize,
+        maxTeamSize: competition.maxTeamSize,
+        requiresKtm: competition.requiresKtm,
+        requiresPayment: competition.requiresPayment,
+        registrationClosedAt: competition.registrationClosedAt,
 
         registrationOpen: competition.registrationOpen?.split("T")[0] ?? "",
 
@@ -98,7 +106,12 @@ export default function AdminEvent() {
       await updateCompetition(Number(editingEvent.id), {
         name: data.name,
         category: data.category,
-        participantQuota: data.maxParticipants,
+        participantQuota: data.maxParticipants > 0 ? data.maxParticipants : null,
+        type: editingEvent.type ?? "individual",
+        minTeamSize: editingEvent.minTeamSize ?? null,
+        maxTeamSize: editingEvent.maxTeamSize ?? null,
+        requiresKtm: data.requiresKtm,
+        requiresPayment: data.requiresPayment,
 
         registrationOpen: new Date(data.registrationOpen).toISOString(),
 
@@ -152,15 +165,17 @@ export default function AdminEvent() {
   const handleVerification = async (
     action: RegistrationVerificationAction,
     registrationId: number,
+    reason?: string,
   ) => {
     if (action === "approve") {
-      await approveRegistration(registrationId);
+      await verifyKtm(registrationId, { status: "approved" });
       await fetchCompetitions();
     } else if (action === "reject") {
-      await rejectRegistration(registrationId);
+      await verifyKtm(registrationId, { status: "rejected", note: reason });
     } else {
       await verifyPayment(registrationId, {
         action: action === "approve-payment" ? "approve" : "reject",
+        reason,
       });
     }
 
@@ -169,7 +184,7 @@ export default function AdminEvent() {
       if (action === "approve" || action === "reject") {
         return {
           ...registration,
-          status: action === "approve" ? "approved" : "rejected",
+          ktmStatus: action === "approve" ? "approved" : "rejected",
         };
       }
       return {
@@ -192,9 +207,27 @@ export default function AdminEvent() {
     );
     setRegistrationToDelete(null);
     setToastMessage(
-      "Pendaftaran dihapus dari tampilan. Perubahan ini belum tersimpan ke backend.",
+      "Pendaftaran dihapus dari sistem. ",
     );
     setShowToast(true);
+  };
+
+  const handleRegistrationToggle = () => {
+    if (!registrationToToggle) return;
+    const eventId = registrationToToggle.id;
+    setEvents((current) =>
+      current.map((event) =>
+        event.id === eventId
+          ? {
+              ...event,
+              registrationClosedAt: event.registrationClosedAt
+                ? null
+                : new Date().toISOString(),
+            }
+          : event,
+      ),
+    );
+    setRegistrationToToggle(null);
   };
 
   return (
@@ -319,6 +352,7 @@ export default function AdminEvent() {
                   onEdit={(event) => {
                     setEditingEvent(event);
                   }}
+                  onToggleRegistration={setRegistrationToToggle}
                 />
               </div>
             )}
@@ -359,7 +393,12 @@ export default function AdminEvent() {
         onConfirm={handleDeleteRegistration}
         itemLabel={`pendaftaran ${registrationToDelete?.competition?.name ?? "event"}`}
         title="Hapus pendaftaran dari event?"
-        description={`Pendaftaran ${registrationToDelete?.teamName || registrationToDelete?.user.name || "ini"} pada ${registrationToDelete?.competition?.name ?? "event"} akan dihapus dari tampilan Admin Event. Perubahan belum tersimpan ke backend.`}
+        description={`Pendaftar ${registrationToDelete?.teamName || registrationToDelete?.user.name || "ini"} pada Event ${registrationToDelete?.competition?.name ?? "event"} akan dihapus , Apakah anda yakin ingin melanjutkan?`}
+      />
+      <RegistrationToggleModal
+        event={registrationToToggle}
+        onClose={() => setRegistrationToToggle(null)}
+        onConfirm={handleRegistrationToggle}
       />
     </div>
   );

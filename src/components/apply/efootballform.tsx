@@ -8,7 +8,7 @@ type EfootballFormProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-// Form khusus kategori efootball: Personal Information -> Add Partner -> Payment
+// E-Football backend menerima satu peserta, tanpa KTM, dan mewajibkan bukti pembayaran.
 export default function EfootballForm({
   step,
   formData,
@@ -18,34 +18,26 @@ export default function EfootballForm({
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Player Name"
+          label="Nama Lengkap Peserta"
           name="namaPemain"
-          placeholder="Full Name"
+          placeholder="Nama Lengkap Peserta"
           value={formData.namaPemain}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"
           required
+          maxLength={100}
         />
         <FormField
-          label="ID Game efootball"
-          name="idGame"
-          placeholder="ex: 123456789"
-          value={formData.idGame}
-          onChange={onChange}
-          animationClass="animate-slideInRight"
-          animationDelay="0.2s"
-          required
-        /> 
-        <FormField
-          label="School/University of Origin"
+          label="Sekolah / Universitas"
           name="asalInstitusi"
-          placeholder="School/University of Origin"
+          placeholder="Nama Sekolah / Universitas"
           value={formData.asalInstitusi}
           onChange={onChange}
           animationClass="animate-scaleIn"
           animationDelay="0.3s"
           required
+          maxLength={150}
         />
       </div>
     );
@@ -53,7 +45,7 @@ export default function EfootballForm({
 
   return (
     <Payment
-      amount={30000}
+      amount={25000}
       paymentProof={formData.paymentProof}
       onChange={onChange}
     />

@@ -12,6 +12,11 @@ export interface Competition {
   slug: string;
   name: string;
   category: string;
+  type?: "individual" | "team";
+  minTeamSize?: number | null;
+  maxTeamSize?: number | null;
+  requiresKtm?: boolean;
+  requiresPayment?: boolean;
   description: string;
 
   status: CompetitionStatus;
@@ -24,6 +29,7 @@ export interface Competition {
   registrationOpen: string;
   eventDate: string;
   registrationClose: string;
+  registrationClosedAt?: string | null;
 
   isFull: boolean;
 }
@@ -31,10 +37,15 @@ export interface Competition {
 export interface UpdateCompetitionPayload {
   name: string;
   category: string;
-  participantQuota: number;
+  participantQuota: number | null;
   registrationOpen: string;
   eventDate: string;
   registrationClose: string;
+  type: "individual" | "team";
+  minTeamSize: number | null;
+  maxTeamSize: number | null;
+  requiresKtm: boolean;
+  requiresPayment: boolean;
 }
 
 export const getCompetitions = async (): Promise<Competition[]> => {

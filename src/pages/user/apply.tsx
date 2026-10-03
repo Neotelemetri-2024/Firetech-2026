@@ -17,6 +17,7 @@ import RegistrationProgress from "../../components/apply/registrationprogres";
 import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
 import { registerCompetition } from "../../services/registration.services";
+import { getCompetitions } from "../../services/competition.services";
 
 const categoryIcons: Record<Category, LucideIcon> = {
   Hackathon: Code2,
@@ -24,16 +25,12 @@ const categoryIcons: Record<Category, LucideIcon> = {
   "E-Football": Gamepad2,
 };
 
-const categories: Category[] = [
-  "Hackathon",
-  "UI/UX",
-  "E-Football",
-];
+const categories: Category[] = ["Hackathon", "UI/UX", "E-Football"];
 
-const competitionIdMap: Record<Category, number> = {
-  Hackathon: 1,
-  "UI/UX": 2,
-  "E-Football": 3,
+const competitionSlugMap: Record<Category, string> = {
+  Hackathon: "hackathon",
+  "UI/UX": "ui-ux-competition",
+  "E-Football": "e-football",
 };
 
 export default function Apply() {
@@ -178,13 +175,7 @@ export default function Apply() {
       }),
     );
 
-    const members = [
-      data.namaPemain,
-      data.anggota1,
-      data.anggota2,
-    ].filter(Boolean);
-
-    payload.append("members", JSON.stringify(members));
+    payload.append("members", JSON.stringify([data.namaPemain]));
 
     payload.append("message", "");
 
@@ -200,6 +191,7 @@ export default function Apply() {
   };
   const buildEfootballPayload = () => {
     const data = formData["E-Football"];
+    
 
     const payload = new FormData();
 
@@ -207,7 +199,6 @@ export default function Apply() {
       "fields",
       JSON.stringify({
         institution: data.asalInstitusi,
-        efootballId: data.idGame,
       }),
     );
 
@@ -274,13 +265,16 @@ export default function Apply() {
 
       const payload = buildPayload();
 
-      const competitionId = competitionIdMap[selectedCategory];
+      const competitions = await getCompetitions();
+      const competition = competitions.find(
+        ({ slug }) => slug === competitionSlugMap[selectedCategory],
+      );
 
-      if (!competitionId) {
-        throw new Error(`Competition ID not found for ${selectedCategory}`);
+      if (!competition) {
+        throw new Error(`Competition not found for ${selectedCategory}`);
       }
 
-      const response = await registerCompetition(competitionId, payload);
+      const response = await registerCompetition(competition.id, payload);
 
       console.log("REGISTER SUCCESS:", response);
 
@@ -299,8 +293,23 @@ export default function Apply() {
       let errorMessage = "Failed to submit registration.";
 
       if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data as
+          | {
+              message?: string;
+              errors?: { field?: string; message?: string }[];
+            }
+          | undefined;
+        const validationDetails = responseData?.errors
+          ?.map(({ field, message }) =>
+            [field, message].filter(Boolean).join(": "),
+          )
+          .filter(Boolean)
+          .join("; ");
+
         errorMessage =
-          error.response?.data?.message || "Failed to submit registration.";
+          [responseData?.message, validationDetails]
+            .filter(Boolean)
+            .join(": ") || "Failed to submit registration.";
       }
 
       setToastType("error");

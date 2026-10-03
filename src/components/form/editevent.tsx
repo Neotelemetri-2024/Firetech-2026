@@ -25,6 +25,8 @@ import type { EventRow, EventStatus } from "../events/tableevent";
 
 export type EventFormData = Omit<EventRow, "id" | "participants"> & {
   participants: number;
+  requiresKtm: boolean;
+  requiresPayment: boolean;
 };
 
 type EventFormProps = {
@@ -48,6 +50,8 @@ type FormState = {
   status: EventStatus | "";
 
   maxParticipants: string;
+  requiresKtm: boolean;
+  requiresPayment: boolean;
 };
 
 /* ─────────── Constants ─────────── */
@@ -161,6 +165,8 @@ function buildInitialForm(initialData?: EventRow): FormState {
       status: "",
 
       maxParticipants: "",
+      requiresKtm: true,
+      requiresPayment: false,
     };
   }
 
@@ -177,7 +183,11 @@ function buildInitialForm(initialData?: EventRow): FormState {
 
     status: initialData.status,
 
-    maxParticipants: String(initialData.maxParticipants),
+    maxParticipants: initialData.maxParticipants
+      ? String(initialData.maxParticipants)
+      : "",
+    requiresKtm: initialData.requiresKtm ?? true,
+    requiresPayment: initialData.requiresPayment ?? false,
   };
 }
 
@@ -215,11 +225,9 @@ function validateForm(form: FormState) {
 
   const max = Number(form.maxParticipants);
 
-  if (!form.maxParticipants.trim()) {
-    errors.maxParticipants = "Kolom kuota peserta wajib diisi.";
-  } else if (!Number.isInteger(max) || max < 1) {
+  if (form.maxParticipants.trim() && (!Number.isInteger(max) || max < 1)) {
     errors.maxParticipants = "Kuota minimum 1 peserta";
-  } else if (max > MAX_QUOTA) {
+  } else if (form.maxParticipants.trim() && max > MAX_QUOTA) {
     errors.maxParticipants = `Kuota maksimum ${MAX_QUOTA} peserta`;
   }
 
@@ -398,6 +406,9 @@ export default function EditEvent({
       participants: initialData?.participants ?? 0,
 
       maxParticipants: Number(form.maxParticipants),
+
+      requiresKtm: form.requiresKtm,
+      requiresPayment: form.requiresPayment,
 
       registrationDeadline: form.registrationDeadline,
     });
@@ -592,6 +603,34 @@ export default function EditEvent({
                   }`}
                 />
               </Field>
+            </div>
+
+            <div className="sm:col-span-2 rounded-2xl border border-white/15 bg-black/15 p-4">
+              <p className="text-sm font-bold text-white">Persyaratan Pendaftaran</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <label className="flex cursor-pointer items-center gap-3 text-sm text-white/85">
+                  <input
+                    type="checkbox"
+                    checked={form.requiresKtm}
+                    onChange={(event) =>
+                      updateField("requiresKtm", event.target.checked)
+                    }
+                    className="h-4 w-4 accent-blue-500"
+                  />
+                  Wajib KTM
+                </label>
+                <label className="flex cursor-pointer items-center gap-3 text-sm text-white/85">
+                  <input
+                    type="checkbox"
+                    checked={form.requiresPayment}
+                    onChange={(event) =>
+                      updateField("requiresPayment", event.target.checked)
+                    }
+                    className="h-4 w-4 accent-blue-500"
+                  />
+                  Wajib pembayaran
+                </label>
+              </div>
             </div>
 
             {/* <div className="sm:col-span-2">

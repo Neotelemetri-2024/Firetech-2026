@@ -52,6 +52,12 @@ export default function HackathonForm({
   }
 
   if (step === 2) {
-    return <AddMember formData={formData} onChange={onChange} />;
+    return (
+      <AddMember
+        formData={formData}
+        requiredAdditionalMembers={3}
+        onChange={onChange}
+      />
+    );
   }
 }

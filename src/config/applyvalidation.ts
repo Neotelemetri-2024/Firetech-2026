@@ -8,16 +8,14 @@ export const requiredFieldsConfig: Record<
 > = {
   Hackathon: {
     1: ["namaTeam", "namaKetua", "asalInstitusi"],
-    2: ["anggota1", "anggota2", "ktm"],
+    2: ["anggota1", "anggota2", "anggota3", "ktm"],
   },
   "UI/UX": {
-    1: ["namaTeam", "namaKetua", "asalInstitusi"],
-    2: ["anggota1", "ktm"],
-    3: ["paymentProof"],
-    //4: ["portofolioUrl"],
+    1: ["namaPemain", "asalInstitusi", "ktm"],
+    2: ["paymentProof"],
   },
   "E-Football": {
-    1: ["namaPemain", "idGame", "asalInstitusi"],
+    1: ["namaPemain", "asalInstitusi"],
     2: ["paymentProof"],
   },
 };
@@ -33,7 +31,6 @@ export const fieldLabels: Record<string, string> = {
   anggota4: "Name Anggota 4",
   ktm: "Kartu Identitas Mahasiswa (KTM)",
   namaPemain: "Nama Pemain",
-  idGame: "ID Game eFootball",
   portofolioUrl: "Link (Figma)",
   namaAnggota: "Name Anggota",
 

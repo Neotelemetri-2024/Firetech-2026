@@ -34,6 +34,7 @@ export interface RegistrationCompetition {
   id: number;
   name: string;
   type?: string;
+  requiresKtm?: boolean;
   requiresPayment?: boolean;
 }
 
@@ -43,7 +44,7 @@ export interface Registration {
   competitionId: number;
   competition?: RegistrationCompetition;
   submittedAt: string;
-  status: string;
+  ktmStatus: string;
   paymentStatus: string;
   teamName: string | null;
   institution: string;
@@ -76,11 +77,6 @@ export const registerCompetition = async (
   const response = await api.post(
     `/api/competitions/${competitionId}/register`,
     formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    },
   );
 
   return response.data;
@@ -123,11 +119,6 @@ export const uploadPaymentProof = async (
   const response = await api.post(
     `/api/registrations/${registrationId}/payment-proof`,
     formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    },
   );
 
   return response.data;
@@ -166,31 +157,19 @@ export const getRegistrationById = async (
   return response.data.data.registration;
 };
 
-/* ===========================
-   APPROVE REGISTRATION
-=========================== */
+export interface RegistrationVerificationPayload {
+  status: "approved" | "rejected";
+  note?: string;
+}
 
-export const approveRegistration = async (registrationId: number) => {
-  const response = await api.put(
-    `/admin/registrations/${registrationId}/approve`,
-  );
-
-  return response.data;
-};
-
-/* ===========================
-   REJECT REGISTRATION
-=========================== */
-
-export const rejectRegistration = async (
+/** PUT /admin/registrations/:id/ktm */
+export const verifyKtm = async (
   registrationId: number,
-  reason?: string,
+  payload: RegistrationVerificationPayload,
 ) => {
   const response = await api.put(
-    `/admin/registrations/${registrationId}/reject`,
-    {
-      reason,
-    },
+    `/admin/registrations/${registrationId}/ktm`,
+    payload,
   );
 
   return response.data;
@@ -211,7 +190,10 @@ export const verifyPayment = async (
 ) => {
   const response = await api.put(
     `/admin/registrations/${registrationId}/payment`,
-    payload,
+    {
+      status: payload.action === "approve" ? "paid" : "rejected",
+      ...(payload.reason ? { note: payload.reason } : {}),
+    },
   );
 
   return response.data;

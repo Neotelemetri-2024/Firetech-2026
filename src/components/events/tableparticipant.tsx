@@ -50,6 +50,7 @@ type ParticipantsTableProps = {
   onVerificationAction?: (
     action: RegistrationVerificationAction,
     registrationId: number,
+    reason?: string,
   ) => Promise<void>;
   onDelete?: (registration: Registration) => void;
 };
@@ -360,7 +361,7 @@ export default function ParticipantsTable({
                                   <ChevronRight
                                     className={`h-3.5 w-3.5 transition-transform ${expandedTeamId === participant.id ? "rotate-90" : ""}`}
                                   />
-                                  Detail anggota &amp; dokumen (
+                                  Detail anggota  (
                                   {participant.members.length})
                                 </button>
                               )}
@@ -534,9 +535,9 @@ export default function ParticipantsTable({
                         ? "Declined"
                         : "Pending",
                   submission:
-                    registrationDetail.status === "approved"
+                    registrationDetail.ktmStatus === "approved"
                       ? "Submitted"
-                      : registrationDetail.status === "rejected"
+                      : registrationDetail.ktmStatus === "rejected"
                         ? "Rejected"
                         : "Pending",
                   members: registrationDetail.members.map((member) => ({
@@ -552,10 +553,20 @@ export default function ParticipantsTable({
         verification={
           registrationDetail && onVerificationAction
             ? {
-                registrationStatus: registrationDetail.status,
-                paymentStatus: registrationDetail.paymentStatus,
-                onAction: (action) =>
-                  onVerificationAction(action, registrationDetail.id),
+              registrationStatus: registrationDetail.ktmStatus,
+              paymentStatus: registrationDetail.paymentStatus,
+              requiresKtm:
+                registrationDetail.competition?.requiresKtm ??
+                !/e[- ]?football/i.test(
+                  registrationDetail.competition?.name ?? "",
+                ),
+              requiresPayment:
+                registrationDetail.competition?.requiresPayment ??
+                !/hackathon/i.test(
+                  registrationDetail.competition?.name ?? "",
+                ),
+                onAction: (action, reason) =>
+                  onVerificationAction(action, registrationDetail.id, reason),
               }
             : undefined
         }

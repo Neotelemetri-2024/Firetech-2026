@@ -14,6 +14,7 @@ import {
   Users,
   PlayCircle,
   Lock,
+  LockOpen,
 } from "lucide-react";
 import Pagination from "../pagination";
 import Filter from "../../components/filter/filter";
@@ -33,6 +34,12 @@ export type EventRow = {
   participants: number;
   maxParticipants: number;
   registrationDeadline: string;
+  requiresKtm?: boolean;
+  requiresPayment?: boolean;
+  type?: "individual" | "team";
+  minTeamSize?: number | null;
+  maxTeamSize?: number | null;
+  registrationClosedAt?: string | null;
 };
 
 /* ─────────── Props ─────────── */
@@ -46,6 +53,7 @@ type EventsTableProps = {
   onDelete?: (event: EventRow) => void;
   /** Called when the user clicks "View" */
   onView?: (event: EventRow) => void;
+  onToggleRegistration?: (event: EventRow) => void;
   pageSize?: number;
 };
 
@@ -146,6 +154,7 @@ export default function EventsTable({
   onEdit,
   onDelete,
   onView,
+  onToggleRegistration,
   pageSize = 5,
 }: EventsTableProps) {
   const [search, setSearch] = useState("");
@@ -153,6 +162,7 @@ export default function EventsTable({
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const isRegistrationClosed = (event: EventRow) => Boolean(event.registrationClosedAt);
 
   /* ── Sorting ── */
   const handleSort = (key: SortKey) => {
@@ -311,7 +321,10 @@ export default function EventsTable({
                     const StatusIcon = getStatusIcon(event.status);
                     const filled = event.participants;
                     const max = event.maxParticipants;
-                    const fillPercent = Math.min((filled / max) * 100, 100);
+                    const fillPercent = max > 0
+                      ? Math.min((filled / max) * 100, 100)
+                      : 0;
+                    const registrationClosed = isRegistrationClosed(event);
 
                     return (
                       <tr
@@ -345,6 +358,11 @@ export default function EventsTable({
                             <StatusIcon className="h-3.5 w-3.5" />
                             {event.status}
                           </span>
+                          <p
+                            className={`mt-1 text-xs font-semibold ${registrationClosed ? "text-amber-200" : "text-emerald-200"}`}
+                          >
+                            Pendaftaran {registrationClosed ? "ditutup" : "dibuka"}
+                          </p>
                         </td>
 
                         {/* Participants */}
@@ -373,6 +391,19 @@ export default function EventsTable({
                         {/* Actions */}
                         <td className="px-4 py-4">
                           <div className="flex items-center justify-end gap-1">
+                            <button
+                              type="button"
+                              onClick={() => onToggleRegistration?.(event)}
+                              aria-label={`${registrationClosed ? "Buka" : "Tutup"} pendaftaran ${event.name}`}
+                              title={`${registrationClosed ? "Buka" : "Tutup"} pendaftaran`}
+                              className={`inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border transition hover:-translate-y-0.5 ${registrationClosed ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200 hover:border-emerald-400/50" : "border-amber-400/30 bg-amber-400/10 text-amber-200 hover:border-amber-400/50"}`}
+                            >
+                              {registrationClosed ? (
+                                <LockOpen className="h-4 w-4" />
+                              ) : (
+                                <Lock className="h-4 w-4" />
+                              )}
+                            </button>
                             {onView && (
                               <button
                                 type="button"
@@ -435,6 +466,7 @@ export default function EventsTable({
           </p>
         </div>
       )}
+
     </div>
   );
 }

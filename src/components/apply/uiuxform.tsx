@@ -1,5 +1,4 @@
 import type { UiUxFormData } from "../../types/applysevent";
-import AddMember from "./addmember";
 import FormField from "./formfield";
 import Payment from "./payment";
 
@@ -9,32 +8,22 @@ type UiUxFormProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-// Form khusus kategori UI/UX: Personal Information -> Upload Portfolio -> Payment
+// Form UI/UX mengikuti definisi backend: satu peserta, KTM, dan bukti pembayaran.
 export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
   if (step === 1) {
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Nama Tim"
-          name="namaTeam"
-          placeholder="Nama Tim"
-          value={formData.namaTeam}
+          label="Nama Lengkap Peserta"
+          name="namaPemain"
+          placeholder="Nama Lengkap Peserta"
+          value={formData.namaPemain}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
           required
+          maxLength={100}
         />
-        <FormField
-          label="Nama Ketua Tim"
-          name="namaKetua"
-          placeholder="Nama Ketua Tim"
-          value={formData.namaKetua}
-          onChange={onChange}
-          animationClass="animate-slideInLeft"
-          animationDelay="0.1s"
-          required
-        />
-
         <FormField
           label="Universitas / Institusi Asal"
           name="asalInstitusi"
@@ -44,19 +33,23 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
           animationClass="animate-slideInRight"
           animationDelay="0.2s"
           required
+          maxLength={150}
         />
+        <div className="mt-8">
+          <label className="mb-2 block text-sm font-semibold text-white">
+            Kartu Tanda Mahasiswa (KTM)
+          </label>
+          <input
+            type="file"
+            name="ktm"
+            accept="application/pdf"
+            onChange={onChange}
+            required
+            className="block w-full rounded-xl border border-white/20 bg-white/10 p-3 text-sm text-white file:mr-4 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:font-bold file:text-slate-900"
+          />
+          <p className="mt-2 text-xs text-white/70">PDF, maksimal 5 MB.</p>
+        </div>
       </div>
-    );
-  }
-
-  if (step === 2) {
-    return (
-      <AddMember
-        formData={formData}
-        maxAdditionalMembers={2}
-        requiredAdditionalMembers={1}
-        onChange={onChange}
-      />
     );
   }
 

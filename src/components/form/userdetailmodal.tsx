@@ -22,7 +22,12 @@ export type UserDetailModalProps = {
   verification?: {
     registrationStatus: string;
     paymentStatus: string;
-    onAction: (action: RegistrationVerificationAction) => Promise<void>;
+    requiresKtm: boolean;
+    requiresPayment: boolean;
+    onAction: (
+      action: RegistrationVerificationAction,
+      reason?: string,
+    ) => Promise<void>;
   };
 };
 
@@ -89,14 +94,20 @@ export default function UserDetailModal({
 
   const runVerification = async (action: RegistrationVerificationAction) => {
     if (!verification) return;
+    const isReject = action === "reject" || action === "reject-payment";
+    const reason = isReject
+      ? window.prompt("Masukkan alasan penolakan (wajib):")?.trim()
+      : undefined;
+    if (isReject && !reason) return;
     setBusyAction(action);
     setVerificationError("");
     try {
-      await verification.onAction(action);
+      await verification.onAction(action, reason);
       if (action === "approve") setLocalRegistrationStatus("approved");
       if (action === "reject") setLocalRegistrationStatus("rejected");
       if (action === "approve-payment") setLocalPaymentStatus("paid");
       if (action === "reject-payment") setLocalPaymentStatus("rejected");
+      onClose();
     } catch {
       setVerificationError("Aksi gagal disimpan. Silakan coba lagi.");
     } finally {
@@ -291,18 +302,24 @@ export default function UserDetailModal({
                             {(
                               [
                                 {
+                                  kind: "ktm",
                                   title: "Verifikasi KTM",
                                   status: localRegistrationStatus,
                                   approve: "approve",
                                   reject: "reject",
                                 },
                                 {
+                                  kind: "payment",
                                   title: "Verifikasi Pembayaran",
                                   status: localPaymentStatus,
                                   approve: "approve-payment",
                                   reject: "reject-payment",
                                 },
                               ] as const
+                            ).filter((item) =>
+                              item.kind === "ktm"
+                                ? verification.requiresKtm
+                                : verification.requiresPayment,
                             ).map((item) => (
                               <section
                                 key={item.title}
@@ -311,6 +328,9 @@ export default function UserDetailModal({
                                 <h5 className="text-sm font-bold text-white/65">
                                   {item.title}
                                 </h5>
+                                <p className="mt-1 text-xs text-white/80">
+                                  Status: {item.status || "pending"}
+                                </p>
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   <button
                                     type="button"

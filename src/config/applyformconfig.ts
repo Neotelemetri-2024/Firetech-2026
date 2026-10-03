@@ -25,26 +25,14 @@ export const initialApplyFormData: ApplyFormDataMap = {
   },
 
   "UI/UX": {
-    // Step 1
-    namaTeam: "",
-    namaKetua: "",
+    namaPemain: "",
     asalInstitusi: "",
-    //portofolioUrl: "",
-
-    // Step 2
-    anggota1: "",
-    anggota2: "",
-    anggota3: "",
-    anggota4: "",
     ktm: null,
-
-    // Upload
     paymentProof: null,
   },
 
   "E-Football": {
     namaPemain: "",
-    idGame: "",
     asalInstitusi: "",
     paymentProof: null,
   },
@@ -68,7 +56,7 @@ export const applyFormConfig: {
     Component: HackathonForm,
   },
   "UI/UX": {
-    steps: ["Informasi Pribadi", "Tambah Anggota", "Pembayaran"],
+    steps: ["Informasi Peserta", "Pembayaran"],
     Component: UiUxForm,
   },
   "E-Football": {
