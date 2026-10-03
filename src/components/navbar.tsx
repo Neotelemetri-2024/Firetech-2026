@@ -35,7 +35,6 @@ const navItems: NavItem[] = [
     label: "Event",
     children: [
       { label: "Hackathon", hash: "hackathon" },
-      //{ label: "Informatics Olympiad", hash: "informaticsolympiad" },
       { label: "UI/UX", hash: "uiux" },
       { label: "E-Football", hash: "ef" },
       { label: "Fast Typing", hash: "ft" },

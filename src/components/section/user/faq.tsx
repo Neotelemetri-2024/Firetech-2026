@@ -8,13 +8,13 @@ const faqData = [
     id: "01",
     question: "Apa saja persyaratan pendaftaran untuk Firetech 2026?",
     answer:
-      "Peserta harus merupakan mahasiswa universitas yang sedang aktif dan memenuhi syarat kelayakan yang ditetapkan oleh komite penyelenggara Firetech 2026.",
+      "Peserta harus merupakan mahasiswa universitas yang sedang aktif,siswa SMA/SMK dan memenuhi syarat kelayakan yang ditetapkan oleh panitia penyelenggara Firetech 2026.",
   },
   {
     id: "02",
     question: "Kapan periode pendaftaran dimulai?",
     answer:
-      "Pendaftaran dibuka pada tanggal 1 Agustus 2026, sesuai dengan jadwal resmi event.",
+      "Pendaftaran dibuka pada tanggal 6 Oktober 2026, sesuai dengan jadwal resmi event.",
   },
   {
     id: "03",
@@ -26,7 +26,7 @@ const faqData = [
     id: "04",
     question: "Di mana Firetech 2026 akan diselenggarakan?",
     answer:
-      "Event ini akan diselenggarakan di Fakultas Teknologi Informasi, Universitas Andalas.",
+      "Event ini akan diselenggarakan di PKM Unand, Universitas Andalas.",
   },
   {
     id: "05",

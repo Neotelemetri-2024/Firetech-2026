@@ -42,22 +42,5 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
     return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
   }
 
-  // if (step === 3) {
-  //   return (
-  //     <div className="space-y-8 animate-fadeIn">
-  //       <FormField
-  //         label="Link Figma"
-  //         name="portofolioUrl"
-  //         placeholder="https://www.figma.com/..."
-  //         value={formData.portofolioUrl}
-  //         onChange={onChange}
-  //         animationClass="animate-scaleIn"
-  //         animationDelay="0.1s"
-  //         required
-  //       />
-  //     </div>
-  //   );
-  // }
-
   return null;
 }

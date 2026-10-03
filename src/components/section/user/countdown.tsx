@@ -4,7 +4,7 @@ import CountdownCard from "../../countdown/card";
 import { headingVariants } from "../../animations/headingvariants";
 import { useTheme } from "../../../context/themecontext";
 
-const TARGET_DATE = new Date("2026-09-20T23:59:59").getTime();
+const TARGET_DATE = new Date("2026-10-06T09:00:00").getTime();
 
 interface TimeLeft {
   days: number;

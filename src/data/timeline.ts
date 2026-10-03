@@ -4,7 +4,7 @@ export const timelineEvents = [
   {
     id: 1,
     title: "Open Registration",
-    date: "1 Oktober 2026",
+    date: "6 Oktober 2026",
     description:
       "Pendaftaran resmi dibuka untuk seluruh peserta. Lengkapi pendaftaran Anda dan amankan tempat Anda sebelum periode pendaftaran berakhir.",
     icon: Calendar,
@@ -26,7 +26,7 @@ export const timelineEvents = [
   {
     id: 3,
     title: "Main Events",
-    date: "7-8 Oktober 2026",
+    date: "7-8 November 2026",
     description:
       "Para peserta mengikuti kompetisi, lokakarya, dan sesi kolaboratif sembari menampilkan kreativitas serta keterampilan teknis.",
     icon: Trophy,
@@ -37,7 +37,7 @@ export const timelineEvents = [
   {
     id: 4,
     title: "Announcement",
-    date: "8 Oktober 2026",
+    date: "8 November 2026",
     description:
       "Rangkaian kegiatan ini diakhiri dengan pengumuman pemenang, pemberian penghargaan atas pencapaian luar biasa, dan upacara penutupan resmi.",
     icon: Brain,

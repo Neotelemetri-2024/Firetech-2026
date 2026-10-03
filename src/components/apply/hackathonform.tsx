@@ -1,6 +1,5 @@
 import type { HackathonFormData } from "../../types/applysevent";
 import FormField from "./formfield";
-import Payment from "./payment";
 import AddMember from "./addmember";
 
 type HackathonFormProps = {
@@ -55,6 +54,4 @@ export default function HackathonForm({
   if (step === 2) {
     return <AddMember formData={formData} onChange={onChange} />;
   }
-
-  return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
 }

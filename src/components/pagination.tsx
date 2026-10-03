@@ -24,8 +24,8 @@ const inactiveClasses =
 const arrowClasses =
   "border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/75 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.12)_100%)] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed";
 
- const focusRing =
-   "focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:shadow-[0_0_15px_rgba(255,255,255,0.25)]";
+const focusRing =
+  "focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:shadow-[0_0_15px_rgba(255,255,255,0.25)]";
 
   return (
     <nav
