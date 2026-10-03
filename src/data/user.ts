@@ -3,6 +3,7 @@ import type { UserItem } from "../types/user";
 
 export const users: UserItem[] = [
   {
+    id: 1,
     name: "Wonwoo",
     email: "jeonwonwoo@gmail.com",
     phone: "628123456789",
@@ -35,6 +36,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 2,
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
     phone: "628998887777",
@@ -58,6 +60,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 3,
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
     phone: "628998887777",
@@ -79,6 +82,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 4,
     name: "Wonwoo",
     email: "jeonwonwoo@gmail.com",
     phone: "628123456789",
@@ -100,6 +104,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 5,
     name: "Mingyu",
     email: "kiming@gmail.com",
     phone: "628112223334",
@@ -120,6 +125,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 6,
     name: "Abdul",
     email: "abdull@gmail.com",
     phone: "628112223334",
@@ -140,6 +146,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 7,
     name: "Jeonghan",
     email: "jeonghan@gmail.com",
     phone: "628998887777",
@@ -161,6 +168,7 @@ export const users: UserItem[] = [
     ],
   },
   {
+    id: 8,
     name: "Abdul",
     email: "abdull@gmail.com",
     phone: "628112223334",
