@@ -9,6 +9,7 @@ import NavbarActions from "./navbar/actions";
 import { useUserProfile } from "../hooks/useUserProfile";
 import NavbarModalContainer from "./navbar/modalcontainer";
 import { logout } from "../services/auth.services";
+import { getMyRegistrations } from "../services/registration.services";
 
 interface NavChild {
   label: string;
@@ -92,6 +93,28 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const { user, profileAlerts, updateProfile } = useUserProfile();
+  const [hasRegistration, setHasRegistration] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!profileOpen || !isLoggedIn) {
+      setHasRegistration(false);
+      return;
+    }
+
+    getMyRegistrations()
+      .then((registrations) => {
+        if (!cancelled) setHasRegistration(registrations.length > 0);
+      })
+      .catch((error) => {
+        console.error("Failed to load registrations:", error);
+        if (!cancelled) setHasRegistration(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profileOpen, isLoggedIn]);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navigate = useNavigate();
@@ -637,6 +660,7 @@ export default function Navbar() {
         profileOpen={profileOpen}
         editProfileOpen={editProfileOpen}
         user={user}
+        hasRegistration={hasRegistration}
         onLogout={handleLogout}
         onLogin={handleLoginClick}
         onCloseProfile={() => setProfileOpen(false)}

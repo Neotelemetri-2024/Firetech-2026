@@ -1,4 +1,5 @@
 import type { UiUxFormData } from "../../types/applysevent";
+import AddMember from "./addmember";
 import FormField from "./formfield";
 import Payment from "./payment";
 
@@ -14,9 +15,9 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Player Name"
+          label="Nama Peserta"
           name="namaPemain"
-          placeholder="Nama Pemain"
+          placeholder="Nama Peserta"
           value={formData.namaPemain}
           onChange={onChange}
           animationClass="animate-slideInLeft"
@@ -25,9 +26,9 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
         />
 
         <FormField
-          label="School/University of Origin"
+          label="Universitas / Institusi Asal"
           name="asalInstitusi"
-          placeholder="School/University of Origin"
+          placeholder="Universitas / Institusi Asal"
           value={formData.asalInstitusi}
           onChange={onChange}
           animationClass="animate-slideInRight"
@@ -39,8 +40,21 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
   }
 
   if (step === 2) {
-    return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
+    return (
+      <AddMember
+        formData={formData}
+        maxAdditionalMembers={2}
+        requiredAdditionalMembers={1}
+        onChange={onChange}
+      />
+    );
   }
 
-  return null;
+  return (
+    <Payment
+      amount={50000}
+      paymentProof={formData.paymentProof}
+      onChange={onChange}
+    />
+  );
 }

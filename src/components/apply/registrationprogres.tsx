@@ -59,20 +59,12 @@ export default function RegistrationProgress({
               {status === "completed" ? (
                 <CheckCircle2
                   size={20}
-                  className={darkMode ? "text-blue-600" : "text-red-600"}
+                  className="text-green-600"
                 />
               ) : (
                 <XCircle
                   size={20}
-                  className={
-                    status === "active"
-                      ? darkMode
-                        ? "text-blue-600"
-                        : "text-red-600"
-                      : darkMode
-                        ? "text-slate-500"
-                        : "text-slate-400"
-                  }
+                  className="text-red-600"
                 />
               )}
 

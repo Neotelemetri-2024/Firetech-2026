@@ -30,8 +30,14 @@ export const initialApplyFormData: ApplyFormDataMap = {
     asalInstitusi: "",
     //portofolioUrl: "",
 
-    // Upload
+    // Step 2
+    anggota1: "",
+    anggota2: "",
+    anggota3: "",
+    anggota4: "",
     ktm: null,
+
+    // Upload
     paymentProof: null,
   },
 
@@ -41,16 +47,6 @@ export const initialApplyFormData: ApplyFormDataMap = {
     asalInstitusi: "",
     paymentProof: null,
   },
-
-  //"Informatics Olympiad": {
-    //Step 1
-    //namaKetua: "",
-    //asalSekolah: "",
-
-    //Step 2
-    //namaAnggota: "",
-    //paymentProof: null,
-  //},
 };
 
 type ApplyFormProps<C extends Category> = {
@@ -67,20 +63,15 @@ export const applyFormConfig: {
   };
 } = {
   Hackathon: {
-    steps: ["Personal Information", "Add Member", "Payment"],
+    steps: ["Informasi Pribadi", "Tambah Anggota"],
     Component: HackathonForm,
   },
   "UI/UX": {
-    steps: ["Personal Information", "Payment"],
+    steps: ["Informasi Pribadi", "Tambah Anggota", "Pembayaran"],
     Component: UiUxForm,
   },
   "E-Football": {
-    steps: ["Personal Information", "Payment"],
+    steps: ["Informasi Pribadi", "Pembayaran"],
     Component: EfootballForm,
   },
-
-  //"Informatics Olympiad": {
-    //steps: ["Personal Information", "Add Member", "Payment"],
-    //Component: InformaticsOlympiadForm,
-  //},
 };

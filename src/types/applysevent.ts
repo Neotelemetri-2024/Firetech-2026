@@ -28,8 +28,14 @@ export type UiUxFormData = {
   asalInstitusi: string;
   //portofolioUrl: string;
 
-  // Upload
+  // Step 2
+  anggota1: string;
+  anggota2: string;
+  anggota3: string;
+  anggota4: string;
   ktm: File | null;
+
+  // Upload
   paymentProof: File | null;
 };
 

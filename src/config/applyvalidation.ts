@@ -2,42 +2,40 @@ import type { Category } from "../types/applysevent";
 
 // Field yang wajib diisi (key form data) untuk setiap step pada tiap kategori.
 // Step index dimulai dari 1.
-export const requiredFieldsConfig: Record<Category, Record<number, string[]>> = {
+export const requiredFieldsConfig: Record<
+  Category,
+  Record<number, string[]>
+> = {
   Hackathon: {
     1: ["namaTeam", "namaKetua", "asalInstitusi"],
     2: ["anggota1", "anggota2", "ktm"],
-    3: ["paymentProof"],
   },
   "UI/UX": {
     1: ["namaPemain", "asalInstitusi"],
-    2: ["paymentProof"],
-    //3: ["portofolioUrl"],
+    2: ["anggota1", "ktm"],
+    3: ["paymentProof"],
+    //4: ["portofolioUrl"],
   },
   "E-Football": {
     1: ["namaPemain", "idGame", "asalInstitusi"],
     2: ["paymentProof"],
   },
-  //"Informatics Olympiad": {
-  //1: ["namaKetua", "asalSekolah"],
-  //2: ["namaAnggota", "ktm"],
-  //3: ["paymentProof"],
-  //},
 };
 
 // Label ramah untuk setiap field, dipakai saat menyusun pesan notifikasi.
 export const fieldLabels: Record<string, string> = {
-  namaTeam: "Team Name",
-  namaKetua: "Leader Name",
-  asalInstitusi: "University of Origin",
-  anggota1: "Member 1 Name",
-  anggota2: "Member 2 Name",
-  anggota3: "Member 3 Name",
-  anggota4: "Member 4 Name",
-  ktm: "Student ID Card (KTM)",
-  namaPemain: "Player Name",
+  namaTeam: "Nama Tim",
+  namaKetua: "Nama Ketua Tim",
+  asalInstitusi: "Universitas / Institusi Asal",
+  anggota1: "Name Anggota 1",
+  anggota2: "Name Anggota 2",
+  anggota3: "Name Anggota 3",
+  anggota4: "Name Anggota 4",
+  ktm: "Kartu Identitas Mahasiswa (KTM)",
+  namaPemain: "Nama Pemain",
   idGame: "ID Game eFootball",
   portofolioUrl: "Link (Figma)",
-  namaAnggota: "Member Name",
+  namaAnggota: "Name Anggota",
 
   paymentProof: "Payment Proof",
 };
@@ -48,7 +46,7 @@ type FormValue = string | File | null;
 export function getMissingFields(
   category: Category,
   step: number,
-  formData: Record<string, FormValue>
+  formData: Record<string, FormValue>,
 ): string[] {
   const requiredFields = requiredFieldsConfig[category][step] ?? [];
 
@@ -64,7 +62,7 @@ export function getMissingFields(
 export function validateStep(
   category: Category,
   step: number,
-  formData: Record<string, FormValue>
+  formData: Record<string, FormValue>,
 ): boolean {
   return getMissingFields(category, step, formData).length === 0;
 }

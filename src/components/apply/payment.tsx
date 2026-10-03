@@ -1,16 +1,19 @@
-import QRCodePNG from "../../assets/qr.png";
+import QRCodePNG from "../../assets/qrfiretech.jpeg";
 import { useTheme } from "../../context/themecontext";
 import FileUpload from "../ui/fileupload";
 
 type PaymentProps = {
+  amount: number;
   paymentProof: File | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function Payment({ paymentProof, onChange }: PaymentProps) {
+export default function Payment({
+  amount,
+  paymentProof,
+  onChange,
+}: PaymentProps) {
   const { darkMode } = useTheme();
-
-  const amount = 150000;
 
   return (
     <section className="w-full">
@@ -39,12 +42,12 @@ export default function Payment({ paymentProof, onChange }: PaymentProps) {
             {/* Upload Payment Proof */}
             <div className="w-full max-w-[320px]">
               <FileUpload
-                label="Upload Payment Proof"
+                label="Unggah Bukti Pembayaran"
                 name="paymentProof"
                 file={paymentProof}
                 // Bukti pembayaran hanya gambar; backend menolak PDF dengan 400.
                 accept=".jpg,.jpeg,.png"
-                hint="JPG, PNG • Max 5 MB"
+                hint="JPEG,JPG, PNG • Max 5 MB"
                 required
                 onChange={onChange}
                 onDelete={() =>
@@ -70,21 +73,21 @@ export default function Payment({ paymentProof, onChange }: PaymentProps) {
               className="mb-6 text-4xl font-bold animate-scaleIn"
               style={{ animationDelay: "0.3s" }}
             >
-              Payment Instructions
+              Petunjuk Pembayaran
             </h2>
 
             <ol className="space-y-5 text-sm font-medium leading-relaxed">
               {[
                 <>
-                  Open your <b>Mobile Banking</b> or <b>E-Wallet</b> application
-                  on your smartphone.
+                  Buka aplikasi <b>Mobile Banking</b> atau <b>E-Wallet</b>
+                  di ponsel pintar Anda.
                 </>,
                 <>
-                  Scan the QR Code displayed on the left using your preferred
-                  payment application.
+                  Pindai Kode QR yang ditampilkan di sebelah kiri menggunakan
+                  aplikasi pembayaran pilihan Anda.
                 </>,
                 <>
-                  Complete the payment of{" "}
+                  Selesaikan pembayaran sebesar{" "}
                   <span
                     className={`font-bold ${darkMode ? "text-blue-600" : "text-red-600"}`}
                   >
@@ -93,11 +96,11 @@ export default function Payment({ paymentProof, onChange }: PaymentProps) {
                   .
                 </>,
                 <>
-                  Once the payment has been completed, click the{" "}
+                  Setelah pembayaran selesai, klik tombol{" "}
                   <b className={darkMode ? "text-blue-600" : "text-red-600"}>
                     Submit
                   </b>{" "}
-                  button on this page.
+                  di halaman ini.
                 </>,
               ].map((content, i) => (
                 <li

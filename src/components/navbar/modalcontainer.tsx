@@ -32,6 +32,7 @@ interface NavbarModalContainerProps {
   editProfileOpen: boolean;
 
   user: ProfileUser;
+  hasRegistration: boolean;
 
   onCloseProfile: () => void;
   onLogout: () => void;
@@ -51,6 +52,7 @@ export default function NavbarModalContainer({
   editProfileOpen,
 
   user,
+  hasRegistration,
 
   onCloseProfile,
 
@@ -73,6 +75,7 @@ export default function NavbarModalContainer({
         onClose={onCloseProfile}
         onEdit={onOpenEditProfile}
         user={user}
+        hasRegistration={hasRegistration}
       />
 
       <EditProfile

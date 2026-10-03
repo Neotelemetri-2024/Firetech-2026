@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UploadCloud, FileText, Trash2, Eye, X } from "lucide-react";
+import { UploadCloud, FileText, Trash2, Eye, X, Info } from "lucide-react";
 import { useTheme } from "../../context/themecontext";
 
 type FileUploadProps = {
@@ -9,6 +9,7 @@ type FileUploadProps = {
   accept?: string;
   /** Teks format dan batas ukuran di bawah area unggah; ikuti `accept`. */
   hint?: string;
+  note?: string;
   required?: boolean;
   previewSize?: "sm" | "lg";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -19,8 +20,9 @@ export default function FileUpload({
   label,
   name,
   file,
-  accept = ".jpg,.jpeg,.png,.pdf",
-  hint = "JPG, PNG, PDF • Max 5 MB",
+  accept = ".pdf",
+  hint = "PDF • Maksimal 5 MB",
+  note,
   required = false,
   previewSize = "lg",
   onChange,
@@ -50,6 +52,27 @@ export default function FileUpload({
             </span>
           )}
         </label>
+
+        {note && (
+          <div
+            className={`mb-3 flex items-start gap-3 rounded-xl border-2 px-4 py-3 text-sm shadow-sm ${
+              darkMode
+                ? "border-amber-500 bg-amber-50 text-amber-950"
+                : "border-amber-400 bg-amber-400/10 text-amber-100"
+            }`}
+          >
+            <Info
+              size={20}
+              className={`mt-0.5 shrink-0 ${
+                darkMode ? "text-amber-600" : "text-amber-400"
+              }`}
+            />
+            <p>
+              <span className="font-bold">Penting: </span>
+              <span className="font-medium">{note}</span>
+            </p>
+          </div>
+        )}
 
         {!file ? (
           <label
@@ -94,7 +117,7 @@ export default function FileUpload({
                 darkMode ? "text-slate-700" : "text-slate-300"
               }`}
             >
-              Click to upload file
+              Klik untuk mengunggah file
             </span>
 
             <span
@@ -187,6 +210,7 @@ export default function FileUpload({
             )}
           </div>
         )}
+
       </div>
 
       {/* Modal Preview */}

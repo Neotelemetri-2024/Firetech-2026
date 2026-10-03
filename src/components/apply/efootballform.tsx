@@ -51,5 +51,11 @@ export default function EfootballForm({
     );
   }
 
-  return <Payment paymentProof={formData.paymentProof} onChange={onChange} />;
+  return (
+    <Payment
+      amount={30000}
+      paymentProof={formData.paymentProof}
+      onChange={onChange}
+    />
+  );
 }

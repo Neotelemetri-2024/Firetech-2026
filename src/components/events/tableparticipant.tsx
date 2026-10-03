@@ -254,13 +254,7 @@ export default function ParticipantsTable({
                       direction={sortDir}
                       onSort={handleSort}
                     />
-                    {/* <SortTh
-                      label="Event"
-                      sortKey="eventName"
-                      currentKey={sortKey}
-                      direction={sortDir}
-                      onSort={handleSort}
-                    /> */}
+
                     {showTeamColumn && (
                       <SortTh
                         label="Team"

@@ -18,7 +18,7 @@ export default function HackathonForm({
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Team Name"
+          label="Nama Tim"
           name="namaTeam"
           placeholder="Team Name"
           value={formData.namaTeam}
@@ -28,9 +28,9 @@ export default function HackathonForm({
           required
         />
         <FormField
-          label="Team Leader Name"
+          label="Nama Ketua Tim"
           name="namaKetua"
-          placeholder="Full Name"
+          placeholder="Nama Ketua Tim"
           value={formData.namaKetua}
           onChange={onChange}
           animationClass="animate-slideInRight"
@@ -38,7 +38,7 @@ export default function HackathonForm({
           required
         />
         <FormField
-          label="University of Origin"
+          label="Universitas / Institusi Asal"
           name="asalInstitusi"
           placeholder="University of Origin"
           value={formData.asalInstitusi}

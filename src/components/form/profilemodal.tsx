@@ -53,6 +53,7 @@ interface ProfileModalProps {
   onLogin: () => void;
   onEdit: () => void;
   user: UserData;
+  hasRegistration: boolean;
 }
 
 export default function ProfileModal({
@@ -62,6 +63,7 @@ export default function ProfileModal({
   onLogout,
   onLogin,
   onEdit,
+  hasRegistration,
 }: ProfileModalProps) {
   const { darkMode } = useTheme();
   const [previewPhoto, setPreviewPhoto] = useState(false);
@@ -90,8 +92,8 @@ export default function ProfileModal({
   };
   const profileAlerts = [
     !user.phone && "Nomor WhatsApp belum ditambahkan",
-    user.payment !== "Paid" && "Pembayaran Belum Diselesaikan.",
-    user.submission !== "Submitted" && "Pengumpulan Berkas Belum Diunggah",
+    isLoggedIn && user.payment !== "Paid" && "Pembayaran Belum Diselesaikan.",
+    isLoggedIn && user.submission !== "Submitted" && "Pengumpulan Berkas Belum Diunggah",
     getTimelineReminder(),
   ].filter((alert): alert is string => Boolean(alert));
 
@@ -202,39 +204,38 @@ export default function ProfileModal({
             {/* Grid Card */}
             <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2 cursor-pointer">
               <ProfileItem
-                icon={<Trophy size={18} />}
-                title="Competition"
-                value={user.competition}
-              />
-              <ProfileItem
-                icon={<Users size={18} />}
-                title="Team"
-                value={user.team}
-              />
-              <ProfileItem
-                icon={<CreditCard size={18} />}
-                title="Payment"
-                value={user.payment}
-                statusColor={getPaymentTone(user.payment)}
-              />
-              <ProfileItem
-                icon={<FileText size={18} />}
-                title="Submission"
-                value={user.submission}
-                statusColor={getSubmissionTone(user.submission)}
+                icon={<Mail size={18} />}
+                title="Email Status"
+                value={emailStatus.label}
+                statusColor={emailStatus.tone}
               />
               <ProfileItem
                 icon={<Phone size={18} />}
                 title="WhatsApp"
                 value={user.phone || "Not set"}
               />
-
-              <ProfileItem
-                icon={<Mail size={18} />}
-                title="Email Status"
-                value={emailStatus.label}
-                statusColor={emailStatus.tone}
-              />
+              {isLoggedIn && <ProfileItem
+                icon={<CreditCard size={18} />}
+                title="Payment"
+                value={hasRegistration ? user.payment : "—"}
+                statusColor={hasRegistration ? getPaymentTone(user.payment) : undefined}
+              />}
+              {isLoggedIn && <ProfileItem
+                icon={<FileText size={18} />}
+                title="Submission"
+                value={hasRegistration ? user.submission : "—"}
+                statusColor={hasRegistration ? getSubmissionTone(user.submission) : undefined}
+              />}
+              {isLoggedIn && hasRegistration && <ProfileItem
+                icon={<Users size={18} />}
+                title="Team"
+                value={user.team}
+              />}
+              {isLoggedIn && hasRegistration && <ProfileItem
+                icon={<Trophy size={18} />}
+                title="Competition"
+                value={user.competition}
+              />}
             </div>
 
             {/* Edit Profile Button */}

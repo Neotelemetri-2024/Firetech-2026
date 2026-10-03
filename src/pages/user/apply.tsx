@@ -178,9 +178,19 @@ export default function Apply() {
       }),
     );
 
-    payload.append("members", JSON.stringify([data.namaPemain]));
+    const members = [
+      data.namaPemain,
+      data.anggota1,
+      data.anggota2,
+    ].filter(Boolean);
+
+    payload.append("members", JSON.stringify(members));
 
     payload.append("message", "");
+
+    if (data.ktm) {
+      payload.append("memberIdentities", data.ktm);
+    }
 
     if (data.paymentProof) {
       payload.append("paymentProof", data.paymentProof);
