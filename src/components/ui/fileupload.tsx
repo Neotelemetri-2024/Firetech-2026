@@ -7,6 +7,8 @@ type FileUploadProps = {
   name: string;
   file: File | null;
   accept?: string;
+  /** Teks format dan batas ukuran di bawah area unggah; ikuti `accept`. */
+  hint?: string;
   required?: boolean;
   previewSize?: "sm" | "lg";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -18,6 +20,7 @@ export default function FileUpload({
   name,
   file,
   accept = ".jpg,.jpeg,.png,.pdf",
+  hint = "JPG, PNG, PDF • Max 5 MB",
   required = false,
   previewSize = "lg",
   onChange,
@@ -99,7 +102,7 @@ export default function FileUpload({
                 darkMode ? "text-slate-500" : "text-slate-500"
               }`}
             >
-              JPG, PNG, PDF • Max 5 MB
+              {hint}
             </span>
           </label>
         ) : (
