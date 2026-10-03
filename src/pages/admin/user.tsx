@@ -9,7 +9,6 @@ import {
   Trash2,
   CreditCard,
   FileCheck,
-  Pencil,
   CheckCircle,
 } from "lucide-react";
 
@@ -23,7 +22,6 @@ import Toast from "../../components/ui/toast";
 import Pagination from "../../components/pagination";
 import Filter from "../../components/filter/filter";
 import Reset from "../../components/button/reset";
-import EditUser from "../../components/form/edituser";
 
 import type {
   UserItem,
@@ -115,12 +113,10 @@ function StatusBadge({
 function UserCard({
   user,
   onView,
-  onEdit,
   onDelete,
 }: {
   user: UserItem;
   onView: () => void;
-  onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
@@ -177,15 +173,6 @@ function UserCard({
 
             <button
               type="button"
-              onClick={onEdit}
-              aria-label={`Edit ${user.name}`}
-              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-blue-400/30 bg-blue-500/15 text-blue-300 transition hover:-translate-y-0.5 hover:bg-blue-500/25 hover:text-blue-200"
-            >
-              <Pencil className="h-4 w-4" />
-            </button>
-
-            <button
-              type="button"
               onClick={onDelete}
               aria-label={`Hapus ${user.name}`}
               className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
@@ -236,9 +223,6 @@ export default function AdminUser() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [eventFilter, setEventFilter] = useState<string | null>(null);
   const [paymentFilter, setPaymentFilter] = useState<string | null>(null);
@@ -315,7 +299,7 @@ export default function AdminUser() {
       );
       setIsDeleting(false);
       setUserToDelete(null);
-      setToastMessage(`User "${deletedName}" berhasil dihapus`);
+      setToastMessage(`User "${deletedName}" dihapus dari tampilan. Perubahan ini belum tersimpan ke backend.`);
       setShowToast(true);
     }, 900);
   };
@@ -622,14 +606,6 @@ export default function AdminUser() {
                           setSelectedUser(user);
                           setIsModalOpen(true);
                         }}
-                        onEdit={() => {
-                          setEditingUser({
-                            ...user,
-                            competitions: [...user.competitions],
-                          });
-
-                          setIsEditOpen(true);
-                        }}
                         onDelete={() => {
                           setUserToDelete(user);
                         }}
@@ -668,83 +644,12 @@ export default function AdminUser() {
               competitions={selectedUser?.competitions ?? []}
             />
 
-            <EditUser
-              open={isEditOpen}
-              onClose={() => {
-                setIsEditOpen(false);
-                setEditingUser(null);
-              }}
-              initialData={
-                editingUser
-                  ? {
-                      name: editingUser.name,
-                      email: editingUser.email,
-                      phone: editingUser.phone,
-                      school: editingUser.school,
-                      competitions: editingUser.competitions.map((item) => ({
-                        title: item.title,
-                        team: item.team,
-                        role: item.role,
-                        payment: item.payment,
-                        submission: item.submission,
-                      })),
-                    }
-                  : undefined
-              }
-              isSaving={isSaving}
-              onSubmit={(data) => {
-                setIsSaving(true);
 
-                setTimeout(() => {
-                  setUserList((prev) =>
-                    prev.map((user) => {
-                      if (user.email !== editingUser?.email) {
-                        return user;
-                      }
-
-                      return {
-                        ...user,
-
-                        name: data.name,
-
-                        email: data.email,
-
-                        phone: data.phone,
-
-                        school: data.school,
-
-                        competitions: [...data.competitions],
-
-                        eventTags: data.competitions.map(
-                          (competition) => competition.title,
-                        ),
-
-                        paymentStatus:
-                          data.competitions[0]?.payment ?? "Pending",
-
-                        submissionStatus:
-                          data.competitions[0]?.submission ?? "Pending",
-                      };
-                    }),
-                  );
-
-                  setIsSaving(false);
-
-                  setIsEditOpen(false);
-
-                  setEditingUser(null);
-
-                  setToastMessage("User successfully updated");
-
-                  setShowToast(true);
-                }, 700);
-              }}
-            />
 
             {/* DELETE USER MODAL */}
             <DeleteModal
               open={userToDelete !== null}
-              itemName={userToDelete?.name}
+              description={`User ${userToDelete?.name ?? "ini"} akan dihapus dari tampilan Admin User. Perubahan ini belum tersimpan ke backend.`}
               itemLabel="user"
               onClose={() => setUserToDelete(null)}
               onConfirm={handleDeleteUser}

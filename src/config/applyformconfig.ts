@@ -26,7 +26,8 @@ export const initialApplyFormData: ApplyFormDataMap = {
 
   "UI/UX": {
     // Step 1
-    namaPemain: "",
+    namaTeam: "",
+    namaKetua: "",
     asalInstitusi: "",
     //portofolioUrl: "",
 

@@ -15,10 +15,20 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
     return (
       <div className="space-y-8 animate-fadeIn">
         <FormField
-          label="Nama Peserta"
-          name="namaPemain"
-          placeholder="Nama Peserta"
-          value={formData.namaPemain}
+          label="Nama Tim"
+          name="namaTeam"
+          placeholder="Nama Tim"
+          value={formData.namaTeam}
+          onChange={onChange}
+          animationClass="animate-slideInRight"
+          animationDelay="0.2s"
+          required
+        />
+        <FormField
+          label="Nama Ketua Tim"
+          name="namaKetua"
+          placeholder="Nama Ketua Tim"
+          value={formData.namaKetua}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.1s"

@@ -4,17 +4,20 @@ import EventsTable, { type EventRow } from "../../components/events/tableevent";
 import ParticipantsTable, {
   type ParticipantRow,
 } from "../../components/events/tableparticipant";
-//import AddEvent, { type NewEventData } from "../../components/form/addevent";
 import EditEvent, { type EventFormData } from "../../components/form/editevent";
 import EventDetailModal from "../../components/form/eventdetailmodal";
-// import DeleteModal from "../../components/form/delete";
+import DeleteModal from "../../components/form/delete";
+import type { RegistrationVerificationAction } from "../../components/form/userdetailmodal";
 import Toast from "../../components/ui/toast";
 import {
   getCompetitions,
   updateCompetition,
 } from "../../services/competition.services";
 import {
+  approveRegistration,
   getRegistrations,
+  rejectRegistration,
+  verifyPayment,
   type Registration,
 } from "../../services/registration.services";
 import type { EventStatus } from "../../components/events/tableevent";
@@ -29,10 +32,11 @@ export default function AdminEvent() {
   const [events, setEvents] = useState<EventRow[]>([]);
   const eventCards = [...new Set(events.map((event) => event.name))];
   const [viewedEvent, setViewedEvent] = useState<EventRow | null>(null);
-  // const [eventToDelete, setEventToDelete] = useState<EventRow | null>(null);
-  // const [isDeleting, setIsDeleting] = useState(false);
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [registrationToDelete, setRegistrationToDelete] =
+    useState<Registration | null>(null);
 
   const fetchCompetitions = useCallback(async () => {
     try {
@@ -107,7 +111,7 @@ export default function AdminEvent() {
 
       setEditingEvent(null);
 
-      setToastMessage(`Event "${data.name}" was successfully updated.`);
+      setToastMessage(`Acara "${data.name}" berhasil diperbarui.`);
 
       setShowToast(true);
     } catch (error) {
@@ -120,14 +124,13 @@ export default function AdminEvent() {
       ? events
       : events.filter((event) => event.name === selectedEvent);
 
-  const allParticipants: ParticipantRow[] = registrations.flatMap(
-    (registration) =>
-      registration.members.map((member, index) => ({
-        id: `${registration.id}-${member.id}`,
-        name: member.name,
-
-        email: index === 0 ? registration.user.email : "-",
-
+  const allParticipants: ParticipantRow[] = registrations.map(
+    (registration) => {
+      const leader = registration.members[0];
+      return {
+        id: String(registration.id),
+        name: leader?.name ?? registration.user.name,
+        email: registration.user.email,
         eventName:
           events.find(
             (event) => event.id === String(registration.competitionId),
@@ -135,8 +138,64 @@ export default function AdminEvent() {
 
         registeredAt: registration.submittedAt,
         team: registration.teamName ?? undefined,
-      })),
+        registration,
+        members: registration.members.map((member, index) => ({
+          name: member.name,
+          email: index === 0 ? registration.user.email : member.email,
+          phone: member.phone,
+          institution: member.institution,
+        })),
+      };
+    },
   );
+
+  const handleVerification = async (
+    action: RegistrationVerificationAction,
+    registrationId: number,
+  ) => {
+    if (action === "approve") {
+      await approveRegistration(registrationId);
+      await fetchCompetitions();
+    } else if (action === "reject") {
+      await rejectRegistration(registrationId);
+    } else {
+      await verifyPayment(registrationId, {
+        action: action === "approve-payment" ? "approve" : "reject",
+      });
+    }
+
+    const updateRegistration = (registration: Registration) => {
+      if (registration.id !== registrationId) return registration;
+      if (action === "approve" || action === "reject") {
+        return {
+          ...registration,
+          status: action === "approve" ? "approved" : "rejected",
+        };
+      }
+      return {
+        ...registration,
+        paymentStatus: action === "approve-payment" ? "paid" : "rejected",
+      };
+    };
+    setRegistrations((current) => current.map(updateRegistration));
+    setToastMessage("Status pendaftaran berhasil diperbarui.");
+    setShowToast(true);
+  };
+
+  const handleDeleteRegistration = () => {
+    if (!registrationToDelete) return;
+    const deletedRegistrationId = registrationToDelete.id;
+    setRegistrations((current) =>
+      current.filter(
+        (registration) => registration.id !== deletedRegistrationId,
+      ),
+    );
+    setRegistrationToDelete(null);
+    setToastMessage(
+      "Pendaftaran dihapus dari tampilan. Perubahan ini belum tersimpan ke backend.",
+    );
+    setShowToast(true);
+  };
 
   return (
     <div className="min-h-screen overflow-hidden text-white">
@@ -155,6 +214,12 @@ export default function AdminEvent() {
               Kelola semua acara dan lihat detail setiap acara menggunakan
               filter cepat di bawah ini.
             </p>
+
+            <Toast
+              open={showToast}
+              message={toastMessage}
+              onClose={() => setShowToast(false)}
+            />
 
             {/* TOOLBAR */}
             <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -244,14 +309,6 @@ export default function AdminEvent() {
 
             {!selectedEvent && !isAdding && !editingEvent && (
               <div className="mt-8">
-                <div className="mb-4">
-                  <Toast
-                    open={showToast}
-                    message={toastMessage}
-                    onClose={() => setShowToast(false)}
-                  />
-                </div>
-
                 <EventsTable
                   key={eventRefresh}
                   events={filteredEvents}
@@ -281,6 +338,8 @@ export default function AdminEvent() {
                     });
                   }}
                   pageSize={10}
+                  onVerificationAction={handleVerification}
+                  onDelete={setRegistrationToDelete}
                 />
               </div>
             )}
@@ -293,6 +352,14 @@ export default function AdminEvent() {
         open={viewedEvent !== null}
         event={viewedEvent}
         onClose={() => setViewedEvent(null)}
+      />
+      <DeleteModal
+        open={registrationToDelete !== null}
+        onClose={() => setRegistrationToDelete(null)}
+        onConfirm={handleDeleteRegistration}
+        itemLabel={`pendaftaran ${registrationToDelete?.competition?.name ?? "event"}`}
+        title="Hapus pendaftaran dari event?"
+        description={`Pendaftaran ${registrationToDelete?.teamName || registrationToDelete?.user.name || "ini"} pada ${registrationToDelete?.competition?.name ?? "event"} akan dihapus dari tampilan Admin Event. Perubahan belum tersimpan ke backend.`}
       />
     </div>
   );

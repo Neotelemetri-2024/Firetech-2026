@@ -11,7 +11,7 @@ export const requiredFieldsConfig: Record<
     2: ["anggota1", "anggota2", "ktm"],
   },
   "UI/UX": {
-    1: ["namaPemain", "asalInstitusi"],
+    1: ["namaTeam", "namaKetua", "asalInstitusi"],
     2: ["anggota1", "ktm"],
     3: ["paymentProof"],
     //4: ["portofolioUrl"],

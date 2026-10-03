@@ -1,24 +1,13 @@
-import { X, Eye } from "lucide-react";
+import { Check, ChevronDown, Download, FileText, X } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
-import type {
-  UserCompetition,
-  PaymentStatus,
-  SubmissionStatus,
-} from "../../types/user";
-import { downloadRegistrationFile } from "../../services/registration.services";
-
-/** Keadaan lightbox bukti pembayaran; null berarti tertutup. */
-type ProofView =
-  | { status: "loading" }
-  | { status: "error" }
-  | { status: "ready"; url: string; isImage: boolean; fileName: string };
-
-const gradientStyle = {
-  backgroundImage:
-    "radial-gradient(circle at 30% 20%, rgba(185, 28, 28, 0.6) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.6) 0%, transparent 50%), linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
-};
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import type { UserCompetition } from "../../types/user";
+import {
+  downloadRegistrationFile,
+  type RegistrationFile,
+} from "../../services/registration.services";
 
 export type UserDetailModalProps = {
   open: boolean;
@@ -28,69 +17,22 @@ export type UserDetailModalProps = {
   phone: string;
   school: string;
   competitions: UserCompetition[];
+  registrationId?: number;
+  proofFiles?: RegistrationFile[];
+  verification?: {
+    registrationStatus: string;
+    paymentStatus: string;
+    onAction: (action: RegistrationVerificationAction) => Promise<void>;
+  };
 };
 
-type StatusTone = "success" | "warning" | "danger";
+export type RegistrationVerificationAction =
+  | "approve"
+  | "reject"
+  | "approve-payment"
+  | "reject-payment";
 
-const paymentToneMap: Record<PaymentStatus, StatusTone> = {
-  Paid: "success",
-  Pending: "warning",
-  Declined: "danger",
-};
-
-const submissionToneMap: Record<SubmissionStatus, StatusTone> = {
-  Submitted: "success",
-  Pending: "warning",
-  Rejected: "danger",
-};
-
-function getPaymentTone(status: PaymentStatus): StatusTone {
-  return paymentToneMap[status];
-}
-
-function getSubmissionTone(status: SubmissionStatus): StatusTone {
-  return submissionToneMap[status];
-}
-
-function getSubmissionButton(competition: UserCompetition) {
-  switch (competition.title) {
-    case "Hackathon":
-      return {
-        label: "Lihat Repositori",
-      };
-
-    case "UI/UX Competition":
-      return {
-        label: "Lihat Desain",
-      };
-
-    default:
-      return null;
-  }
-}
-
-function StatusPill({
-  children,
-  tone,
-}: {
-  children: ReactNode;
-  tone: "success" | "warning" | "danger";
-}) {
-  const toneClasses =
-    tone === "success"
-      ? "bg-[#57d11f] text-white"
-      : tone === "warning"
-        ? "bg-[#f6bf14] text-[#231500]"
-        : "bg-[#ef4444] text-white";
-
-  return (
-    <span
-      className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-bold shadow-[0_8px_18px_rgba(0,0,0,0.16)] ${toneClasses} transition hover:-translate-y-0.5 hover:shadow-[0_12px_22px_rgba(0,0,0,0.2)] cursor-pointer`}
-    >
-      {children}
-    </span>
-  );
-}
+const EMPTY_PROOF_FILES: RegistrationFile[] = [];
 
 function InfoLine({ label, value }: { label: string; value: string }) {
   return (
@@ -127,86 +69,40 @@ export default function UserDetailModal({
   phone,
   school,
   competitions,
+  registrationId,
+  proofFiles = EMPTY_PROOF_FILES,
+  verification,
 }: UserDetailModalProps) {
-  const [proof, setProof] = useState<ProofView | null>(null);
-
-  // URL blob yang sedang ditampilkan, supaya bisa dilepas dari memori.
-  const objectUrlRef = useRef<string | null>(null);
-  // Nomor permintaan terakhir: unduhan yang selesai setelah lightbox ditutup
-  // (atau diganti) tidak boleh menampilkan apa pun.
-  const requestRef = useRef(0);
-
-  const releaseObjectUrl = () => {
-    if (objectUrlRef.current) {
-      URL.revokeObjectURL(objectUrlRef.current);
-      objectUrlRef.current = null;
-    }
-  };
-
-  const closeProof = () => {
-    requestRef.current += 1;
-    releaseObjectUrl();
-    setProof(null);
-  };
-
-  /**
-   * Bukti dari backend tidak bisa dipasang langsung sebagai `<img src>`: endpoint
-   * berkasnya butuh header Authorization, yang tidak dikirim oleh `<img>`.
-   * Jadi berkasnya diunduh dulu lewat axios, lalu ditampilkan dari URL blob.
-   */
-  const openPaymentProof = async (competition: UserCompetition) => {
-    const { paymentProofFile, registrationId, paymentProof } = competition;
-
-    if (!paymentProofFile || registrationId === undefined) {
-      // Data dummy: sudah berupa URL gambar biasa.
-      if (paymentProof) {
-        setProof({
-          status: "ready",
-          url: paymentProof,
-          isImage: true,
-          fileName: "bukti-pembayaran",
-        });
-      }
-      return;
-    }
-
-    releaseObjectUrl();
-    requestRef.current += 1;
-    const requestId = requestRef.current;
-
-    setProof({ status: "loading" });
-
-    try {
-      const blob = await downloadRegistrationFile(
-        registrationId,
-        paymentProofFile.id,
-      );
-
-      if (requestId !== requestRef.current) return;
-
-      const url = URL.createObjectURL(blob);
-      objectUrlRef.current = url;
-
-      setProof({
-        status: "ready",
-        url,
-        isImage: blob.type.startsWith("image/"),
-        fileName:
-          paymentProofFile.originalName ??
-          `bukti-pembayaran-${paymentProofFile.id}`,
-      });
-    } catch {
-      if (requestId === requestRef.current) setProof({ status: "error" });
-    }
-  };
-
-  useEffect(
-    () => () => {
-      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
-    },
-    [],
+  const [busyAction, setBusyAction] =
+    useState<RegistrationVerificationAction | null>(null);
+  const [verificationError, setVerificationError] = useState("");
+  const [localRegistrationStatus, setLocalRegistrationStatus] = useState(
+    verification?.registrationStatus ?? "",
   );
+  const [localPaymentStatus, setLocalPaymentStatus] = useState(
+    verification?.paymentStatus ?? "",
+  );
+  const [showProofs, setShowProofs] = useState(false);
+  const [proofViews, setProofViews] = useState<
+    Record<number, { url?: string; type?: string; error?: boolean }>
+  >({});
 
+  const runVerification = async (action: RegistrationVerificationAction) => {
+    if (!verification) return;
+    setBusyAction(action);
+    setVerificationError("");
+    try {
+      await verification.onAction(action);
+      if (action === "approve") setLocalRegistrationStatus("approved");
+      if (action === "reject") setLocalRegistrationStatus("rejected");
+      if (action === "approve-payment") setLocalPaymentStatus("paid");
+      if (action === "reject-payment") setLocalPaymentStatus("rejected");
+    } catch {
+      setVerificationError("Aksi gagal disimpan. Silakan coba lagi.");
+    } finally {
+      setBusyAction(null);
+    }
+  };
   useEffect(() => {
     if (!open) return;
 
@@ -218,43 +114,77 @@ export default function UserDetailModal({
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open || !showProofs || !registrationId || proofFiles.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+    const objectUrls: string[] = [];
+
+    proofFiles.forEach(async (file) => {
+      try {
+        const blob = await downloadRegistrationFile(registrationId, file.id);
+        const url = URL.createObjectURL(blob);
+        if (cancelled) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrls.push(url);
+        setProofViews((current) => ({
+          ...current,
+          [file.id]: { url, type: blob.type || file.mimeType },
+        }));
+      } catch {
+        if (!cancelled) {
+          setProofViews((current) => ({
+            ...current,
+            [file.id]: { error: true },
+          }));
+        }
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [open, showProofs, registrationId, proofFiles]);
+
   if (!open) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/70 px-3 py-4 backdrop-blur-md"
+      className="fixed inset-0 z-10000 flex items-center justify-center overflow-y-auto bg-black/70 px-3 py-4 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       aria-labelledby="user-detail-title"
       style={{ animation: "proof-fade-in 0.25s ease-out" }}
     >
       <div
-        className="relative w-full max-w-255 max-h-[90vh] overflow-hidden rounded-[1.8rem] border border-white/35 bg-[linear-gradient(135deg,#0d4f86_0%,#14539f_42%,#2f1ea0_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
+        className="relative flex w-full max-w-255 max-h-[90vh] flex-col overflow-hidden rounded-[1.8rem] border border-white/30 bg-[radial-gradient(circle_at_15%_15%,rgba(248,113,113,0.38),transparent_28%),radial-gradient(circle_at_78%_78%,rgba(96,165,250,0.28),transparent_30%),linear-gradient(120deg,#3b0d1a_0%,#5d0d22_20%,#1d2c4a_58%,#114ba5_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
         style={{
-          ...gradientStyle,
           animation: "proof-zoom-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         <div className="pointer-events-none absolute -left-16 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-10 bottom-2 h-44 w-44 rounded-full bg-[#5b7cff]/20 blur-3xl" />
 
-        {!proof && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-4 top-4 z-9999 pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white cursor-pointer transition hover:-translate-y-0.5 hover:bg-white/20"
-            style={{
-              zIndex: 9999,
-              animation:
-                "proof-zoom-in 0.35s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both",
-            }}
-            aria-label="Close modal"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-9999 pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white cursor-pointer transition hover:-translate-y-0.5 hover:bg-white/20"
+          style={{
+            zIndex: 9999,
+            animation:
+              "proof-zoom-in 0.35s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both",
+          }}
+          aria-label="Close modal"
+        >
+          <X className="h-6 w-6" />
+        </button>
 
-        <div className="custom-scrollbar max-h-[90vh] overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
+        <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
           <div
             className="mb-5 border-b border-white/80 pb-4"
             style={{ animation: "proof-slide-down 0.3s 0.08s ease-out both" }}
@@ -307,7 +237,7 @@ export default function UserDetailModal({
                   className="mt-6 flex flex-wrap items-center gap-3"
                   style={{ animation: "proof-fade-in 0.3s 0.3s ease-out both" }}
                 >
-                  <StatusPill tone="success">Finalis</StatusPill>
+                  {/* <StatusPill tone="success">Finalis</StatusPill> */}
 
                   <button
                     type="button"
@@ -347,33 +277,6 @@ export default function UserDetailModal({
                           </p>
                         )}
 
-                        <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Pembayaran</p>
-                          <span>:</span>
-
-                          <StatusPill
-                            tone={getPaymentTone(competition.payment)}
-                          >
-                            {competition.payment}
-                          </StatusPill>
-
-                          {competition.paymentProofFile ||
-                          competition.paymentProof ? (
-                            <button
-                              type="button"
-                              onClick={() => openPaymentProof(competition)}
-                              className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition  hover:-translate-y-0.5 cursor-pointer"
-                            >
-                              <Eye size={16} />
-                              Proof
-                            </button>
-                          ) : (
-                            <span className="text-sm text-white/50">
-                              Bukti belum diunggah
-                            </span>
-                          )}
-                        </div>
-
                         {competition.title === "Hackathon" &&
                           competition.role && (
                             <p className="flex flex-wrap gap-2">
@@ -383,169 +286,180 @@ export default function UserDetailModal({
                             </p>
                           )}
 
-                        <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-bold">Pengumpulan</p>
-                          <span>:</span>
-
-                          <StatusPill
-                            tone={getSubmissionTone(competition.submission)}
-                          >
-                            {competition.submission}
-                          </StatusPill>
-
-                          {(() => {
-                            const action = getSubmissionButton(competition);
-
-                            if (
-                              !action ||
-                              competition.submission !== "Submitted" ||
-                              !competition.submissionLink
-                            ) {
-                              return action ? (
-                                <span className="text-sm text-white/50">
-                                  Pengumpulan tidak tersedia
-                                </span>
-                              ) : null;
-                            }
-
-                            return (
-                              <a
-                                href={competition.submissionLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-500/20 hover:text-cyan-200"
+                        {verification && (
+                          <div className="mt-5 flex flex-wrap items-start gap-3">
+                            {(
+                              [
+                                {
+                                  title: "Verifikasi KTM",
+                                  status: localRegistrationStatus,
+                                  approve: "approve",
+                                  reject: "reject",
+                                },
+                                {
+                                  title: "Verifikasi Pembayaran",
+                                  status: localPaymentStatus,
+                                  approve: "approve-payment",
+                                  reject: "reject-payment",
+                                },
+                              ] as const
+                            ).map((item) => (
+                              <section
+                                key={item.title}
+                                className="w-fit max-w-full rounded-2xl border border-white/15 bg-black/10 p-4"
                               >
-                                <Eye size={16} />
-                                {action.label}
-                              </a>
-                            );
-                          })()}
-                        </div>
+                                <h5 className="text-sm font-bold text-white/65">
+                                  {item.title}
+                                </h5>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  <button
+                                    type="button"
+                                    disabled={busyAction !== null}
+                                    onClick={() =>
+                                      void runVerification(item.approve)
+                                    }
+                                    className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/30 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-400/20 disabled:opacity-50"
+                                  >
+                                    <Check className="h-3.5 w-3.5" />{" "}
+                                    {busyAction === item.approve
+                                      ? "Menyimpan..."
+                                      : "Setujui"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={busyAction !== null}
+                                    onClick={() =>
+                                      void runVerification(item.reject)
+                                    }
+                                    className="inline-flex items-center gap-1.5 rounded-lg border border-red-300/30 bg-red-400/10 px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-red-400/20 disabled:opacity-50"
+                                  >
+                                    <X className="h-3.5 w-3.5" />{" "}
+                                    {busyAction === item.reject
+                                      ? "Menyimpan..."
+                                      : "Tolak"}
+                                  </button>
+                                </div>
+                              </section>
+                            ))}
+                          </div>
+                        )}
+
+                        {registrationId !== undefined && (
+                          <section className="mt-5 rounded-2xl border border-white/15 bg-black/10 p-4">
+                            <button
+                              type="button"
+                              aria-expanded={showProofs}
+                              onClick={() => {
+                                if (!showProofs) setProofViews({});
+                                setShowProofs((visible) => !visible);
+                              }}
+                              className="flex w-full items-center justify-between gap-3 text-left font-black text-white transition hover:text-cyan-100"
+                            >
+                              <span className="inline-flex items-center gap-2">
+                                <FileText className="h-4 w-4" /> Bukti
+                              </span>
+                              <ChevronDown
+                                className={`h-4 w-4 transition-transform ${showProofs ? "rotate-180" : ""}`}
+                              />
+                            </button>
+
+                            {showProofs &&
+                              (proofFiles.length > 0 ? (
+                                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                  {proofFiles.map((file) => {
+                                    const view = proofViews[file.id];
+                                    const mimeType =
+                                      view?.type ?? file.mimeType;
+                                    const fileName =
+                                      file.originalName ?? `berkas-${file.id}`;
+
+                                    return (
+                                      <article
+                                        key={file.id}
+                                        className="overflow-hidden rounded-xl border border-white/15 bg-black/20 p-3"
+                                      >
+                                        <p className="mb-2 truncate text-sm font-bold text-white/85">
+                                          {file.kind === "payment_proof"
+                                            ? "Bukti pembayaran"
+                                            : "KTM / Identitas"}
+                                          {file.originalName
+                                            ? ` · ${file.originalName}`
+                                            : ""}
+                                        </p>
+                                        {view?.error ? (
+                                          <p
+                                            role="alert"
+                                            className="text-sm text-red-200"
+                                          >
+                                            Berkas gagal dimuat.
+                                          </p>
+                                        ) : !view?.url ? (
+                                          <p className="text-sm text-white/55">
+                                            Memuat berkas...
+                                          </p>
+                                        ) : mimeType.startsWith("image/") ? (
+                                          <a
+                                            href={view.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            title="Buka foto ukuran penuh"
+                                          >
+                                            <img
+                                              src={view.url}
+                                              alt={fileName}
+                                              className="max-h-72 w-full rounded-lg object-contain"
+                                            />
+                                          </a>
+                                        ) : mimeType === "application/pdf" ? (
+                                          <iframe
+                                            title={fileName}
+                                            src={view.url}
+                                            className="h-72 w-full rounded-lg bg-white"
+                                          />
+                                        ) : (
+                                          <div className="flex min-h-24 items-center justify-center rounded-lg border border-dashed border-white/20 text-sm text-white/60">
+                                            File siap diunduh
+                                          </div>
+                                        )}
+                                        {view?.url && (
+                                          <a
+                                            href={view.url}
+                                            download={fileName}
+                                            className="mt-3 inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10"
+                                          >
+                                            <Download className="h-4 w-4" />{" "}
+                                            Unduh{" "}
+                                            {mimeType.startsWith("image/")
+                                              ? "foto"
+                                              : "file"}
+                                          </a>
+                                        )}
+                                      </article>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <p className="mt-4 text-sm text-white/60">
+                                  Belum ada dokumen yang diunggah.
+                                </p>
+                              ))}
+                          </section>
+                        )}
                       </div>
                     </article>
                   ))}
                 </div>
+                {verificationError && (
+                  <p role="alert" className="mt-3 text-sm text-red-200">
+                    {verificationError}
+                  </p>
+                )}
               </SectionCard>
             </div>
           </div>
-          {proof && (
-            <div
-              className="fixed inset-0 z-60 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-              style={{ animation: "proof-fade-in 0.25s ease-out" }}
-              onClick={closeProof}
-            >
-              <div
-                className="group relative max-w-4xl"
-                style={{
-                  animation: "proof-zoom-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Top toolbar */}
-                <div
-                  className="absolute -top-14 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-2xl border border-white/20 bg-black/60 px-4 py-2.5 backdrop-blur-xl"
-                  style={{
-                    animation: "proof-slide-down 0.3s 0.1s ease-out both",
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
-                    <span className="text-sm font-semibold tracking-wide text-white/90">
-                      Bukti Pembayaran
-                    </span>
-                  </div>
-                </div>
-
-                {/* Close button */}
-                <button
-                  type="button"
-                  aria-label="Tutup Bukti Pembayaran"
-                  title="Tutup"
-                  onClick={closeProof}
-                  className="absolute -right-4 -top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white shadow-2xl backdrop-blur-xl transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:bg-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
-                  style={{
-                    animation:
-                      "proof-zoom-in 0.35s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both",
-                  }}
-                >
-                  <X size={20} />
-                </button>
-
-                {/* Image container */}
-                <div
-                  className="relative overflow-hidden rounded-2xl border border-white/25 bg-black/40 shadow-2xl shadow-black/50 backdrop-blur-md"
-                  style={{
-                    animation:
-                      "proof-zoom-in 0.35s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both",
-                  }}
-                >
-                  {/* Glass reflection overlay */}
-                  <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/5 to-transparent" />
-
-                  {proof.status === "loading" && (
-                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-3 text-white/70">
-                      <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
-                      <p className="text-sm">Memuat bukti pembayaran...</p>
-                    </div>
-                  )}
-
-                  {proof.status === "error" && (
-                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-2 px-6 text-center text-white/80">
-                      <p className="font-semibold">
-                        Bukti pembayaran gagal dimuat
-                      </p>
-                      <p className="text-sm text-white/60">
-                        Berkas tidak ditemukan atau sesi Anda sudah berakhir.
-                        Coba muat ulang halaman.
-                      </p>
-                    </div>
-                  )}
-
-                  {proof.status === "ready" && proof.isImage && (
-                    <img
-                      src={proof.url}
-                      alt="Proof of payment"
-                      className="max-h-[78vh] max-w-[90vw] object-contain sm:max-w-[85vw]"
-                    />
-                  )}
-
-                  {proof.status === "ready" && !proof.isImage && (
-                    <div className="flex h-64 w-72 flex-col items-center justify-center gap-4 px-6 text-center text-white/80">
-                      <p className="text-sm">
-                        Berkas ini bukan gambar sehingga tidak bisa
-                        ditampilkan di sini.
-                      </p>
-                      <a
-                        href={proof.url}
-                        download={proof.fileName}
-                        className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-                      >
-                        Unduh berkas
-                      </a>
-                    </div>
-                  )}
-
-                  {/* Bottom gradient fade */}
-                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-linear-to-t from-black/40 to-transparent" />
-                </div>
-
-                {/* Bottom caption bar */}
-                <div
-                  className="mt-3 flex items-center justify-center gap-2 text-center"
-                  style={{
-                    animation: "proof-slide-up 0.3s 0.2s ease-out both",
-                  }}
-                >
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-medium text-white/60 backdrop-blur-xl">
-                    <Eye size={14} className="text-white/40" />
-                    Klik di luar gambar untuk menutup
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

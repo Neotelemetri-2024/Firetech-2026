@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { Fragment, useState, useMemo } from "react";
 import {
   Search,
   ChevronDown,
@@ -9,8 +9,15 @@ import {
   X,
   Users,
   ArrowLeft,
+  ChevronRight,
+  Eye,
+  Trash2,
 } from "lucide-react";
+import type { Registration } from "../../services/registration.services";
 import Pagination from "../pagination";
+import UserDetailModal, {
+  type RegistrationVerificationAction,
+} from "../form/userdetailmodal";
 
 /* ─────────── Types ─────────── */
 
@@ -21,6 +28,13 @@ export type ParticipantRow = {
   eventName: string;
   registeredAt: string;
   team?: string;
+  members?: {
+    name: string;
+    email?: string;
+    phone?: string;
+    institution?: string;
+  }[];
+  registration?: Registration;
 };
 
 /* ─────────── Props ─────────── */
@@ -33,6 +47,11 @@ type ParticipantsTableProps = {
   /** Called when the user clicks "Back" to deselect the event */
   onBack?: () => void;
   pageSize?: number;
+  onVerificationAction?: (
+    action: RegistrationVerificationAction,
+    registrationId: number,
+  ) => Promise<void>;
+  onDelete?: (registration: Registration) => void;
 };
 
 /* ─────────── Helpers ─────────── */
@@ -86,13 +105,20 @@ export default function ParticipantsTable({
   selectedEvent,
   onBack,
   pageSize = 10,
+  onVerificationAction,
+  onDelete,
 }: ParticipantsTableProps) {
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedTeamId, setExpandedTeamId] = useState<string | null>(null);
+  const [registrationDetail, setRegistrationDetail] =
+    useState<Registration | null>(null);
   const showTeamColumn =
-    selectedEvent === "Hackathon" || selectedEvent === null;
+    selectedEvent === "Hackathon" ||
+    selectedEvent === "UI/UX Competition" ||
+    selectedEvent === null;
 
   /* ── Filter participants by selected event ── */
   const filtered = useMemo(() => {
@@ -110,7 +136,12 @@ export default function ParticipantsTable({
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.email.toLowerCase().includes(q) ||
-          (p.team && p.team.toLowerCase().includes(q)),
+          (p.team && p.team.toLowerCase().includes(q)) ||
+          p.members?.some((member) =>
+            [member.name, member.email, member.phone, member.institution].some(
+              (value) => value?.toLowerCase().includes(q),
+            ),
+          ),
       );
     }
 
@@ -137,6 +168,22 @@ export default function ParticipantsTable({
     }
     setCurrentPage(1);
   };
+
+  const modalProofFiles = useMemo(() => {
+    if (!registrationDetail) return [];
+    const allFiles = [
+      ...(registrationDetail.files ?? []),
+      ...registrationDetail.members.flatMap((member) => member.files ?? []),
+    ];
+    return [
+      ...new Map(allFiles.map((file) => [file.id, file])).values(),
+    ].filter(
+      (file) =>
+        /identity|identit|ktm|student.?card/i.test(file.kind) ||
+        (registrationDetail.competition?.name !== "Hackathon" &&
+          file.kind === "payment_proof"),
+    );
+  }, [registrationDetail]);
 
   /* ── Pagination ── */
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -264,65 +311,174 @@ export default function ParticipantsTable({
                         onSort={handleSort}
                       />
                     )}
+                    {(onVerificationAction || onDelete) && (
+                      <th className="px-4 py-4 text-right text-xs font-black uppercase tracking-[0.2em] text-white/70">
+                        Aksi
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {paginated.map((participant, index) => (
-                    <tr
-                      key={participant.id}
-                      className="transition-colors hover:bg-white/5"
-                    >
-                      {/* Number */}
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-xs font-bold text-white/50">
-                          {(currentPage - 1) * pageSize + index + 1}
-                        </span>
-                      </td>
-
-                      {/* Name */}
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)]">
-                            <UserRound className="h-4 w-4 text-white/70" />
-                          </div>
-                          <p className="font-black tracking-tight text-white">
-                            {participant.name}
-                          </p>
-                        </div>
-                      </td>
-
-                      {/* Email */}
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3.5 w-3.5 shrink-0 text-white/50" />
-                          <span className="font-semibold text-white/75">
-                            {participant.email}
+                    <Fragment key={participant.id}>
+                      <tr
+                        key={participant.id}
+                        className="transition-colors hover:bg-white/5"
+                      >
+                        {/* Number */}
+                        <td className="px-4 py-4 text-center">
+                          <span className="text-xs font-bold text-white/50">
+                            {(currentPage - 1) * pageSize + index + 1}
                           </span>
-                        </div>
-                      </td>
-
-                      {/* Event Name */}
-                      {/* <td className="px-4 py-4">
-                        <span className="inline-flex items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] px-3 py-1 text-xs font-bold text-white/85">
-                          {participant.eventName}
-                        </span>
-                      </td> */}
-
-                      {/* Team */}
-                      {showTeamColumn && (
-                        <td className="px-4 py-4">
-                          {participant.team ? (
-                            <span className="font-semibold text-white/80">
-                              {participant.team}
-                            </span>
-                          ) : (
-                            <span className="text-xs italic text-white/40">
-                              —
-                            </span>
-                          )}
                         </td>
-                      )}
-                    </tr>
+
+                        {/* Name */}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)]">
+                              <UserRound className="h-4 w-4 text-white/70" />
+                            </div>
+                            <p className="font-black tracking-tight text-white">
+                              {participant.name}
+                            </p>
+                            {participant.members &&
+                              participant.members.length > 0 && (
+                                <button
+                                  type="button"
+                                  aria-expanded={
+                                    expandedTeamId === participant.id
+                                  }
+                                  onClick={() =>
+                                    setExpandedTeamId((current) =>
+                                      current === participant.id
+                                        ? null
+                                        : participant.id,
+                                    )
+                                  }
+                                  className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-cyan-200 transition hover:text-white"
+                                >
+                                  <ChevronRight
+                                    className={`h-3.5 w-3.5 transition-transform ${expandedTeamId === participant.id ? "rotate-90" : ""}`}
+                                  />
+                                  Detail anggota &amp; dokumen (
+                                  {participant.members.length})
+                                </button>
+                              )}
+                          </div>
+                        </td>
+
+                        {/* Email */}
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-3.5 w-3.5 shrink-0 text-white/50" />
+                            <span className="font-semibold text-white/75">
+                              {participant.email}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Team */}
+                        {showTeamColumn && (
+                          <td className="px-4 py-4">
+                            {participant.team ? (
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="font-semibold text-white/80">
+                                  {participant.team}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="text-xs italic text-white/40">
+                                —
+                              </span>
+                            )}
+                          </td>
+                        )}
+                        {(onVerificationAction || onDelete) && (
+                          <td className="px-4 py-4">
+                            <div className="flex justify-end gap-2">
+                              {onVerificationAction &&
+                                participant.registration && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setRegistrationDetail(
+                                        participant.registration!,
+                                      )
+                                    }
+                                    aria-label={`Lihat detail ${participant.team || participant.name}`}
+                                    title="Lihat detail"
+                                    className="rounded-lg border border-cyan-300/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </button>
+                                )}
+                              {onDelete && participant.registration && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onDelete(participant.registration!)
+                                  }
+                                  aria-label={`Hapus pendaftaran ${participant.team || participant.name}`}
+                                  className="rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-200 transition hover:bg-red-500/20"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                      {expandedTeamId === participant.id &&
+                        participant.members && (
+                          <tr
+                            key={`${participant.id}-members`}
+                            className="bg-black/15"
+                          >
+                            <td
+                              colSpan={
+                                (showTeamColumn ? 4 : 3) +
+                                (onVerificationAction || onDelete ? 1 : 0)
+                              }
+                              className="px-6 py-4"
+                            >
+                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                {participant.members.map(
+                                  (member, memberIndex) => (
+                                    <div
+                                      key={`${participant.id}-member-${memberIndex}`}
+                                      className="rounded-xl border border-white/15 bg-white/5 p-3"
+                                    >
+                                      <p className="font-bold text-white">
+                                        {member.name}
+                                        {memberIndex === 0 ? (
+                                          <span className="ml-2 text-xs font-semibold text-blue-200">
+                                            Ketua
+                                          </span>
+                                        ) : null}
+                                      </p>
+                                      {member.email && (
+                                        <p className="mt-1 break-all text-xs text-white/65">
+                                          {member.email}
+                                        </p>
+                                      )}
+                                      {member.phone && (
+                                        <p className="mt-1 text-xs text-white/65">
+                                          {member.phone}
+                                        </p>
+                                      )}
+                                      {member.institution && (
+                                        <p className="mt-1 text-xs text-white/65">
+                                          {member.institution}
+                                        </p>
+                                      )}
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
@@ -353,6 +509,57 @@ export default function ParticipantsTable({
           </p>
         </div>
       )}
+      <UserDetailModal
+        key={registrationDetail?.id ?? "closed"}
+        open={registrationDetail !== null}
+        onClose={() => setRegistrationDetail(null)}
+        name={registrationDetail?.user.name ?? ""}
+        email={registrationDetail?.user.email ?? ""}
+        phone={registrationDetail?.members[0]?.phone ?? ""}
+        school={registrationDetail?.institution ?? ""}
+        registrationId={registrationDetail?.id}
+        proofFiles={modalProofFiles}
+        competitions={
+          registrationDetail
+            ? [
+                {
+                  registrationId: registrationDetail.id,
+                  title: registrationDetail.competition?.name ?? "Event",
+                  team: registrationDetail.teamName ?? "-",
+                  role: "",
+                  payment:
+                    registrationDetail.paymentStatus === "paid"
+                      ? "Paid"
+                      : registrationDetail.paymentStatus === "rejected"
+                        ? "Declined"
+                        : "Pending",
+                  submission:
+                    registrationDetail.status === "approved"
+                      ? "Submitted"
+                      : registrationDetail.status === "rejected"
+                        ? "Rejected"
+                        : "Pending",
+                  members: registrationDetail.members.map((member) => ({
+                    name: member.name,
+                    email: member.email,
+                    phone: member.phone,
+                    institution: member.institution,
+                  })),
+                },
+              ]
+            : []
+        }
+        verification={
+          registrationDetail && onVerificationAction
+            ? {
+                registrationStatus: registrationDetail.status,
+                paymentStatus: registrationDetail.paymentStatus,
+                onAction: (action) =>
+                  onVerificationAction(action, registrationDetail.id),
+              }
+            : undefined
+        }
+      />
     </div>
   );
 }
