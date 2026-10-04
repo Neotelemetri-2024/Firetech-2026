@@ -96,7 +96,7 @@ export default function Toast({
           </p>
 
           <p
-            className={`mt-0.5 truncate text-sm font-medium ${
+            className={`mt-0.5 text-sm font-medium ${
               darkMode ? "text-black" : "text-white"
             }`}
           >

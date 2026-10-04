@@ -110,7 +110,7 @@ export default function Apply() {
         .join(", ");
 
       setValidationMessage(
-        `Please complete the following required fields before proceeding: ${missingLabels}`,
+        `Harap lengkapi kolom wajib berikut sebelum melanjutkan: ${missingLabels}`,
       );
 
       setShowValidationToast(true);
@@ -259,7 +259,7 @@ export default function Apply() {
         setToastType("error");
 
         setValidationMessage(
-          `Please complete the following required fields before proceeding: ${missingLabels}`,
+          `Harap lengkapi kolom wajib berikut sebelum melanjutkan: ${missingLabels}`,
         );
 
         setShowValidationToast(true);
@@ -289,13 +289,13 @@ export default function Apply() {
 
       setToastType("success");
 
-      setValidationMessage("Registration submitted successfully!");
+      setValidationMessage("Pendaftaran berhasil dikirim! Silakan tunggu konfirmasi dari panitia.");
 
       setShowValidationToast(true);
     } catch (error: unknown) {
       console.error("REGISTER ERROR:", error);
 
-      let errorMessage = "Failed to submit registration.";
+      let errorMessage = "Gagal mengirim pendaftaran.";
 
       if (axios.isAxiosError(error)) {
         const responseData = error.response?.data as
@@ -314,7 +314,7 @@ export default function Apply() {
         errorMessage =
           [responseData?.message, validationDetails]
             .filter(Boolean)
-            .join(": ") || "Failed to submit registration.";
+            .join(": ") || "Gagal mengirim pendaftaran.";
       }
 
       setToastType("error");

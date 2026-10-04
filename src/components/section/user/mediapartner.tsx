@@ -1,8 +1,6 @@
 // Import React hooks untuk lifecycle management dan DOM manipulation
-import { useRef } from "react";
 import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
-import { headingVariants } from "../../animations/headingvariants";
 import Call from "../../button/call";
 import lombaTeknoLogo from "../../../assets/mediapartner/Logo LombaTekno.png";
 import lombaUiuxLogo from "../../../assets/mediapartner/Logo LombaUIUX.png";
@@ -37,25 +35,19 @@ const mediaPartners: MediaPartner[] = [
 
 // Main component untuk menampilkan media partner dengan animasi
 export default function MediaPartner() {
-  // Reference ke section element untuk scroll trigger
-  const sectionRef = useRef<HTMLElement>(null);
   const { darkMode } = useTheme();
-  void mediaPartners; // media partner cards are temporarily commented out
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-18">
+    <section className="relative overflow-hidden py-18">
       {/* Main content container */}
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Section header dengan title dan description */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, margin: "-80px" }}
-          className="mx-auto mb-24 max-w-3xl text-center"
-        >
+        <div className="mx-auto mb-24 max-w-3xl text-center">
           {/* Heading */}
           <motion.h2
-            variants={headingVariants.title}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
             className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             }`}
@@ -63,9 +55,7 @@ export default function MediaPartner() {
             OUR MEDIA PARTNER
           </motion.h2>
 
-          <motion.div
-            custom={2}
-            variants={headingVariants}
+          <div
             className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
               darkMode ? "bg-blue-700" : "bg-red-700"
             }`}
@@ -73,7 +63,9 @@ export default function MediaPartner() {
 
           {/* Deskripsi section */}
           <motion.p
-            variants={headingVariants.subtitle}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
             className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8  ${
               darkMode ? "text-black" : "text-white"
             }`}
@@ -81,22 +73,15 @@ export default function MediaPartner() {
             Bersama mitra media kami, Firetech memperluas jangkauan inovasi,
             teknologi, dan kewirausahaan kepada audiens yang lebih luas.
           </motion.p>
-        </motion.div>
+        </div>
         {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
         {/* ===== Desktop Media Partner ===== */}
 
         <div className="hidden lg:block mp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
-          <motion.div
-            variants={headingVariants.marqueeContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
-            className="mp-marquee-track flex w-max gap-12"
-          >
+          <div className="mp-marquee-track flex w-max gap-12">
             {[...mediaPartners, ...mediaPartners].map((item, index) => (
               <motion.div
                 key={`${item.name}-${index}`}
-                variants={headingVariants.marqueeItem}
                 whileHover={{
                   y: -8,
                   scale: 1.05,
@@ -131,7 +116,7 @@ export default function MediaPartner() {
                 />
               </motion.div>
             ))}
-          </motion.div>
+          </div>
 
           {/* ===== Coming Soon Overlay - Desktop ===== */}
           {/* <div className=" pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
@@ -216,13 +201,9 @@ export default function MediaPartner() {
 
         {/* ===== Note ===== */}
         <motion.p
-          variants={headingVariants.subtitle}
           initial="hidden"
           whileInView="visible"
-          viewport={{
-            once: false,
-            amount: 0.3,
-          }}
+          viewport={{ once: true, amount: 0.1 }}
           className={`mt-2 text-center font-space text-sm italic ${
             darkMode ? "text-slate-500" : "text-slate-500"
           }`}

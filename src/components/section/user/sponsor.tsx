@@ -1,7 +1,6 @@
 // Import React hooks untuk lifecycle management dan DOM manipulation
 import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
-import { headingVariants } from "../../animations/headingvariants";
 import Call from "../../button/call";
 import baraLogo from "../../../assets/sponsor/Bara.webp";
 import saynanaLogo from "../../../assets/sponsor/saynana.webp";
@@ -27,8 +26,6 @@ const sponsors: Sponsor[] = [
 // Main component untuk menampilkan sponsor dengan animasi
 export default function Sponsor() {
   const { darkMode } = useTheme();
-  void sponsors; // sponsor cards are temporarily commented out
-
   return (
     <section className="relative overflow-hidden py-18">
       {/* Main content container1 */}
@@ -37,13 +34,9 @@ export default function Sponsor() {
         <div className="sp-header mx-auto mb-24 max-w-3xl text-center">
           <div className="mb-8 text-center">
             <motion.h2
-              variants={headingVariants.title}
               initial="hidden"
               whileInView="visible"
-              viewport={{
-                once: false,
-                amount: 0.3,
-              }}
+              viewport={{ once: true, amount: 0.1 }}
               className={`
               text-5xl md:text-6xl
               font-black
@@ -55,22 +48,16 @@ export default function Sponsor() {
               OUR SPONSOR
             </motion.h2>
 
-            <motion.div
-              custom={2}
-              variants={headingVariants}
+            <div
               className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
                 darkMode ? "bg-blue-700" : "bg-red-700"
               }`}
             />
 
             <motion.p
-              variants={headingVariants.subtitle}
               initial="hidden"
               whileInView="visible"
-              viewport={{
-                once: false,
-                amount: 0.3,
-              }}
+              viewport={{ once: true, amount: 0.1 }}
               className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8 ${darkMode ? "text-slate-600" : "text-slate-400"}`}
             >
               Didukung dengan bangga oleh para pemimpin industri, perusahaan
@@ -83,13 +70,6 @@ export default function Sponsor() {
 
         <div className="hidden lg:block sp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
           <motion.div
-            variants={headingVariants.marqueeContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{
-              once: false,
-              amount: 0.2,
-            }}
             className="sp-marquee-track flex w-max gap-8"
             animate={{
               x: ["0%", "-50%"],
@@ -106,7 +86,6 @@ export default function Sponsor() {
             {[...sponsors, ...sponsors].map((item, index) => (
               <motion.div
                 key={`${item.name}-${index}`}
-                variants={headingVariants.marqueeItem}
                 whileHover={{
                   scale: 1.08,
                   rotate: 2,
@@ -227,13 +206,9 @@ export default function Sponsor() {
 
         {/* ===== Note ===== */}
         <motion.p
-          variants={headingVariants.subtitle}
           initial="hidden"
           whileInView="visible"
-          viewport={{
-            once: false,
-            amount: 0.3,
-          }}
+          viewport={{ once: true, amount: 0.1 }}
           className={`mt-2 text-center font-space text-sm italic ${
             darkMode ? "text-slate-500" : "text-slate-500"
           }`}

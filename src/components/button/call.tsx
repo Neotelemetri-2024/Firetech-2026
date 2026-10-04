@@ -24,7 +24,7 @@ export default function Call({
       rel="noopener noreferrer"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false }}
+      viewport={{ once: true, amount: 0.1 }}
       whileHover={{
         scale: 1.03,
         y: -4,
@@ -33,7 +33,7 @@ export default function Call({
         scale: 0.98,
       }}
       transition={{
-        duration: 0.4,
+        duration: 0.35,
       }}
       className={`
         group
