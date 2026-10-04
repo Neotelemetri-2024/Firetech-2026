@@ -29,7 +29,7 @@ export default function Sponsor() {
 
   return (
     <section className="relative overflow-hidden py-18">
-      {/* Main content container */}
+      {/* Main content container1 */}
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Section header dengan title dan description */}
         <div className="sp-header mx-auto mb-24 max-w-3xl text-center">
