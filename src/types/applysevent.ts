@@ -20,9 +20,11 @@ export type HackathonFormData = {
 };
 
 export type UiUxFormData = {
-  // Peserta tunggal, sesuai registration form UI/UX pada backend.
-  namaPemain: string;
+  namaTeam: string;
+  namaKetua: string;
   asalInstitusi: string;
+  anggota1: string;
+  anggota2: string;
   ktm: File | null;
   paymentProof: File | null;
 };

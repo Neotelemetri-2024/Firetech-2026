@@ -7,8 +7,8 @@ type AddMemberProps = {
   formData: {
     anggota1: string;
     anggota2: string;
-    anggota3: string;
-    anggota4: string;
+    anggota3?: string;
+    anggota4?: string;
     ktm?: File | null;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -23,9 +23,9 @@ export default function AddMember({
   return (
     <div className="space-y-8 animate-fadeIn">
       <FormField
-        label="Name Anggota 1"
+        label="Nama Anggota 1"
         name="anggota1"
-        placeholder="Full Name"
+        placeholder="Nama Lengkap"
         value={formData.anggota1}
         onChange={onChange}
         animationClass="animate-slideInLeft"
@@ -34,9 +34,9 @@ export default function AddMember({
       />
 
       <FormField
-        label="Name Anggota 2"
+        label="Nama Anggota 2"
         name="anggota2"
-        placeholder="Full Name"
+        placeholder="Nama Lengkap"
         value={formData.anggota2}
         onChange={onChange}
         animationClass="animate-slideInRight"
@@ -47,10 +47,10 @@ export default function AddMember({
       {maxAdditionalMembers === 4 && (
         <>
         <FormField
-          label="Name Anggota 3"
+          label="Nama Anggota 3"
           name="anggota3"
-          placeholder="Full Name"
-          value={formData.anggota3}
+          placeholder="Nama Lengkap"
+          value={formData.anggota3 ?? ""}
           onChange={onChange}
           animationClass="animate-slideInLeft"
           animationDelay="0.3s"
@@ -58,10 +58,10 @@ export default function AddMember({
         />
 
         <FormField
-          label="Name Anggota 4"
+          label="Nama Anggota 4"
           name="anggota4"
-          placeholder="Full Name"
-          value={formData.anggota4}
+          placeholder="Nama Lengkap"
+          value={formData.anggota4 ?? ""}
           onChange={onChange}
           animationClass="animate-slideInRight"
           animationDelay="0.4s"

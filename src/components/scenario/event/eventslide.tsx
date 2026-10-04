@@ -42,14 +42,22 @@ export default function EventSlide({
       return;
     }
 
-    let storedUser: { phone?: string; whatsapp?: string } = {};
+    let storedUser: { phone?: string; whatsapp?: string; role?: string } = {};
     try {
       storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     } catch {
       storedUser = {};
     }
 
-    if (!(storedUser.phone || storedUser.whatsapp || "").trim()) {
+    const role = String(
+      storedUser.role || localStorage.getItem("role") || "",
+    ).toUpperCase();
+    const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+
+    if (
+      !isAdmin &&
+      !(storedUser.phone || storedUser.whatsapp || "").trim()
+    ) {
       window.dispatchEvent(new Event("firetech-open-profile-modal"));
       return;
     }

@@ -69,7 +69,13 @@ export default function AdminDashboard() {
                 total + (registration.members?.length ?? 0),
               0,
             )
-          : (selectedEvent.slotsUsed ?? 0),
+          : selectedEvent.slug === "ui-ux-competition"
+            ? selectedEventRegistrations.reduce(
+                (total, registration) =>
+                  total + (registration.members?.length ?? 0),
+                0,
+              )
+            : (selectedEvent.slotsUsed ?? 0),
       ),
       label: "Partisipan",
       icon: "/src/assets/admin/dashboard/participant.webp",

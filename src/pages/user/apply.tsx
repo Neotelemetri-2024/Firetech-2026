@@ -165,17 +165,21 @@ export default function Apply() {
 
   const buildUiUxPayload = () => {
     const data = formData["UI/UX"];
+    const members = [data.namaKetua, data.anggota1, data.anggota2].filter(
+      Boolean,
+    );
 
     const payload = new FormData();
 
     payload.append(
       "fields",
       JSON.stringify({
+        teamName: data.namaTeam,
         institution: data.asalInstitusi,
       }),
     );
 
-    payload.append("members", JSON.stringify([data.namaPemain]));
+    payload.append("members", JSON.stringify(members));
 
     payload.append("message", "");
 

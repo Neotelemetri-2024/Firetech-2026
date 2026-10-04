@@ -25,8 +25,11 @@ export const initialApplyFormData: ApplyFormDataMap = {
   },
 
   "UI/UX": {
-    namaPemain: "",
+    namaTeam: "",
+    namaKetua: "",
     asalInstitusi: "",
+    anggota1: "",
+    anggota2: "",
     ktm: null,
     paymentProof: null,
   },
@@ -56,7 +59,7 @@ export const applyFormConfig: {
     Component: HackathonForm,
   },
   "UI/UX": {
-    steps: ["Informasi Peserta", "Pembayaran"],
+    steps: ["Informasi Tim", "Tambah Anggota", "Pembayaran"],
     Component: UiUxForm,
   },
   "E-Football": {
