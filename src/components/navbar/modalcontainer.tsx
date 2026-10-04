@@ -1,6 +1,6 @@
 import ProfileModal from "../form/profilemodal";
 import EditProfile from "../form/editprofile";
-import type { PaymentStatus, SubmissionStatus } from "../../types/user";
+import type { UserRegistrationStatus } from "../../types/user";
 
 interface ProfileUser {
   avatarUrl: string;
@@ -17,9 +17,7 @@ interface ProfileUser {
 
   team: string;
 
-  payment: PaymentStatus;
-
-  submission: SubmissionStatus;
+  registrationStatuses: UserRegistrationStatus[];
 
   timeline: {
     title: string;

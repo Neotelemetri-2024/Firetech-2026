@@ -10,6 +10,8 @@ import { useUserProfile } from "../hooks/useUserProfile";
 import NavbarModalContainer from "./navbar/modalcontainer";
 import { logout } from "../services/auth.services";
 import { getMyRegistrations } from "../services/registration.services";
+import type { Registration } from "../services/registration.services";
+import type { UserRegistrationStatus } from "../types/user";
 
 interface NavChild {
   label: string;
@@ -92,29 +94,122 @@ export default function Navbar() {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const { user, profileAlerts, updateProfile } = useUserProfile();
-  const [hasRegistration, setHasRegistration] = useState(false);
+  const { user, updateProfile } = useUserProfile();
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
 
   useEffect(() => {
     let cancelled = false;
-    if (!profileOpen || !isLoggedIn) {
-      setHasRegistration(false);
+    if (!isLoggedIn) {
+      setRegistrations([]);
       return;
     }
 
-    getMyRegistrations()
-      .then((registrations) => {
-        if (!cancelled) setHasRegistration(registrations.length > 0);
-      })
-      .catch((error) => {
-        console.error("Failed to load registrations:", error);
-        if (!cancelled) setHasRegistration(false);
-      });
+    const loadRegistrations = () => {
+      getMyRegistrations()
+        .then((registrations) => {
+          if (!cancelled) setRegistrations(registrations);
+        })
+        .catch((error) => {
+          console.error("Failed to load registrations:", error);
+          if (!cancelled) setRegistrations([]);
+        });
+    };
+
+    const reloadWhenVisible = () => {
+      if (document.visibilityState === "visible") loadRegistrations();
+    };
+
+    loadRegistrations();
+    window.addEventListener("focus", loadRegistrations);
+    window.addEventListener("firetech-registration-updated", loadRegistrations);
+    document.addEventListener("visibilitychange", reloadWhenVisible);
 
     return () => {
       cancelled = true;
+      window.removeEventListener("focus", loadRegistrations);
+      window.removeEventListener(
+        "firetech-registration-updated",
+        loadRegistrations,
+      );
+      document.removeEventListener("visibilitychange", reloadWhenVisible);
     };
-  }, [profileOpen, isLoggedIn]);
+  }, [isLoggedIn]);
+
+  const hasRegistration = registrations.length > 0;
+  const registrationStatuses = registrations.map(
+    (registration): UserRegistrationStatus => {
+      const competition =
+        registration.competition?.name ??
+        `Competition ${registration.competitionId}`;
+      const normalizedCompetition = competition.toLowerCase();
+      const isHackathon = normalizedCompetition.includes("hackathon");
+      const isEFootball = /e[\s-]?football/.test(normalizedCompetition);
+      const requiresPayment =
+        registration.competition?.requiresPayment ?? !isHackathon;
+      const requiresKtm =
+        registration.competition?.requiresKtm ?? !isEFootball;
+      const usesTeam =
+        registration.competition?.type !== undefined
+          ? registration.competition.type.toLowerCase() === "team"
+          : isHackathon;
+
+      return {
+        registrationId: registration.id,
+        competition,
+        payment:
+          registration.paymentStatus === "paid"
+            ? "Paid"
+            : registration.paymentStatus === "rejected"
+              ? "Declined"
+              : "Pending",
+        submission:
+          registration.ktmStatus === "approved"
+            ? "Approved"
+            : registration.ktmStatus === "rejected"
+              ? "Rejected"
+              : "Pending",
+        requiresPayment,
+        requiresKtm,
+        usesTeam,
+        team: registration.teamName,
+      };
+    },
+  );
+  const approvedRegistrations = registrationStatuses.filter(
+    (registration) =>
+      (!registration.requiresPayment || registration.payment === "Paid") &&
+      (!registration.requiresKtm || registration.submission === "Approved"),
+  );
+  const registrationAlertCount = isLoggedIn
+    ? registrationStatuses.reduce(
+        (count, registration) =>
+          count +
+          Number(
+            registration.requiresPayment && registration.payment !== "Paid",
+          ) +
+          Number(
+            registration.requiresKtm &&
+              registration.submission !== "Approved",
+          ),
+        0,
+      )
+    : Number(!user.email) + Number(!user.phone);
+  const profileUser = {
+    ...user,
+    registrationStatuses,
+    team:
+      registrationStatuses
+        .filter(
+          (registration): registration is UserRegistrationStatus & { team: string } =>
+            registration.usesTeam && Boolean(registration.team),
+        )
+        .map((registration) => `${registration.team} (${registration.competition})`)
+        .join(", ") || "—",
+    competition:
+      approvedRegistrations
+        .map((registration) => registration.competition)
+        .join(", ") || "—",
+  };
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navigate = useNavigate();
@@ -157,6 +252,22 @@ export default function Navbar() {
 
     return () => {
       window.removeEventListener("auth-state-changed", syncAuthState);
+    };
+  }, []);
+
+  useEffect(() => {
+    const openProfileModal = () => setProfileOpen(true);
+
+    window.addEventListener(
+      "firetech-open-profile-modal",
+      openProfileModal,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "firetech-open-profile-modal",
+        openProfileModal,
+      );
     };
   }, []);
 
@@ -418,7 +529,7 @@ export default function Navbar() {
 
           <NavbarActions
             darkMode={darkMode}
-            profileAlerts={profileAlerts}
+            profileAlerts={registrationAlertCount}
             isLoggedIn={isLoggedIn}
             onProfileClick={() => setProfileOpen(true)}
             onLoginClick={handleLoginClick}
@@ -659,7 +770,7 @@ export default function Navbar() {
       <NavbarModalContainer
         profileOpen={profileOpen}
         editProfileOpen={editProfileOpen}
-        user={user}
+        user={profileUser}
         hasRegistration={hasRegistration}
         onLogout={handleLogout}
         onLogin={handleLoginClick}

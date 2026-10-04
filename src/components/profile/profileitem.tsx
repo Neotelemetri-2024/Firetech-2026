@@ -6,7 +6,7 @@ import { useTheme } from "../../context/themecontext";
 interface ProfileItemProps {
   icon: ReactNode;
   title: string;
-  value: string;
+  value: ReactNode;
   statusColor?: "success" | "warning" | "danger";
 }
 
@@ -56,13 +56,13 @@ export default function ProfileItem({
             {value}
           </div>
         ) : (
-          <p
+          <div
             className={`font-semibold ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
             {value}
-          </p>
+          </div>
         )}
       </div>
     </div>

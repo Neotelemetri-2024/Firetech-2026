@@ -32,15 +32,7 @@ const events = [
     image: hackathonImg,
     color: "#ef4444",
   },
-  // {
-  //   id: "02",
-  //   title: "Informatics Olympiad",
-  //   tagline: "Think Fast. Solve Smart.",
-  //   description:
-  //     "Uji pemikiran algoritmik dan keterampilan pemrograman Anda melalui serangkaian masalah menantang. Berkompetisi melawan pikiran terbaik dalam logika, efisiensi, dan penyelesaian masalah.",
-  //   image: informaticsImg,
-  //color: "#f59e0b",
-  //},
+
   {
     id: "02",
     slug: "ui-ux-competition",

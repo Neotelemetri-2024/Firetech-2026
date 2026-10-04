@@ -17,6 +17,7 @@ export function getPaymentTone(status: PaymentStatus): StatusTone {
 
 export function getSubmissionTone(status: SubmissionStatus): StatusTone {
   switch (status) {
+    case "Approved":
     case "Submitted":
       return "success";
 
@@ -43,7 +44,7 @@ export function getEmailStatus(email: string) {
 }
 
 export function getStatusColor(status: string): StatusTone {
-  if (status === "Paid" || status === "Submitted") {
+  if (status === "Paid" || status === "Approved" || status === "Submitted") {
     return "success";
   }
 

@@ -91,6 +91,10 @@ export default function UserDetailModal({
   const [proofViews, setProofViews] = useState<
     Record<number, { url?: string; type?: string; error?: boolean }>
   >({});
+  const whatsappNumber = phone.replace(/\D/g, "");
+  const whatsappLinkNumber = whatsappNumber.startsWith("0")
+    ? `62${whatsappNumber.slice(1)}`
+    : whatsappNumber;
 
   const runVerification = async (action: RegistrationVerificationAction) => {
     if (!verification) return;
@@ -230,16 +234,24 @@ export default function UserDetailModal({
                       WhatsApp :
                     </span>
 
-                    <a
-                      href={`https://wa.me/${phone.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Contact via WhatsApp"
-                      title="WhatsApp"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white"
-                    >
-                      <FaWhatsapp className="h-5 w-5" />
-                    </a>
+                    {whatsappNumber ? (
+                      <>
+                        <a
+                          href={`https://wa.me/${whatsappLinkNumber}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Contact via WhatsApp"
+                          title="WhatsApp"
+                          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white"
+                        >
+                          <FaWhatsapp className="h-5 w-5" />
+                        </a>
+
+                        <span className="text-white">{phone}</span>
+                      </>
+                    ) : (
+                      <span className="text-white/60">Belum ada</span>
+                    )}
                   </div>
                   <InfoLine label="Institution :" value={school} />
                 </div>
@@ -316,51 +328,53 @@ export default function UserDetailModal({
                                   reject: "reject-payment",
                                 },
                               ] as const
-                            ).filter((item) =>
-                              item.kind === "ktm"
-                                ? verification.requiresKtm
-                                : verification.requiresPayment,
-                            ).map((item) => (
-                              <section
-                                key={item.title}
-                                className="w-fit max-w-full rounded-2xl border border-white/15 bg-black/10 p-4"
-                              >
-                                <h5 className="text-sm font-bold text-white/65">
-                                  {item.title}
-                                </h5>
-                                <p className="mt-1 text-xs text-white/80">
-                                  Status: {item.status || "pending"}
-                                </p>
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <button
-                                    type="button"
-                                    disabled={busyAction !== null}
-                                    onClick={() =>
-                                      void runVerification(item.approve)
-                                    }
-                                    className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/30 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-400/20 disabled:opacity-50"
-                                  >
-                                    <Check className="h-3.5 w-3.5" />{" "}
-                                    {busyAction === item.approve
-                                      ? "Menyimpan..."
-                                      : "Setujui"}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    disabled={busyAction !== null}
-                                    onClick={() =>
-                                      void runVerification(item.reject)
-                                    }
-                                    className="inline-flex items-center gap-1.5 rounded-lg border border-red-300/30 bg-red-400/10 px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-red-400/20 disabled:opacity-50"
-                                  >
-                                    <X className="h-3.5 w-3.5" />{" "}
-                                    {busyAction === item.reject
-                                      ? "Menyimpan..."
-                                      : "Tolak"}
-                                  </button>
-                                </div>
-                              </section>
-                            ))}
+                            )
+                              .filter((item) =>
+                                item.kind === "ktm"
+                                  ? verification.requiresKtm
+                                  : verification.requiresPayment,
+                              )
+                              .map((item) => (
+                                <section
+                                  key={item.title}
+                                  className="w-fit max-w-full rounded-2xl border border-white/15 bg-black/10 p-4"
+                                >
+                                  <h5 className="text-sm font-bold text-white/65">
+                                    {item.title}
+                                  </h5>
+                                  <p className="mt-1 text-xs text-white/80">
+                                    Status: {item.status || "pending"}
+                                  </p>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      disabled={busyAction !== null}
+                                      onClick={() =>
+                                        void runVerification(item.approve)
+                                      }
+                                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/30 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-400/20 disabled:opacity-50"
+                                    >
+                                      <Check className="h-3.5 w-3.5" />{" "}
+                                      {busyAction === item.approve
+                                        ? "Menyimpan..."
+                                        : "Setujui"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={busyAction !== null}
+                                      onClick={() =>
+                                        void runVerification(item.reject)
+                                      }
+                                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-300/30 bg-red-400/10 px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-red-400/20 disabled:opacity-50"
+                                    >
+                                      <X className="h-3.5 w-3.5" />{" "}
+                                      {busyAction === item.reject
+                                        ? "Menyimpan..."
+                                        : "Tolak"}
+                                    </button>
+                                  </div>
+                                </section>
+                              ))}
                           </div>
                         )}
 

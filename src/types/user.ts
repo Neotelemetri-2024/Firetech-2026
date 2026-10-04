@@ -1,6 +1,21 @@
 export type PaymentStatus = "Paid" | "Pending" | "Declined";
 
-export type SubmissionStatus = "Submitted" | "Pending" | "Rejected";
+export type SubmissionStatus =
+  | "Approved"
+  | "Submitted"
+  | "Pending"
+  | "Rejected";
+
+export type UserRegistrationStatus = {
+  registrationId: number;
+  competition: string;
+  payment: PaymentStatus;
+  submission: SubmissionStatus;
+  requiresPayment: boolean;
+  requiresKtm: boolean;
+  usesTeam: boolean;
+  team: string | null;
+};
 
 export type UserCompetitionMember = {
   name: string;

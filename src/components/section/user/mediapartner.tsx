@@ -15,19 +15,19 @@ type MediaPartner = {
 const mediaPartners: MediaPartner[] = [
   {
     name: "Media Partner 1",
-    logo: "/public/vite.svg",
+    logo: "/src/assets/mediapartner/Logo LombaTekno.png",
   },
   {
     name: "Media Partner 2",
-    logo: "/src/assets/event/fasttyping.webp",
+    logo: "/src/assets/mediapartner/Logo LombaUIUX.png",
   },
   {
     name: "Media Partner 3",
-    logo: "/images/mediapartner3.png",
+    logo: "/src/assets/mediapartner/Logo TeknoEventCampus25.png",
   },
   {
     name: "Media Partner 4",
-    logo: "/images/mediapartner4.png",
+    logo: "/src/assets/mediapartner/LowoTeknoEvent251.png",
   },
 ];
 
@@ -82,7 +82,7 @@ export default function MediaPartner() {
         {/* ===== Desktop Media Partner ===== */}
 
         <div className="hidden lg:block mp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
-          {/* <motion.div
+          <motion.div
             variants={headingVariants.marqueeContainer}
             initial="hidden"
             whileInView="visible"
@@ -127,10 +127,10 @@ export default function MediaPartner() {
                 />
               </motion.div>
             ))}
-          </motion.div> */}
+          </motion.div>
 
           {/* ===== Coming Soon Overlay - Desktop ===== */}
-          <div className=" pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
+          {/* <div className=" pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{
@@ -150,24 +150,24 @@ export default function MediaPartner() {
               </span>
               Coming Soon
             </motion.div>
-          </div>
+          </div> */}
         </div>
 
         {/* ===== Mobile Media Partner ===== */}
         <div className="relative min-h-48 lg:hidden">
-          {/* <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
             {mediaPartners.map((item) => (
               <div
                 key={item.name}
                 className="
-        flex
-        items-center
-        justify-center
-        rounded-2xl
-        border
-        border-white/10
-        p-6
-      "
+                flex
+                items-center
+                justify-center
+                rounded-2xl
+                border
+                border-white/10
+                p-6
+              "
               >
                 <img
                   src={item.logo}
@@ -176,10 +176,10 @@ export default function MediaPartner() {
                 />
               </div>
             ))}
-          </div> */}
+          </div>
 
           {/* ===== Coming Soon Overlay - Mobile ===== */}
-          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
+          {/* <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{
@@ -199,7 +199,7 @@ export default function MediaPartner() {
               </span>
               Coming Soon
             </motion.div>
-          </div>
+          </div> */}
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl">

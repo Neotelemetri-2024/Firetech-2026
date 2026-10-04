@@ -21,7 +21,7 @@ import {
 
 import { useEffect, useState } from "react";
 import ProfileItem from "../profile/profileitem";
-import type { PaymentStatus, SubmissionStatus } from "../../types/user";
+import type { UserRegistrationStatus } from "../../types/user";
 import ProfileAlert from "../profile/profilealert";
 import ProfilePreview from "../profile/profilepreview";
 
@@ -40,8 +40,7 @@ interface UserData {
   participantId: string;
   competition: string;
   team: string;
-  payment: PaymentStatus;
-  submission: SubmissionStatus;
+  registrationStatuses: UserRegistrationStatus[];
 
   timeline: TimelineData;
 }
@@ -70,6 +69,12 @@ export default function ProfileModal({
   const emailStatus = getEmailStatus(user.email);
 
   const isLoggedIn = Boolean(user.email);
+  const paymentRegistrations = user.registrationStatuses.filter(
+    (registration) => registration.requiresPayment,
+  );
+  const submissionRegistrations = user.registrationStatuses.filter(
+    (registration) => registration.requiresKtm,
+  );
 
   const getTimelineReminder = () => {
     const today = new Date();
@@ -91,9 +96,41 @@ export default function ProfileModal({
     return null;
   };
   const profileAlerts = [
-    !user.phone && "Nomor WhatsApp belum ditambahkan",
-    isLoggedIn && user.payment !== "Paid" && "Pembayaran Belum Diselesaikan.",
-    isLoggedIn && user.submission !== "Submitted" && "Pengumpulan Berkas Belum Diunggah",
+    !isLoggedIn && emailStatus.label === "Not Verified" && "Belum login",
+    !user.phone && "Nomor WhatsApp belum diisi",
+    ...(isLoggedIn
+      ? user.registrationStatuses.flatMap((registration) => {
+          const alerts: string[] = [];
+
+          if (
+            registration.requiresPayment &&
+            registration.payment === "Pending"
+          ) {
+            alerts.push(
+              `${registration.competition}: pembayaran menunggu verifikasi.`,
+            );
+          } else if (
+            registration.requiresPayment &&
+            registration.payment === "Declined"
+          ) {
+            alerts.push(`${registration.competition}: pembayaran ditolak.`);
+          }
+
+          if (
+            registration.requiresKtm &&
+            registration.submission === "Pending"
+          ) {
+            alerts.push(`${registration.competition}: KTM menunggu verifikasi.`);
+          } else if (
+            registration.requiresKtm &&
+            registration.submission === "Rejected"
+          ) {
+            alerts.push(`${registration.competition}: KTM ditolak.`);
+          }
+
+          return alerts;
+        })
+      : []),
     getTimelineReminder(),
   ].filter((alert): alert is string => Boolean(alert));
 
@@ -214,19 +251,67 @@ export default function ProfileModal({
                 title="WhatsApp"
                 value={user.phone || "Not set"}
               />
-              {isLoggedIn && <ProfileItem
+              {isLoggedIn && paymentRegistrations.length > 0 && <ProfileItem
                 icon={<CreditCard size={18} />}
                 title="Payment"
-                value={hasRegistration ? user.payment : "—"}
-                statusColor={hasRegistration ? getPaymentTone(user.payment) : undefined}
+                value={(
+                  <div className="space-y-1.5">
+                    {paymentRegistrations.map((registration) => {
+                      const tone = getPaymentTone(registration.payment);
+                      return (
+                        <p
+                          key={registration.registrationId}
+                          className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1"
+                        >
+                          <span>{registration.competition}</span>
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs ${
+                              tone === "success"
+                                ? "bg-green-500/15 text-green-500"
+                                : tone === "warning"
+                                  ? "bg-yellow-500/15 text-yellow-500"
+                                  : "bg-red-500/15 text-red-500"
+                            }`}
+                          >
+                            {registration.payment}
+                          </span>
+                        </p>
+                      );
+                    })}
+                  </div>
+                )}
               />}
-              {isLoggedIn && <ProfileItem
+              {isLoggedIn && submissionRegistrations.length > 0 && <ProfileItem
                 icon={<FileText size={18} />}
                 title="Submission"
-                value={hasRegistration ? user.submission : "—"}
-                statusColor={hasRegistration ? getSubmissionTone(user.submission) : undefined}
+                value={(
+                  <div className="space-y-1.5">
+                    {submissionRegistrations.map((registration) => {
+                      const tone = getSubmissionTone(registration.submission);
+                      return (
+                        <p
+                          key={registration.registrationId}
+                          className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1"
+                        >
+                          <span>{registration.competition}</span>
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-xs ${
+                              tone === "success"
+                                ? "bg-green-500/15 text-green-500"
+                                : tone === "warning"
+                                  ? "bg-yellow-500/15 text-yellow-500"
+                                  : "bg-red-500/15 text-red-500"
+                            }`}
+                          >
+                            {registration.submission}
+                          </span>
+                        </p>
+                      );
+                    })}
+                  </div>
+                )}
               />}
-              {isLoggedIn && hasRegistration && <ProfileItem
+              {isLoggedIn && user.team && user.team !== "—" && <ProfileItem
                 icon={<Users size={18} />}
                 title="Team"
                 value={user.team}

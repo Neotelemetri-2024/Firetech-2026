@@ -4,11 +4,13 @@ import {
   getCompetitions,
   type Competition,
 } from "../../services/competition.services";
+import { getRegistrations, type Registration } from "../../services/registration.services";
 
 export default function AdminDashboard() {
   const [currentEvent, setCurrentEvent] = useState(0);
 
   const [events, setEvents] = useState<Competition[]>([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,6 +18,11 @@ export default function AdminDashboard() {
       try {
         const competitions = await getCompetitions();
         setEvents(competitions);
+        try {
+          setRegistrations(await getRegistrations());
+        } catch (error) {
+          console.error("Failed to fetch registrations:", error);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -41,10 +48,29 @@ export default function AdminDashboard() {
   }
 
   const selectedEvent = events[currentEvent];
+  const verifiedHackathonTeams =
+    selectedEvent.slug === "hackathon"
+      ? registrations.filter(
+          (registration) =>
+            registration.competitionId === selectedEvent.id &&
+            registration.ktmStatus === "approved",
+        )
+      : [];
+  const selectedEventRegistrations = registrations.filter(
+    (registration) => registration.competitionId === selectedEvent.id,
+  );
 
   const visibleStats = [
     {
-      value: String(selectedEvent.slotsUsed ?? 0),
+      value: String(
+        selectedEvent.slug === "hackathon"
+          ? verifiedHackathonTeams.reduce(
+              (total, registration) =>
+                total + (registration.members?.length ?? 0),
+              0,
+            )
+          : (selectedEvent.slotsUsed ?? 0),
+      ),
       label: "Partisipan",
       icon: "/src/assets/admin/dashboard/participant.webp",
     },
@@ -53,14 +79,27 @@ export default function AdminDashboard() {
   if (selectedEvent.slug === "hackathon") {
     visibleStats.push(
       {
-        value: String(selectedEvent.participantQuota ?? 0),
+        value: String(verifiedHackathonTeams.length),
         label: "Tim",
         icon: "/src/assets/admin/dashboard/team.webp",
       },
       {
+        value: String(verifiedHackathonTeams.length),
+        label: "Terverifikasi",
+        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+      },
+    );
+  } else if (selectedEvent.slug === "ui-ux-competition") {
+    visibleStats.push(
+      {
         value: String(selectedEvent.totalRegistrations ?? 0),
         label: "Pembayaran",
         icon: "/src/assets/admin/dashboard/payment.webp",
+      },
+      {
+        value: String(selectedEventRegistrations.length),
+        label: "Tim",
+        icon: "/src/assets/admin/dashboard/team.webp",
       },
       {
         value: String(selectedEvent.slotsLeft ?? 0),
@@ -68,6 +107,16 @@ export default function AdminDashboard() {
         icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
       },
     );
+  } else if (selectedEvent.slug === "e-football") {
+    visibleStats.push({
+      value: String(
+        selectedEventRegistrations.filter(
+          (registration) => registration.paymentStatus === "paid",
+        ).length,
+      ),
+      label: "Pembayaran",
+      icon: "/src/assets/admin/dashboard/payment.webp",
+    });
   } else {
     visibleStats.push(
       {
@@ -104,8 +153,10 @@ export default function AdminDashboard() {
 
           {/* Stats Grid */}
           <div
-            className={`mt-10 grid w-full max-w-7xl gap-3 sm:gap-4 ${
-              visibleStats.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"
+            className={`mx-auto mt-10 grid w-full gap-3 sm:gap-4 ${
+              selectedEvent.slug === "e-football"
+                ? "max-w-4xl md:grid-cols-2"
+                : `max-w-7xl ${visibleStats.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"}`
             }`}
           >
             {visibleStats.map((stat, index) => (

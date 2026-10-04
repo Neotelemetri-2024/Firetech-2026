@@ -397,7 +397,21 @@ export default function AdminUser() {
 
             email: user.email,
 
-            phone: userRegistrations[0]?.members?.[0]?.phone ?? "-",
+            phone:
+              user.phone ||
+              user.whatsapp ||
+              user.phoneNumber ||
+              user.whatsappNumber ||
+              user.phone_number ||
+              user.whatsapp_number ||
+              user.profile?.phone ||
+              user.profile?.whatsapp ||
+              user.profile?.phoneNumber ||
+              user.profile?.whatsappNumber ||
+              user.profile?.phone_number ||
+              user.profile?.whatsapp_number ||
+              userRegistrations[0]?.members?.[0]?.phone ||
+              "-",
 
             school: userRegistrations[0]?.institution ?? "-",
 

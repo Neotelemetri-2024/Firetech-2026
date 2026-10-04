@@ -78,7 +78,7 @@ export default function RegistrationToggleModal({
           </div>
 
           <div className="mt-5 text-center">
-            <div className="mx-auto mb-5 grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-amber-400/40 bg-amber-500/15 text-amber-300 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+            <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-full border border-amber-400/40 bg-amber-500/15 text-amber-300 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
               {isClosed ? <LockOpen className="h-8 w-8" /> : <Lock className="h-8 w-8" />}
             </div>
             <h2 id="registration-toggle-title" className="text-2xl font-black uppercase tracking-wide">

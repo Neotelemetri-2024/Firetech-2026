@@ -28,9 +28,34 @@ export default function EventSlide({
   const handleExploreChallenge = () => {
     if (!canRegister) return;
 
+    if (title === "Fast Typing") {
+      window.open(
+        "https://fast-typing-firetech2026.vercel.app/",
+        "_blank",
+        "noopener,noreferrer",
+      );
+      return;
+    }
+
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/login");
+      return;
+    }
+
+    let storedUser: { phone?: string; whatsapp?: string } = {};
+    try {
+      storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      storedUser = {};
+    }
+
+    if (!(storedUser.phone || storedUser.whatsapp || "").trim()) {
+      window.dispatchEvent(new Event("firetech-open-profile-modal"));
+      return;
+    }
+
     const eventMap: Record<string, string> = {
       Hackathon: "hackathon",
-      "Fast Typing": "ft",
       "E-Football": "e-football",
       "UI/UX": "ui-ux-competition",
     };
@@ -45,15 +70,6 @@ export default function EventSlide({
       }),
     );
 
-    if (title === "Fast Typing") {
-      window.open(
-        "https://fast-typing-firetech2026.vercel.app/",
-        "_blank",
-        "noopener,noreferrer",
-      );
-      return;
-    }
-
     navigate("/home/apply", {
       state: {
         category: title,
@@ -66,7 +82,9 @@ export default function EventSlide({
   const buttonLabel = isFull
     ? "Quota Full"
     : status === "open"
-      ? "Register"
+      ? title === "Fast Typing"
+        ? "Go to Website"
+        : "Register"
       : status === "upcoming"
         ? "Coming Soon"
         : status === "closed"

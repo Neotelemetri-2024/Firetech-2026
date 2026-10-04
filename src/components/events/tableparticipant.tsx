@@ -320,12 +320,14 @@ export default function ParticipantsTable({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                  {paginated.map((participant, index) => (
-                    <Fragment key={participant.id}>
-                      <tr
-                        key={participant.id}
-                        className="transition-colors hover:bg-white/5"
-                      >
+                  {paginated.map((participant, index) => {
+                    const isEFootball = /e[\s-]?football/i.test(
+                      participant.eventName,
+                    );
+
+                    return (
+                      <Fragment key={participant.id}>
+                        <tr className="transition-colors hover:bg-white/5">
                         {/* Number */}
                         <td className="px-4 py-4 text-center">
                           <span className="text-xs font-bold text-white/50">
@@ -342,7 +344,8 @@ export default function ParticipantsTable({
                             <p className="font-black tracking-tight text-white">
                               {participant.name}
                             </p>
-                            {participant.members &&
+                            {!isEFootball &&
+                              participant.members &&
                               participant.members.length > 0 && (
                                 <button
                                   type="button"
@@ -429,7 +432,8 @@ export default function ParticipantsTable({
                           </td>
                         )}
                       </tr>
-                      {expandedTeamId === participant.id &&
+                      {!isEFootball &&
+                        expandedTeamId === participant.id &&
                         participant.members && (
                           <tr
                             key={`${participant.id}-members`}
@@ -479,8 +483,9 @@ export default function ParticipantsTable({
                             </td>
                           </tr>
                         )}
-                    </Fragment>
-                  ))}
+                      </Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -516,7 +521,22 @@ export default function ParticipantsTable({
         onClose={() => setRegistrationDetail(null)}
         name={registrationDetail?.user.name ?? ""}
         email={registrationDetail?.user.email ?? ""}
-        phone={registrationDetail?.members[0]?.phone ?? ""}
+        phone={
+          registrationDetail?.user.phone ||
+          registrationDetail?.user.whatsapp ||
+          registrationDetail?.user.phoneNumber ||
+          registrationDetail?.user.whatsappNumber ||
+          registrationDetail?.user.phone_number ||
+          registrationDetail?.user.whatsapp_number ||
+          registrationDetail?.user.profile?.phone ||
+          registrationDetail?.user.profile?.whatsapp ||
+          registrationDetail?.user.profile?.phoneNumber ||
+          registrationDetail?.user.profile?.whatsappNumber ||
+          registrationDetail?.user.profile?.phone_number ||
+          registrationDetail?.user.profile?.whatsapp_number ||
+          registrationDetail?.members[0]?.phone ||
+          ""
+        }
         school={registrationDetail?.institution ?? ""}
         registrationId={registrationDetail?.id}
         proofFiles={modalProofFiles}

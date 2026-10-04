@@ -14,23 +14,11 @@ type Sponsor = {
 const sponsors: Sponsor[] = [
   {
     name: "Sponsor 1",
-    logo: "/public/vite.svg",
+    logo: "/src/assets/sponsor/Bara.webp",
   },
   {
     name: "Sponsor 2",
-    logo: "/public/tabaringpov.webp",
-  },
-  {
-    name: "Sponsor 3",
-    logo: "/images/sponsor3.png",
-  },
-  {
-    name: "Sponsor 4",
-    logo: "/images/sponsor4.png",
-  },
-  {
-    name: "Sponsor 5",
-    logo: "/images/sponsor5.png",
+    logo: "/src/assets/sponsor/saynana.webp",
   },
 ];
 
@@ -92,7 +80,7 @@ export default function Sponsor() {
         {/* ===== Desktop Sponsor ===== */}
 
         <div className="hidden lg:block sp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
-          {/* <motion.div
+          <motion.div
             variants={headingVariants.marqueeContainer}
             initial="hidden"
             whileInView="visible"
@@ -127,16 +115,16 @@ export default function Sponsor() {
                   damping: 18,
                 }}
                 className="
-          sp-card
-          group
-          relative
-          w-64
-          shrink-0
-          overflow-hidden
-          p-8
-          cursor-pointer
-          perspective-1000
-        "
+                sp-card
+                group
+                relative
+                w-64
+                shrink-0
+                overflow-hidden
+                p-8
+                cursor-pointer
+                perspective-1000
+              "
               >
                 <img
                   src={item.logo}
@@ -152,10 +140,10 @@ export default function Sponsor() {
                 />
               </motion.div>
             ))}
-          </motion.div> */}
+          </motion.div>
 
           {/* ===== Coming Soon Overlay - Desktop ===== */}
-          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
+          {/* <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{
@@ -175,24 +163,24 @@ export default function Sponsor() {
               </span>
               Coming Soon
             </motion.div>
-          </div>
+          </div> */}
         </div>
 
         {/* ===== Mobile Sponsor ===== */}
         <div className="relative min-h-48 lg:hidden">
-          {/* <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
             {sponsors.map((item) => (
               <div
                 key={item.name}
                 className="
-        flex
-        items-center
-        justify-center
-        rounded-2xl
-        border
-        border-white/10
-        p-6
-      "
+                flex
+                items-center
+                justify-center
+                rounded-2xl
+                border
+                border-white/10
+                p-6
+              "
               >
                 <img
                   src={item.logo}
@@ -201,10 +189,10 @@ export default function Sponsor() {
                 />
               </div>
             ))}
-          </div> */}
+          </div>
 
           {/* ===== Coming Soon Overlay - Mobile ===== */}
-          <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
+          {/* <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{
@@ -224,7 +212,7 @@ export default function Sponsor() {
               </span>
               Coming Soon
             </motion.div>
-          </div>
+          </div> */}
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl">

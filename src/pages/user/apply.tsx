@@ -277,6 +277,7 @@ export default function Apply() {
       const response = await registerCompetition(competition.id, payload);
 
       console.log("REGISTER SUCCESS:", response);
+      window.dispatchEvent(new Event("firetech-registration-updated"));
 
       setFormData(initialApplyFormData);
 
