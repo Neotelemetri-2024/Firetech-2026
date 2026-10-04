@@ -10,7 +10,6 @@ import hackathonImg from "../../../assets/gallery/gallery1.webp";
 import uiuxImg from "../../../assets/event/uiux.webp";
 import efootballImg from "../../../assets/event/efootball.webp";
 import fasttypingImg from "../../../assets/event/fasttyping.webp";
-//import informaticsImg from "../../../assets/event/informaticsolympiad.webp";
 import { headingVariants } from "../../animations/headingvariants";
 import { getCompetitions } from "../../../services/competition.services";
 

@@ -5,6 +5,10 @@ import {
   type Competition,
 } from "../../services/competition.services";
 import { getRegistrations, type Registration } from "../../services/registration.services";
+import participantIcon from "../../assets/admin/dashboard/participant.webp";
+import teamIcon from "../../assets/admin/dashboard/team.webp";
+import verifiedPaymentIcon from "../../assets/admin/dashboard/verifiedpayment.webp";
+import paymentIcon from "../../assets/admin/dashboard/payment.webp";
 
 export default function AdminDashboard() {
   const [currentEvent, setCurrentEvent] = useState(0);
@@ -78,7 +82,7 @@ export default function AdminDashboard() {
             : (selectedEvent.slotsUsed ?? 0),
       ),
       label: "Partisipan",
-      icon: "/src/assets/admin/dashboard/participant.webp",
+      icon: participantIcon,
     },
   ];
 
@@ -87,12 +91,12 @@ export default function AdminDashboard() {
       {
         value: String(verifiedHackathonTeams.length),
         label: "Tim",
-        icon: "/src/assets/admin/dashboard/team.webp",
+        icon: teamIcon,
       },
       {
         value: String(verifiedHackathonTeams.length),
         label: "Terverifikasi",
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+        icon: verifiedPaymentIcon,
       },
     );
   } else if (selectedEvent.slug === "ui-ux-competition") {
@@ -100,17 +104,17 @@ export default function AdminDashboard() {
       {
         value: String(selectedEvent.totalRegistrations ?? 0),
         label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
+        icon: paymentIcon,
       },
       {
         value: String(selectedEventRegistrations.length),
         label: "Tim",
-        icon: "/src/assets/admin/dashboard/team.webp",
+        icon: teamIcon,
       },
       {
         value: String(selectedEvent.slotsLeft ?? 0),
         label: "Terverifikasi",
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+        icon: verifiedPaymentIcon,
       },
     );
   } else if (selectedEvent.slug === "e-football") {
@@ -121,19 +125,19 @@ export default function AdminDashboard() {
         ).length,
       ),
       label: "Pembayaran",
-      icon: "/src/assets/admin/dashboard/payment.webp",
+      icon: paymentIcon,
     });
   } else {
     visibleStats.push(
       {
         value: String(selectedEvent.totalRegistrations ?? 0),
         label: "Pembayaran",
-        icon: "/src/assets/admin/dashboard/payment.webp",
+        icon: paymentIcon,
       },
       {
         value: String(selectedEvent.slotsLeft ?? 0),
         label: "Terverifikasi",
-        icon: "/src/assets/admin/dashboard/verifiedpayment.webp",
+        icon: verifiedPaymentIcon,
       },
     );
   }

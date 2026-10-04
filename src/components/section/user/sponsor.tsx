@@ -3,6 +3,8 @@ import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
 import Call from "../../button/call";
+import baraLogo from "../../../assets/sponsor/Bara.webp";
+import saynanaLogo from "../../../assets/sponsor/saynana.webp";
 
 // Tipe data untuk sponsor dengan property name dan logo
 type Sponsor = {
@@ -14,11 +16,11 @@ type Sponsor = {
 const sponsors: Sponsor[] = [
   {
     name: "Sponsor 1",
-    logo: "/src/assets/sponsor/Bara.webp",
+    logo: baraLogo,
   },
   {
     name: "Sponsor 2",
-    logo: "/src/assets/sponsor/saynana.webp",
+    logo: saynanaLogo,
   },
 ];
 

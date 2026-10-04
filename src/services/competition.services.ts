@@ -63,6 +63,12 @@ export const getAdminCompetitionById = async (id: number) => {
   return response.data.data;
 };
 
+export const checkAdminAccess = async (): Promise<void> => {
+  await api.get("/admin/competitions", {
+    params: { page: 1, limit: 1 },
+  });
+};
+
 export const updateCompetition = async (
   id: number,
   payload: UpdateCompetitionPayload,

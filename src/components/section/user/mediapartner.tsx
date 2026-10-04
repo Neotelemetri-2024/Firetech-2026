@@ -4,6 +4,10 @@ import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
 import { headingVariants } from "../../animations/headingvariants";
 import Call from "../../button/call";
+import lombaTeknoLogo from "../../../assets/mediapartner/Logo LombaTekno.png";
+import lombaUiuxLogo from "../../../assets/mediapartner/Logo LombaUIUX.png";
+import teknoEventCampusLogo from "../../../assets/mediapartner/Logo TeknoEventCampus25.png";
+import lowoTeknoEventLogo from "../../../assets/mediapartner/LowoTeknoEvent251.png";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -15,19 +19,19 @@ type MediaPartner = {
 const mediaPartners: MediaPartner[] = [
   {
     name: "Media Partner 1",
-    logo: "/src/assets/mediapartner/Logo LombaTekno.png",
+    logo: lombaTeknoLogo,
   },
   {
     name: "Media Partner 2",
-    logo: "/src/assets/mediapartner/Logo LombaUIUX.png",
+    logo: lombaUiuxLogo,
   },
   {
     name: "Media Partner 3",
-    logo: "/src/assets/mediapartner/Logo TeknoEventCampus25.png",
+    logo: teknoEventCampusLogo,
   },
   {
     name: "Media Partner 4",
-    logo: "/src/assets/mediapartner/LowoTeknoEvent251.png",
+    logo: lowoTeknoEventLogo,
   },
 ];
 
