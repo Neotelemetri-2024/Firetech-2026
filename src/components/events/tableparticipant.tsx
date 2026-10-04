@@ -547,7 +547,11 @@ export default function ParticipantsTable({
                   registrationId: registrationDetail.id,
                   title: registrationDetail.competition?.name ?? "Event",
                   team: registrationDetail.teamName ?? "-",
-                  role: "",
+                  role: /hackathon|ui\s*\/?\s*ux/i.test(
+                    registrationDetail.competition?.name ?? "",
+                  )
+                    ? "Ketua"
+                    : "",
                   payment:
                     registrationDetail.paymentStatus === "paid"
                       ? "Paid"
@@ -575,16 +579,26 @@ export default function ParticipantsTable({
             ? {
               registrationStatus: registrationDetail.ktmStatus,
               paymentStatus: registrationDetail.paymentStatus,
-              requiresKtm:
-                registrationDetail.competition?.requiresKtm ??
-                !/e[- ]?football/i.test(
-                  registrationDetail.competition?.name ?? "",
-                ),
-              requiresPayment:
-                registrationDetail.competition?.requiresPayment ??
-                !/hackathon/i.test(
-                  registrationDetail.competition?.name ?? "",
-                ),
+              requiresKtm: (() => {
+                const competitionName =
+                  registrationDetail.competition?.name ?? selectedEvent ?? "";
+                if (/ui\s*\/?\s*ux|hackathon/i.test(competitionName)) return true;
+                if (/e[-\s]?football/i.test(competitionName)) return false;
+                return (
+                  registrationDetail.competition?.requiresKtm ??
+                  true
+                );
+              })(),
+              requiresPayment: (() => {
+                const competitionName =
+                  registrationDetail.competition?.name ?? selectedEvent ?? "";
+                if (/ui\s*\/?\s*ux|e[-\s]?football/i.test(competitionName)) return true;
+                if (/hackathon/i.test(competitionName)) return false;
+                return (
+                  registrationDetail.competition?.requiresPayment ??
+                  true
+                );
+              })(),
                 onAction: (action, reason) =>
                   onVerificationAction(action, registrationDetail.id, reason),
               }

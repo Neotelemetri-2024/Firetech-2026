@@ -193,6 +193,7 @@ export default function AdminEvent() {
       };
     };
     setRegistrations((current) => current.map(updateRegistration));
+    window.dispatchEvent(new Event("registrations:updated"));
     setToastMessage("Status pendaftaran berhasil diperbarui.");
     setShowToast(true);
   };

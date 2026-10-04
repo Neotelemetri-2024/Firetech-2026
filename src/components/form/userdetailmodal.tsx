@@ -3,6 +3,8 @@ import { FaWhatsapp } from "react-icons/fa";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import Toast from "../ui/toast";
 import type { UserCompetition } from "../../types/user";
 import {
   downloadRegistrationFile,
@@ -38,6 +40,8 @@ export type RegistrationVerificationAction =
   | "reject-payment";
 
 const EMPTY_PROOF_FILES: RegistrationFile[] = [];
+const isTeamCompetition = (title: string) =>
+  /hackathon|ui\s*\/?\s*ux/i.test(title);
 
 function InfoLine({ label, value }: { label: string; value: string }) {
   return (
@@ -87,6 +91,10 @@ export default function UserDetailModal({
   const [localPaymentStatus, setLocalPaymentStatus] = useState(
     verification?.paymentStatus ?? "",
   );
+  const [successToast, setSuccessToast] = useState("");
+  const [completedVerificationKinds, setCompletedVerificationKinds] = useState<
+    Array<"ktm" | "payment">
+  >([]);
   const [showProofs, setShowProofs] = useState(false);
   const [proofViews, setProofViews] = useState<
     Record<number, { url?: string; type?: string; error?: boolean }>
@@ -107,11 +115,51 @@ export default function UserDetailModal({
     setVerificationError("");
     try {
       await verification.onAction(action, reason);
-      if (action === "approve") setLocalRegistrationStatus("approved");
-      if (action === "reject") setLocalRegistrationStatus("rejected");
-      if (action === "approve-payment") setLocalPaymentStatus("paid");
-      if (action === "reject-payment") setLocalPaymentStatus("rejected");
-      onClose();
+      const nextRegistrationStatus =
+        action === "approve"
+          ? "approved"
+          : action === "reject"
+            ? "rejected"
+            : localRegistrationStatus;
+      const nextPaymentStatus =
+        action === "approve-payment"
+          ? "paid"
+          : action === "reject-payment"
+            ? "rejected"
+            : localPaymentStatus;
+
+      setLocalRegistrationStatus(nextRegistrationStatus);
+      setLocalPaymentStatus(nextPaymentStatus);
+
+      const actionKind =
+        action === "approve" || action === "reject" ? "ktm" : "payment";
+      const nextCompletedKinds = new Set<"ktm" | "payment">([
+        ...completedVerificationKinds,
+        actionKind,
+      ]);
+      setCompletedVerificationKinds([...nextCompletedKinds]);
+
+      const isUiUxCompetition = competitions.some((competition) =>
+        /ui\s*\/?\s*ux/i.test(competition.title),
+      );
+      const mustCompleteBothUiUxVerifications =
+        isUiUxCompetition &&
+        verification.requiresKtm &&
+        verification.requiresPayment;
+      const bothUiUxActionsCompleted =
+        (!verification.requiresKtm || nextCompletedKinds.has("ktm")) &&
+        (!verification.requiresPayment || nextCompletedKinds.has("payment"));
+
+      if (
+        !mustCompleteBothUiUxVerifications ||
+        bothUiUxActionsCompleted
+      ) {
+        onClose();
+      } else {
+        setSuccessToast(
+          "Verifikasi tersimpan. Silakan lanjutkan verifikasi berikutnya.",
+        );
+      }
     } catch {
       setVerificationError("Aksi gagal disimpan. Silakan coba lagi.");
     } finally {
@@ -166,21 +214,26 @@ export default function UserDetailModal({
     };
   }, [open, showProofs, registrationId, proofFiles]);
 
-  if (!open) return null;
-
   return createPortal(
-    <div
-      className="fixed inset-0 z-10000 flex items-center justify-center overflow-y-auto bg-black/70 px-3 py-4 backdrop-blur-md"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="user-detail-title"
-      style={{ animation: "proof-fade-in 0.25s ease-out" }}
-    >
-      <div
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="user-detail-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+          className="fixed inset-0 z-10000 flex items-center justify-center overflow-y-auto bg-black/70 px-3 py-4 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="user-detail-title"
+        >
+        <motion.div
+        initial={{ opacity: 0, scale: 0.97, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.98, y: 8 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         className="relative flex w-full max-w-255 max-h-[90vh] flex-col overflow-hidden rounded-[1.8rem] border border-white/30 bg-[radial-gradient(circle_at_15%_15%,rgba(248,113,113,0.38),transparent_28%),radial-gradient(circle_at_78%_78%,rgba(96,165,250,0.28),transparent_30%),linear-gradient(120deg,#3b0d1a_0%,#5d0d22_20%,#1d2c4a_58%,#114ba5_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
-        style={{
-          animation: "proof-zoom-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-        }}
       >
         <div className="pointer-events-none absolute -left-16 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-10 bottom-2 h-44 w-44 rounded-full bg-[#5b7cff]/20 blur-3xl" />
@@ -200,6 +253,16 @@ export default function UserDetailModal({
         </button>
 
         <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
+          {successToast && (
+            <div className="mb-4">
+              <Toast
+                open
+                message={successToast}
+                duration={3000}
+                onClose={() => setSuccessToast("")}
+              />
+            </div>
+          )}
           <div
             className="mb-5 border-b border-white/80 pb-4"
             style={{ animation: "proof-slide-down 0.3s 0.08s ease-out both" }}
@@ -282,17 +345,20 @@ export default function UserDetailModal({
                     animation: "proof-fade-in 0.3s 0.28s ease-out both",
                   }}
                 >
-                  {competitions.map((competition) => (
-                    <article
-                      key={`${competition.title}-${competition.team}`}
-                      className="py-4 text-white/85"
-                    >
+                  {competitions.map((competition) => {
+                    const teamCompetition = isTeamCompetition(competition.title);
+
+                    return (
+                      <article
+                        key={`${competition.title}-${competition.team}`}
+                        className="py-4 text-white/85"
+                      >
                       <h4 className="text-lg font-black uppercase tracking-wide sm:text-xl">
                         {competition.title}
                       </h4>
 
                       <div className="mt-4 space-y-3 text-[1rem] sm:text-[1.02rem]">
-                        {competition.title === "Hackathon" && (
+                        {teamCompetition && (
                           <p className="flex flex-wrap gap-2">
                             <span className="font-bold">Tim</span>
                             <span>:</span>
@@ -300,8 +366,7 @@ export default function UserDetailModal({
                           </p>
                         )}
 
-                        {competition.title === "Hackathon" &&
-                          competition.role && (
+                        {teamCompetition && competition.role && (
                             <p className="flex flex-wrap gap-2">
                               <span className="font-bold">Role</span>
                               <span>:</span>
@@ -480,8 +545,9 @@ export default function UserDetailModal({
                           </section>
                         )}
                       </div>
-                    </article>
-                  ))}
+                      </article>
+                    );
+                  })}
                 </div>
                 {verificationError && (
                   <p role="alert" className="mt-3 text-sm text-red-200">
@@ -492,8 +558,10 @@ export default function UserDetailModal({
             </div>
           </div>
         </div>
-      </div>
-    </div>,
+        </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body,
   );
 }

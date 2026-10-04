@@ -114,6 +114,8 @@ export default function Event() {
     const track = trackRef.current;
     if (!section || !track) return;
     const panels = gsap.utils.toArray<HTMLElement>(".panel", track);
+    if (panels.length < 2) return;
+
     const ctx = gsap.context(() => {
       gsap.set(track, { y: TRACK_OFFSET });
       gsap.to(track, {

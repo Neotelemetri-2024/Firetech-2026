@@ -40,6 +40,8 @@ export type UserCompetition = {
 
   payment: PaymentStatus;
   submission: SubmissionStatus;
+  requiresPayment?: boolean;
+  requiresSubmission?: boolean;
 
   /** URL gambar yang bisa langsung dipakai `<img>` (hanya data dummy). */
   paymentProof?: string;
@@ -55,6 +57,8 @@ export type UserItem = {
 
   name: string;
   email: string;
+  role?: string;
+  hasRegistration?: boolean;
   phone: string;
   school: string;
 

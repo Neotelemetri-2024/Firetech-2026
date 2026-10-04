@@ -93,6 +93,8 @@ export function useUserProfile() {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem("accessToken")) return;
+
     const loadProfile = async () => {
       try {
         const profile = await getProfile();
@@ -112,7 +114,14 @@ export function useUserProfile() {
           }),
         );
       } catch (error) {
-        console.error(error);
+        const status = (
+          error as { response?: { status?: number } }
+        ).response?.status;
+
+        // Guest or expired sessions can receive 401; this is an expected auth state.
+        if (status !== 401) {
+          console.error("Failed to load user profile:", error);
+        }
       }
     };
 

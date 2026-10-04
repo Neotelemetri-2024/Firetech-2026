@@ -224,10 +224,6 @@ export default function Navbar() {
   );
 
   useEffect(() => {
-    console.log("ACTIVE EVENT:", activeEvent);
-  }, [activeEvent]);
-
-  useEffect(() => {
     const handleEventChange = (event: Event) => {
       const customEvent = event as CustomEvent<string>;
 

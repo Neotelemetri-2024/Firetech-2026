@@ -21,7 +21,7 @@ export default function NavbarActions({
 }: NavbarActionsProps) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const role = user.role?.toUpperCase();
+  const role = String(user.role || localStorage.getItem("role") || "").toUpperCase();
 
   const isAdmin = role?.includes("ADMIN") ?? false;
   return (

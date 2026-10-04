@@ -1,11 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
 
 import { useTheme } from "../../../context/themecontext";
 
 import { headingVariants } from "../../animations/headingvariants";
-import { initTimelineAnimation } from "../../animations/timeline";
-
 import roadImage from "../../../assets/timeline/road.webp";
 import TimelineCheckpoint from "../../ui/checkpoint";
 
@@ -14,10 +12,6 @@ import { timelineEvents } from "../../../data/timeline";
 export default function Timeline() {
   const sectionRef = useRef<HTMLElement>(null);
   const { darkMode } = useTheme();
-
-  useEffect(() => {
-    initTimelineAnimation();
-  }, []);
 
   const cardOffsets = ["mt-34", "mt-34", "mt-[44px]", "mt-[44px]"];
   return (

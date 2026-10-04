@@ -10,9 +10,11 @@ import {
   CreditCard,
   FileCheck,
   CheckCircle,
+  ChevronDown,
 } from "lucide-react";
 
 import type { ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { useState, useEffect } from "react";
 
@@ -79,19 +81,16 @@ function StatusBadge({
 }: {
   icon: typeof CreditCard;
   label: string;
-  status: PaymentStatus | SubmissionStatus;
+  status: PaymentStatus | SubmissionStatus | "—";
 }) {
-  const tone = getStatusColor(status);
-
-  const colorMap = {
-    success: "border-emerald-400/30 bg-emerald-500/15 text-emerald-300",
-
-    warning: "border-amber-400/30 bg-amber-500/15 text-amber-300",
-
-    danger: "border-red-400/30 bg-red-500/15 text-red-300",
-  };
-
-  const color = colorMap[tone];
+  const color =
+    status === "—"
+      ? "border-white/15 bg-white/5 text-white/50"
+      : {
+          success: "border-emerald-400/30 bg-emerald-500/15 text-emerald-300",
+          warning: "border-amber-400/30 bg-amber-500/15 text-amber-300",
+          danger: "border-red-400/30 bg-red-500/15 text-red-300",
+        }[getStatusColor(status)];
 
   return (
     <div className="flex items-center gap-2">
@@ -119,6 +118,14 @@ function UserCard({
   onView: () => void;
   onDelete: () => void;
 }) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const isAdmin = ["ADMIN", "SUPER_ADMIN"].includes(
+    user.role?.toUpperCase() ?? "",
+  );
+  const registeredCompetitions = user.competitions.filter(
+    (competition) => competition.registrationId !== undefined,
+  );
+
   return (
     <article className="rounded-3xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] p-4 sm:p-5 transition cursor-pointer hover:-translate-y-0.5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -137,50 +144,122 @@ function UserCard({
             </p>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <StatusBadge
-              icon={CreditCard}
-              label="Pembayaran"
-              status={user.paymentStatus}
-            />
-
-            <StatusBadge
-              icon={FileCheck}
-              label="Pengumpulan"
-              status={user.submissionStatus}
-            />
-          </div>
+          {!isAdmin && (
+            user.hasRegistration ? (
+              <div className="mt-4 space-y-3">
+                {registeredCompetitions.length > 1 && (
+                  <button
+                    type="button"
+                    aria-expanded={detailsOpen}
+                    onClick={() => setDetailsOpen((open) => !open)}
+                    className="flex w-full items-center justify-between rounded-xl border border-white/15 bg-black/10 px-4 py-3 text-left text-sm font-bold text-white transition hover:bg-white/10"
+                  >
+                    <span>
+                      {registeredCompetitions.length} event terdaftar - {detailsOpen ? "Sembunyikan detail status" : "Lihat detail status"}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: detailsOpen ? 180 : 0 }}
+                      transition={{ duration: 0.28, ease: "easeInOut" }}
+                      className="flex shrink-0"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </motion.span>
+                  </button>
+                )}
+                <AnimatePresence initial={false}>
+                  {(registeredCompetitions.length <= 1 || detailsOpen) && (
+                    <motion.div
+                      key="registration-statuses"
+                      initial={{ height: 0, opacity: 0, y: -6 }}
+                      animate={{ height: "auto", opacity: 1, y: 0 }}
+                      exit={{ height: 0, opacity: 0, y: -6 }}
+                      transition={{
+                        height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+                        opacity: { duration: 0.22, ease: "easeOut" },
+                        y: { duration: 0.28, ease: "easeOut" },
+                      }}
+                      className="space-y-3 overflow-hidden"
+                    >
+                      {registeredCompetitions.map((competition) => (
+                        <div
+                          key={competition.registrationId}
+                          className="flex flex-col gap-2 rounded-xl border border-white/10 bg-black/10 p-3"
+                        >
+                          <p className="text-xs font-bold uppercase tracking-wide text-white/70">
+                            {competition.title}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-4">
+                            {competition.requiresPayment !== false && (
+                              <StatusBadge
+                                icon={CreditCard}
+                                label="Pembayaran"
+                                status={competition.payment}
+                              />
+                            )}
+                            {competition.requiresSubmission !== false && (
+                              <StatusBadge
+                                icon={FileCheck}
+                                label="Pengumpulan"
+                                status={competition.submission}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <StatusBadge
+                  icon={CreditCard}
+                  label="Pembayaran"
+                  status="—"
+                />
+                <StatusBadge
+                  icon={FileCheck}
+                  label="Pengumpulan"
+                  status="—"
+                />
+              </div>
+            )
+          )}
         </div>
 
-        <div className="flex flex-col gap-3 md:items-end">
-          {/* EVENT TAG */}
-          <div className="flex flex-wrap gap-2">
-            {user.eventTags.map((tag) => (
-              <UserTag key={tag}>{tag}</UserTag>
-            ))}
-          </div>
+        {!isAdmin && (
+          <div className="flex flex-col gap-3 md:items-end">
+            {/* EVENT TAG */}
+            {user.eventTags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {user.eventTags.map((tag) => (
+                  <UserTag key={tag}>{tag}</UserTag>
+                ))}
+              </div>
+            )}
 
-          {/* ACTION BUTTON */}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onView}
-              aria-label={`View ${user.name}'s details`}
-              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/85 transition hover:-translate-y-0.5 hover:text-white"
-            >
-              <Eye className="h-4 w-4" />
-            </button>
+            {/* ACTION BUTTON */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onView}
+                aria-label={`View ${user.name}'s details`}
+                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)] text-white/85 transition hover:-translate-y-0.5 hover:text-white"
+              >
+                <Eye className="h-4 w-4" />
+              </button>
 
-            <button
-              type="button"
-              onClick={onDelete}
-              aria-label={`Hapus ${user.name}`}
-              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+              <button
+                type="button"
+                onClick={onDelete}
+                aria-label={`Hapus ${user.name}`}
+                className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </article>
   );
@@ -308,10 +387,22 @@ export default function AdminUser() {
     const matchesEvent = !eventFilter || user.eventTags.includes(eventFilter);
 
     const matchesPayment =
-      !paymentFilter || user.paymentStatus === paymentFilter;
+      !paymentFilter ||
+      (user.hasRegistration &&
+          user.competitions.some(
+          (competition) =>
+            competition.requiresPayment !== false &&
+            competition.payment === paymentFilter,
+        ));
 
     const matchesSubmission =
-      !submissionFilter || user.submissionStatus === submissionFilter;
+      !submissionFilter ||
+      (user.hasRegistration &&
+          user.competitions.some(
+          (competition) =>
+            competition.requiresSubmission !== false &&
+            competition.submission === submissionFilter,
+        ));
 
     const matchesTeam =
       !teamFilter ||
@@ -397,6 +488,10 @@ export default function AdminUser() {
 
             email: user.email,
 
+            role: user.role,
+
+            hasRegistration: userRegistrations.length > 0,
+
             phone:
               user.phone ||
               user.whatsapp ||
@@ -451,11 +546,25 @@ export default function AdminUser() {
 
                       team: registration.teamName ?? "-",
 
-                      role: competitionName === "Hackathon" ? "Ketua" : "",
+                      role: /hackathon|ui\s*\/?\s*ux/i.test(competitionName)
+                        ? "Ketua"
+                        : "",
 
                       payment: mapPaymentStatus(registration.paymentStatus),
 
                       submission: mapSubmissionStatus(registration.ktmStatus),
+
+                      requiresPayment: /hackathon/i.test(competitionName)
+                        ? false
+                        : /e[-\s]?football/i.test(competitionName)
+                          ? true
+                          : (registration.competition?.requiresPayment ?? true),
+
+                      requiresSubmission: /e[-\s]?football/i.test(competitionName)
+                        ? false
+                        : /hackathon/i.test(competitionName)
+                          ? true
+                          : (registration.competition?.requiresKtm ?? true),
 
                       // Isinya diambil modal lewat endpoint berkas (butuh token),
                       // jadi yang disimpan di sini hanya rujukannya.
@@ -499,6 +608,12 @@ export default function AdminUser() {
     };
 
     fetchData();
+    window.addEventListener("focus", fetchData);
+    window.addEventListener("registrations:updated", fetchData);
+    return () => {
+      window.removeEventListener("focus", fetchData);
+      window.removeEventListener("registrations:updated", fetchData);
+    };
   }, []);
 
   return (
@@ -511,6 +626,12 @@ export default function AdminUser() {
                 title="Managemen User"
                 subtitle="Tinjau peserta yang terdaftar, filter status mereka, dan pindai partisipasi acara."
               />
+              <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-100/90">
+                Badge pada menu User menghitung status yang masih perlu
+                ditindaklanjuti: pembayaran selain <strong>Paid</strong> dan
+                pengumpulan KTM selain <strong>Submitted</strong>. Kedua
+                kategori dihitung terpisah untuk setiap pendaftaran.
+              </p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {stats.map((stat) => (
                   <InfoChip

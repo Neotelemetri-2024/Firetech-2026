@@ -150,38 +150,30 @@ export default function Auth() {
                       credentialResponse.credential,
                     );
 
-                    console.log("LOGIN SUCCESS");
-                    console.log(response);
-
                     const accessToken = response?.data?.accessToken;
                     const user = response?.data?.user;
 
-                    console.log("ACCESS TOKEN:", accessToken);
-                    console.log("USER:", user);
-                    console.log("ROLE:", user?.role);
-
-                    if (accessToken) {
-                      localStorage.setItem("accessToken", accessToken);
+                    if (!accessToken) {
+                      throw new Error("Login response did not include an access token");
                     }
+
+                    localStorage.setItem("accessToken", accessToken);
 
                     if (user) {
                       localStorage.setItem("user", JSON.stringify(user));
+                      if (typeof user.role === "string") {
+                        localStorage.setItem("role", user.role.toUpperCase());
+                      }
                     }
 
-                    const role = String(user?.role || "").toUpperCase();
-
-                    if (role === "ADMIN" || role === "SUPER_ADMIN") {
-                      window.location.href = "/admin";
-                    } else {
-                      window.location.href = "/home";
-                    }
-                  } catch (error) {
-                    console.error("GOOGLE LOGIN ERROR:", error);
+                    // The server-validated AdminRoute chooses the destination
+                    // for both admin and participant accounts.
+                    window.location.href = "/admin";
+                  } catch {
+                    console.error("Google login failed.");
                   }
                 }}
-                onError={() => {
-                  console.error("GOOGLE LOGIN FAILED");
-                }}
+                onError={() => console.error("Google login failed.")}
                 theme="outline"
                 size="large"
                 shape="pill"

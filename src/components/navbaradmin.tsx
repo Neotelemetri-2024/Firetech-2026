@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, Globe2, Menu, X } from "lucide-react";
 import LogoutButton from "./button/logout";
 import Tooltip from "./ui/tooltip";
@@ -7,15 +7,13 @@ import { logout } from "../services/auth.services";
 import { motion, LayoutGroup } from "framer-motion";
 import FiretechLogo from "../assets/firetech.webp";
 import Badge from "./ui/badge";
-// import { users } from "../data/user";
+import { getRegistrations } from "../services/registration.services";
 
 type NavItem = {
   label: string;
   href: string;
   badge?: number;
 };
-
-// const totalUsers = users.length;
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/admin" },
@@ -33,10 +31,54 @@ function isActivePath(pathname: string, href: string) {
 
 export default function NavbarAdmin() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userStatusBadge, setUserStatusBadge] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadStatusBadge = async () => {
+      try {
+        const registrations = await getRegistrations();
+        const count = registrations.reduce((total, registration) => {
+          const competitionName = registration.competition?.name ?? "";
+          const normalizedName = competitionName.toLowerCase();
+          const isHackathon = normalizedName.includes("hackathon");
+          const isEFootball = /e[\s-]?football/.test(normalizedName);
+          const requiresPayment =
+            registration.competition?.requiresPayment ?? !isHackathon;
+          const requiresKtm =
+            registration.competition?.requiresKtm ?? !isEFootball;
+
+          return (
+            total +
+            Number(requiresPayment && registration.paymentStatus !== "paid") +
+            Number(requiresKtm && registration.ktmStatus !== "approved")
+          );
+        }, 0);
+
+        if (!cancelled) setUserStatusBadge(count);
+      } catch (error) {
+        console.error("Failed to load user status badge:", error);
+        if (!cancelled) setUserStatusBadge(0);
+      }
+    };
+
+    loadStatusBadge();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [location.pathname]);
+
+  const visibleNavItems = navItems.map((item) =>
+    item.href === "/admin/users"
+      ? { ...item, badge: userStatusBadge }
+      : item,
+  );
 
   const aosAttrs = (delay: number) => ({
     "data-aos": "fade-down" as const,
@@ -70,6 +112,7 @@ export default function NavbarAdmin() {
       localStorage.removeItem("token");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
 
       sessionStorage.clear();
 
@@ -82,6 +125,7 @@ export default function NavbarAdmin() {
       localStorage.removeItem("token");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
 
       sessionStorage.clear();
 
@@ -126,7 +170,7 @@ export default function NavbarAdmin() {
             >
               <LayoutGroup>
                 <ul className="flex items-center gap-6 rounded-full lg:gap-12">
-                  {navItems.map((item) => {
+                  {visibleNavItems.map((item) => {
                     const isActive = isActivePath(location.pathname, item.href);
 
                     return (
@@ -277,7 +321,7 @@ export default function NavbarAdmin() {
 
             <nav className="p-3" aria-label="Admin mobile navigation">
               <ul className="grid gap-2">
-                {navItems.map((item) => {
+                {visibleNavItems.map((item) => {
                   const isActive = isActivePath(location.pathname, item.href);
                   return (
                     <li key={item.href}>

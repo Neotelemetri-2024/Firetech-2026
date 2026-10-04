@@ -1,8 +1,11 @@
 import { gsap } from "../../utils/gsap";
 
 export const initTimelineAnimation = () => {
+  const roadPath = document.querySelector<SVGElement>("#roadPath");
+  if (!roadPath) return;
+
   gsap.fromTo(
-    "#roadPath",
+    roadPath,
     {
       strokeDasharray: 4000,
       strokeDashoffset: 4000,
