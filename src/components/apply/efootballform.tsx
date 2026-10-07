@@ -1,10 +1,13 @@
 import type { EfootballFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import Payment from "./payment";
+import type { RegistrationFile } from "../../services/registration.services";
 
 type EfootballFormProps = {
   step: number;
   formData: EfootballFormData;
+  existingFiles?: RegistrationFile[];
+  registrationId?: number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -12,6 +15,8 @@ type EfootballFormProps = {
 export default function EfootballForm({
   step,
   formData,
+  existingFiles,
+  registrationId,
   onChange,
 }: EfootballFormProps) {
   if (step === 1) {
@@ -47,6 +52,8 @@ export default function EfootballForm({
     <Payment
       amount={25000}
       paymentProof={formData.paymentProof}
+      existingFiles={existingFiles}
+      registrationId={registrationId}
       onChange={onChange}
     />
   );

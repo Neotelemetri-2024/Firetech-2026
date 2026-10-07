@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { UploadCloud, FileText, Trash2, Eye, X, Info } from "lucide-react";
 import { useTheme } from "../../context/themecontext";
+import {
+  downloadRegistrationFile,
+  type RegistrationFile,
+} from "../../services/registration.services";
 
 type FileUploadProps = {
   label: string;
   name: string;
   file: File | null;
+  existingFile?: RegistrationFile | null;
+  registrationId?: number | null;
   accept?: string;
   /** Teks format dan batas ukuran di bawah area unggah; ikuti `accept`. */
   hint?: string;
@@ -20,6 +26,8 @@ export default function FileUpload({
   label,
   name,
   file,
+  existingFile,
+  registrationId,
   accept = ".pdf",
   hint = "PDF • Maksimal 5 MB",
   note,
@@ -30,6 +38,8 @@ export default function FileUpload({
 }: FileUploadProps) {
   const { darkMode } = useTheme();
   const [showPreview, setShowPreview] = useState(false);
+  const [existingPreviewUrl, setExistingPreviewUrl] = useState<string | null>(null);
+  const [showExistingPreview, setShowExistingPreview] = useState(false);
 
   const isImage = !!file && file.type.startsWith("image/");
 
@@ -74,7 +84,7 @@ export default function FileUpload({
           </div>
         )}
 
-        {!file ? (
+        {!file && !existingFile ? (
           <label
             className={`
               group
@@ -128,6 +138,96 @@ export default function FileUpload({
               {hint}
             </span>
           </label>
+        ) : !file && existingFile ? (
+          <div
+            className={`rounded-2xl border p-4 ${
+              darkMode
+                ? "border-slate-300 bg-white"
+                : "border-slate-700 bg-slate-900/40"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <FileText
+                  size={22}
+                  className={darkMode ? "text-blue-600" : "text-red-500"}
+                />
+
+                <div className="min-w-0">
+                  <p
+                    className={`truncate text-sm font-semibold ${
+                      darkMode ? "text-slate-800" : "text-white"
+                    }`}
+                  >
+                    {existingFile.originalName ?? "Berkas tersimpan"}
+                  </p>
+
+                  <p
+                    className={`text-xs ${
+                      darkMode ? "text-slate-500" : "text-slate-400"
+                    }`}
+                  >
+                    Berkas sudah diunggah sebelumnya (unggah baru untuk mengganti)
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const blob = await downloadRegistrationFile(
+                        registrationId ?? 0,
+                        existingFile.id,
+                      );
+                      const url = URL.createObjectURL(blob);
+                      const isImg =
+                        blob.type.startsWith("image/") ||
+                        /image|png|jpeg|jpg/.test(existingFile.mimeType);
+                      const isPdf =
+                        blob.type === "application/pdf" ||
+                        /pdf/.test(existingFile.mimeType);
+                      if (isImg) {
+                        setExistingPreviewUrl(url);
+                        setShowExistingPreview(true);
+                      } else if (isPdf) {
+                        window.open(url, "_blank");
+                      } else {
+                        window.open(url, "_blank");
+                      }
+                    } catch (e) {
+                      console.error("Failed to preview file:", e);
+                    }
+                  }}
+                  className="cursor-pointer rounded-xl p-2 text-blue-600 transition hover:bg-blue-500/10"
+                  title="Preview File"
+                >
+                  <Eye size={18} />
+                </button>
+
+                <label className="cursor-pointer rounded-xl px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white transition hover:bg-blue-700">
+                  <span>Ganti File</span>
+                  <input
+                    type="file"
+                    name={name}
+                    accept={accept}
+                    className="hidden"
+                    onChange={onChange}
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="cursor-pointer rounded-xl p-2 text-red-500 transition hover:bg-red-500/10"
+                  title="Hapus File"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
         ) : (
           <div
             className={`rounded-2xl border p-4 ${
@@ -149,7 +249,7 @@ export default function FileUpload({
                       darkMode ? "text-slate-800" : "text-white"
                     }`}
                   >
-                    {file.name}
+                    {file?.name}
                   </p>
 
                   <p
@@ -157,7 +257,7 @@ export default function FileUpload({
                       darkMode ? "text-slate-500" : "text-slate-400"
                     }`}
                   >
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                    {file ? (file.size / 1024 / 1024).toFixed(2) : "0.00"} MB
                   </p>
                 </div>
               </div>
@@ -257,6 +357,74 @@ export default function FileUpload({
 
             <img
               src={URL.createObjectURL(file)}
+              alt="Preview"
+              className={`
+              rounded-2xl
+              object-contain
+              shadow-2xl
+              ${
+                previewSize === "sm"
+                  ? "max-h-[65vh] max-w-[65vw]"
+                  : "max-h-[90vh] max-w-[90vw]"
+              }
+            `}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Existing File Preview Modal */}
+      {showExistingPreview && existingPreviewUrl && (
+        <div
+          className="
+          fixed
+          inset-0
+          z-9999
+          flex
+          items-center
+          justify-center
+          bg-black/80
+          backdrop-blur-sm
+          p-4
+        "
+          onClick={() => {
+            setShowExistingPreview(false);
+            URL.revokeObjectURL(existingPreviewUrl);
+            setExistingPreviewUrl(null);
+          }}
+        >
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => {
+                setShowExistingPreview(false);
+                URL.revokeObjectURL(existingPreviewUrl);
+                setExistingPreviewUrl(null);
+              }}
+              className="
+              absolute
+              -right-3
+              -top-3
+              z-10
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              bg-red-600
+              text-white
+              shadow-lg
+              transition-all
+              hover:scale-110
+              cursor-pointer
+            "
+            >
+              <X size={18} />
+            </button>
+
+            <img
+              src={existingPreviewUrl}
               alt="Preview"
               className={`
               rounded-2xl

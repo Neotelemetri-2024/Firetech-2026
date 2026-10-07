@@ -18,8 +18,10 @@ import {
   getRegistrations,
   verifyKtm,
   verifyPayment,
+  deleteRegistration,
   type Registration,
 } from "../../services/registration.services";
+import { getUsers } from "../../services/user.services";
 import type { EventStatus } from "../../components/events/tableevent";
 
 export default function AdminEvent() {
@@ -37,22 +39,22 @@ export default function AdminEvent() {
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
   const [registrationToDelete, setRegistrationToDelete] =
     useState<Registration | null>(null);
 
-  const fetchCompetitions = useCallback(async () => {
-    try {
-      const competitions = await getCompetitions();
+  const fetchCompetitions = useCallback(async (): Promise<EventRow[]> => {
+    const competitions = await getCompetitions();
 
-      const statusMap: Record<string, EventStatus> = {
-        upcoming: "Upcoming",
-        open: "Active",
-        closed: "Closed",
-        ongoing: "Ongoing",
-        finished: "Finished",
-      };
+    const statusMap: Record<string, EventStatus> = {
+      upcoming: "Upcoming",
+      open: "Active",
+      closed: "Closed",
+      ongoing: "Ongoing",
+      finished: "Finished",
+    };
 
-      const mappedEvents: EventRow[] = competitions.map((competition) => ({
+    return competitions.map((competition) => ({
         id: String(competition.id),
         name: competition.name,
         category: competition.category,
@@ -74,23 +76,50 @@ export default function AdminEvent() {
         participants: competition.slotsUsed ?? 0,
         maxParticipants: competition.participantQuota ?? 0,
       }));
-
-      setEvents(mappedEvents);
-    } catch (error) {
-      console.error("Failed fetch competitions:", error);
-    }
   }, []);
 
   useEffect(() => {
-    fetchCompetitions();
+    let cancelled = false;
+
+    const loadCompetitions = async () => {
+      try {
+        const mappedEvents = await fetchCompetitions();
+        if (!cancelled) setEvents(mappedEvents);
+      } catch (error) {
+        console.error("Failed fetch competitions:", error);
+      }
+    };
+
+    void loadCompetitions();
+    return () => {
+      cancelled = true;
+    };
   }, [fetchCompetitions]);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
       try {
-        const data = await getRegistrations();
+        const [regData, usersData] = await Promise.all([
+          getRegistrations(),
+          getUsers().catch(() => []),
+        ]);
 
-        setRegistrations(data);
+        const enriched = regData.map((reg) => {
+          const matchedUser = usersData.find(
+            (u) =>
+              u.id === reg.userId ||
+              u.email.toLowerCase() === reg.user?.email?.toLowerCase(),
+          );
+          return {
+            ...reg,
+            user: {
+              ...reg.user,
+              phone: matchedUser?.phone || reg.user?.phone || null,
+            },
+          };
+        });
+
+        setRegistrations(enriched);
       } catch (error) {
         console.error("Failed to fetch registrations:", error);
       }
@@ -120,7 +149,7 @@ export default function AdminEvent() {
         registrationClose: new Date(data.registrationDeadline).toISOString(),
       });
 
-      await fetchCompetitions();
+      setEvents(await fetchCompetitions());
 
       setEditingEvent(null);
 
@@ -169,7 +198,11 @@ export default function AdminEvent() {
   ) => {
     if (action === "approve") {
       await verifyKtm(registrationId, { status: "approved" });
-      await fetchCompetitions();
+      try {
+        setEvents(await fetchCompetitions());
+      } catch (error) {
+        console.error("Failed to refresh competitions after approval:", error);
+      }
     } else if (action === "reject") {
       await verifyKtm(registrationId, { status: "rejected", note: reason });
     } else {
@@ -198,19 +231,27 @@ export default function AdminEvent() {
     setShowToast(true);
   };
 
-  const handleDeleteRegistration = () => {
+  const handleDeleteRegistration = async () => {
     if (!registrationToDelete) return;
     const deletedRegistrationId = registrationToDelete.id;
-    setRegistrations((current) =>
-      current.filter(
-        (registration) => registration.id !== deletedRegistrationId,
-      ),
-    );
     setRegistrationToDelete(null);
-    setToastMessage(
-      "Pendaftaran dihapus dari sistem. ",
-    );
-    setShowToast(true);
+    try {
+      await deleteRegistration(deletedRegistrationId);
+      setRegistrations((current) =>
+        current.filter(
+          (registration) => registration.id !== deletedRegistrationId,
+        ),
+      );
+      setToastType("success");
+      setToastMessage("Pendaftaran berhasil dihapus dari event.");
+      setShowToast(true);
+      window.dispatchEvent(new Event("registrations:updated"));
+    } catch (error) {
+      console.error("Failed to delete registration:", error);
+      setToastType("error");
+      setToastMessage("Gagal menghapus pendaftar dari event.");
+      setShowToast(true);
+    }
   };
 
   const handleRegistrationToggle = () => {
@@ -252,6 +293,7 @@ export default function AdminEvent() {
             <Toast
               open={showToast}
               message={toastMessage}
+              type={toastType}
               onClose={() => setShowToast(false)}
             />
 

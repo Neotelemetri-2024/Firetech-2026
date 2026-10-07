@@ -1,5 +1,6 @@
 import FormField from "./formfield";
 import FileUpload from "../ui/fileupload";
+import type { RegistrationFile } from "../../services/registration.services";
 
 type AddMemberProps = {
   maxAdditionalMembers?: 2 | 4;
@@ -11,6 +12,8 @@ type AddMemberProps = {
     anggota4?: string;
     ktm?: File | null;
   };
+  existingFiles?: RegistrationFile[];
+  registrationId?: number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -18,8 +21,16 @@ export default function AddMember({
   formData,
   maxAdditionalMembers = 4,
   requiredAdditionalMembers = 2,
+  existingFiles = [],
+  registrationId,
   onChange,
 }: AddMemberProps) {
+  const existingKtm = existingFiles.find(
+    (file) =>
+      file.kind === "identity" ||
+      /identity|identit|ktm|student.?card/i.test(file.kind),
+  );
+
   return (
     <div className="space-y-8 animate-fadeIn">
       <FormField
@@ -74,6 +85,8 @@ export default function AddMember({
         label="Unggah Kartu Identitas Mahasiswa (KTM)"
         name="ktm"
         file={formData.ktm ?? null}
+        existingFile={existingKtm}
+        registrationId={registrationId}
         note="Mohon gabungkan kartu KTM seluruh anggota tim menjadi satu file."
         required
         onChange={onChange}

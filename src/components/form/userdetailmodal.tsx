@@ -10,10 +10,17 @@ import {
   downloadRegistrationFile,
   type RegistrationFile,
 } from "../../services/registration.services";
+import {
+  getUserById,
+  getUsers,
+  findPhoneNumber,
+  type AdminUser,
+} from "../../services/user.services";
 
 export type UserDetailModalProps = {
   open: boolean;
   onClose: () => void;
+  userId?: number;
   name: string;
   email: string;
   phone: string;
@@ -73,6 +80,7 @@ function SectionCard({
 export default function UserDetailModal({
   open,
   onClose,
+  userId,
   name,
   email,
   phone,
@@ -82,6 +90,9 @@ export default function UserDetailModal({
   proofFiles = EMPTY_PROOF_FILES,
   verification,
 }: UserDetailModalProps) {
+  const [fetchedUser, setFetchedUser] = useState<AdminUser | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
+  const [userFetchError, setUserFetchError] = useState("");
   const [busyAction, setBusyAction] =
     useState<RegistrationVerificationAction | null>(null);
   const [verificationError, setVerificationError] = useState("");
@@ -99,10 +110,84 @@ export default function UserDetailModal({
   const [proofViews, setProofViews] = useState<
     Record<number, { url?: string; type?: string; error?: boolean }>
   >({});
-  const whatsappNumber = phone.replace(/\D/g, "");
-  const whatsappLinkNumber = whatsappNumber.startsWith("0")
-    ? `62${whatsappNumber.slice(1)}`
-    : whatsappNumber;
+
+  useEffect(() => {
+    if (!open) {
+      setFetchedUser(null);
+      setUserFetchError("");
+      return;
+    }
+
+    let cancelled = false;
+    const fetchUserData = async () => {
+      setIsLoadingUser(true);
+      setUserFetchError("");
+      try {
+        if (userId) {
+          try {
+            const detail = await getUserById(userId);
+            if (!cancelled) {
+              setFetchedUser(detail);
+              setIsLoadingUser(false);
+              return;
+            }
+          } catch {
+            // Fallback if getUserById returns 404 or fails
+          }
+        }
+        const allUsers = await getUsers();
+        if (!cancelled) {
+          const matched = allUsers.find(
+            (u) =>
+              (userId && u.id === userId) ||
+              u.email.toLowerCase() === email.toLowerCase(),
+          );
+          if (matched) {
+            setFetchedUser(matched);
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          setUserFetchError("Gagal memuat detail user dari server.");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingUser(false);
+        }
+      }
+    };
+
+    void fetchUserData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, userId, email]);
+
+  const resolvedId = fetchedUser?.id ?? userId;
+  const resolvedEmail = fetchedUser?.email ?? email;
+  const resolvedPhone =
+    findPhoneNumber(fetchedUser) ||
+    fetchedUser?.phone ||
+    fetchedUser?.whatsapp ||
+    phone;
+  const resolvedUpdatedAt = fetchedUser?.updatedAt
+    ? new Date(fetchedUser.updatedAt).toLocaleString("id-ID", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : "";
+
+  const whatsappNumber = resolvedPhone.replace(/\D/g, "");
+  const hasValidWhatsappNumber =
+    whatsappNumber.length >= 8 && whatsappNumber.length <= 15;
+  const whatsappLinkNumber = whatsappNumber.startsWith("0062")
+    ? whatsappNumber.slice(2)
+    : whatsappNumber.startsWith("0")
+      ? `62${whatsappNumber.slice(1)}`
+      : whatsappNumber.startsWith("8")
+        ? `62${whatsappNumber}`
+        : whatsappNumber;
 
   const runVerification = async (action: RegistrationVerificationAction) => {
     if (!verification) return;
@@ -290,14 +375,19 @@ export default function UserDetailModal({
                     animation: "proof-fade-in 0.3s 0.22s ease-out both",
                   }}
                 >
+                  {resolvedId !== undefined && (
+                    <InfoLine label="ID :" value={String(resolvedId)} />
+                  )}
                   <InfoLine label="Name :" value={name} />
-                  <InfoLine label="Email :" value={email} />
+                  <InfoLine label="Email :" value={resolvedEmail} />
                   <div className="flex flex-wrap items-center gap-2 text-[1.04rem] leading-7 text-white/95 sm:text-[1.08rem]">
                     <span className="min-w-19 font-semibold text-white/90">
                       WhatsApp :
                     </span>
 
-                    {whatsappNumber ? (
+                    {isLoadingUser && !resolvedPhone ? (
+                      <span className="text-white/60">Memuat nomor...</span>
+                    ) : hasValidWhatsappNumber ? (
                       <>
                         <a
                           href={`https://wa.me/${whatsappLinkNumber}`}
@@ -305,18 +395,25 @@ export default function UserDetailModal({
                           rel="noopener noreferrer"
                           aria-label="Contact via WhatsApp"
                           title="WhatsApp"
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white"
+                          className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 text-white transition hover:bg-[#1fba59] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                         >
                           <FaWhatsapp className="h-5 w-5" />
+                          <span className="text-sm font-bold">Chat WhatsApp</span>
                         </a>
 
-                        <span className="text-white">{phone}</span>
+                        <span className="text-white">{resolvedPhone}</span>
                       </>
                     ) : (
                       <span className="text-white/60">Belum ada</span>
                     )}
                   </div>
                   <InfoLine label="Institution :" value={school} />
+                  {resolvedUpdatedAt && (
+                    <InfoLine label="Diperbarui :" value={resolvedUpdatedAt} />
+                  )}
+                  {userFetchError && (
+                    <p className="text-xs text-amber-200">{userFetchError}</p>
+                  )}
                 </div>
 
                 <div

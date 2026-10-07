@@ -85,6 +85,8 @@ export function useUserProfile() {
         }),
       );
 
+      window.dispatchEvent(new Event("user:updated"));
+
       return updatedUser;
     } catch (error) {
       console.error("Update profile failed:", error);

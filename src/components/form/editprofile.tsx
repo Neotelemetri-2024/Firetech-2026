@@ -79,11 +79,14 @@ export default function EditProfile({
   };
 
   const handleSave = async () => {
-    const phone = form.whatsapp.trim();
+    const rawPhone = form.whatsapp.trim();
+    const cleanPhone = rawPhone.replace(/[\s\-.()]/g, "");
+    const match = cleanPhone.match(/^(?:\+62|62)0?(\d+)$/);
+    const phone = match ? `0${match[1]}` : cleanPhone;
 
-    if (!/^08\d{8,11}$/.test(phone)) {
+    if (!/^0[0-9]{10,12}$/.test(phone)) {
       setSuccess("");
-      setError("Nomor WhatsApp harus diawali 08 dan hanya berisi angka");
+      setError("Nomor WhatsApp harus diawali 0 dan terdiri dari 11–13 digit (mis. 081234567890)");
       return;
     }
 

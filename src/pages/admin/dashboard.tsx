@@ -63,6 +63,11 @@ export default function AdminDashboard() {
   const selectedEventRegistrations = registrations.filter(
     (registration) => registration.competitionId === selectedEvent.id,
   );
+  const verifiedUiUxRegistrations = selectedEventRegistrations.filter(
+    (registration) =>
+      registration.ktmStatus === "approved" &&
+      registration.paymentStatus === "paid",
+  );
 
   const visibleStats = [
     {
@@ -74,7 +79,7 @@ export default function AdminDashboard() {
               0,
             )
           : selectedEvent.slug === "ui-ux-competition"
-            ? selectedEventRegistrations.reduce(
+            ? verifiedUiUxRegistrations.reduce(
                 (total, registration) =>
                   total + (registration.members?.length ?? 0),
                 0,
@@ -102,12 +107,16 @@ export default function AdminDashboard() {
   } else if (selectedEvent.slug === "ui-ux-competition") {
     visibleStats.push(
       {
-        value: String(selectedEvent.totalRegistrations ?? 0),
+        value: String(
+          selectedEventRegistrations.filter(
+            (registration) => registration.paymentStatus === "paid",
+          ).length,
+        ),
         label: "Pembayaran",
         icon: paymentIcon,
       },
       {
-        value: String(selectedEventRegistrations.length),
+        value: String(verifiedUiUxRegistrations.length),
         label: "Tim",
         icon: teamIcon,
       },

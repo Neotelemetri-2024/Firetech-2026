@@ -191,42 +191,12 @@ body {
   }
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes logoSpin {
-  from {
-    transform: rotateY(0deg) scale(1.1);
-  }
-  to {
-    transform: rotateY(360deg) scale(1.1);
-  }
-}
-
-.mp-card:hover .mp-logo {
-  animation: logoSpin 0.6s ease-in-out;
-}
-
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.mp-marquee-track {
-  animation: marquee 25s linear infinite;
-}
-
-.mp-marquee-wrapper:hover .mp-marquee-track {
-  animation-play-state: paused;
 }
 
 @keyframes fadeIn {

@@ -51,6 +51,7 @@ interface ProfileModalProps {
   onLogout: () => void;
   onLogin: () => void;
   onEdit: () => void;
+  onReviewRegistration: (registrationId: number, competition: string) => void;
   user: UserData;
   hasRegistration: boolean;
 }
@@ -62,6 +63,7 @@ export default function ProfileModal({
   onLogout,
   onLogin,
   onEdit,
+  onReviewRegistration,
   hasRegistration,
 }: ProfileModalProps) {
   const { darkMode } = useTheme();
@@ -322,6 +324,36 @@ export default function ProfileModal({
                 value={user.competition}
               />}
             </div>
+
+            {isLoggedIn &&
+              user.registrationStatuses
+                .map((registration) => (
+                  <button
+                    key={`review-${registration.registrationId}`}
+                    type="button"
+                    onClick={() =>
+                      onReviewRegistration(
+                        registration.registrationId,
+                        registration.competition,
+                      )
+                    }
+                    className={`mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border py-3 text-sm font-semibold transition hover:-translate-y-0.5 ${
+                      darkMode
+                        ? "border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100"
+                        : "border-blue-300/30 bg-blue-500/10 text-blue-100 hover:bg-blue-500/20"
+                    }`}
+                  >
+                    <Pencil size={17} />
+                    <span>
+                      Tinjau Kembali · {registration.competition}
+                      <span className="mt-1 block text-xs font-normal opacity-75">
+                        {registration.requiresKtm && `KTM: ${registration.submission}`}
+                        {registration.requiresKtm && registration.requiresPayment && " · "}
+                        {registration.requiresPayment && `Pembayaran: ${registration.payment}`}
+                      </span>
+                    </span>
+                  </button>
+                ))}
 
             {/* Edit Profile Button */}
             {isLoggedIn && (

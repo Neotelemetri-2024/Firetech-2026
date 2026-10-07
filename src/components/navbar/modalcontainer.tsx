@@ -36,6 +36,7 @@ interface NavbarModalContainerProps {
   onLogout: () => void;
   onLogin: () => void;
   onOpenEditProfile: () => void;
+  onReviewRegistration: (registrationId: number, competition: string) => void;
   onCloseEditProfile: () => void;
 
   onSaveProfile: (data: {
@@ -59,6 +60,7 @@ export default function NavbarModalContainer({
   onLogin,
 
   onOpenEditProfile,
+  onReviewRegistration,
 
   onCloseEditProfile,
 
@@ -72,6 +74,7 @@ export default function NavbarModalContainer({
         onLogin={onLogin}
         onClose={onCloseProfile}
         onEdit={onOpenEditProfile}
+        onReviewRegistration={onReviewRegistration}
         user={user}
         hasRegistration={hasRegistration}
       />

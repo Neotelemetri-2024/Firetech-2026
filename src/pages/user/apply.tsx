@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Code2, Palette, Gamepad2 } from "lucide-react";
 import axios from "axios";
 
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/applysevent";
+import type { ApplyFormDataMap } from "../../types/applysevent";
 import {
   applyFormConfig,
   initialApplyFormData,
@@ -16,7 +17,14 @@ import EfootballForm from "../../components/apply/efootballform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
-import { registerCompetition } from "../../services/registration.services";
+import {
+  getMyRegistrationById,
+  getMyRegistrations,
+  registerCompetition,
+  updateRegistration,
+  type RegistrationFile,
+  type RegistrationMember,
+} from "../../services/registration.services";
 import { getCompetitions } from "../../services/competition.services";
 
 const categoryIcons: Record<Category, LucideIcon> = {
@@ -33,11 +41,108 @@ const competitionSlugMap: Record<Category, string> = {
   "E-Football": "e-football",
 };
 
+const categoryFromSlug = (slug?: string): Category | null => {
+  if (slug === "hackathon") return "Hackathon";
+  if (slug === "ui-ux-competition") return "UI/UX";
+  if (slug === "e-football") return "E-Football";
+  return null;
+};
+
+const categoryFromName = (name?: string): Category | null => {
+  const normalized = name?.toLowerCase() ?? "";
+  if (normalized.includes("hackathon")) return "Hackathon";
+  if (normalized.includes("ui/ux") || normalized.includes("ui-ux")) return "UI/UX";
+  if (normalized.includes("e-football") || normalized.includes("efootball")) {
+    return "E-Football";
+  }
+  return null;
+};
+
+const getRegistrationFiles = (
+  reg: Awaited<ReturnType<typeof getMyRegistrationById>> | null | undefined,
+): RegistrationFile[] => {
+  if (!reg) return [];
+  return [
+    ...(reg.files ?? []),
+    ...(reg.members?.flatMap((m) => m.files ?? []) ?? []),
+  ];
+};
+
+type RegistrationMemberLike =
+  | RegistrationMember
+  | { order?: number; institution?: string; name?: string }
+  | string;
+
+const formDataFromRegistration = (
+  category: Category,
+  registration: Awaited<ReturnType<typeof getMyRegistrationById>> | null | undefined,
+): ApplyFormDataMap[Category] => {
+  const rawMembers = registration?.members ?? [];
+  const members: RegistrationMemberLike[] = [...rawMembers].sort(
+    (a, b) => {
+      const orderA = typeof a === "string" ? 0 : (a.order ?? 0);
+      const orderB = typeof b === "string" ? 0 : (b.order ?? 0);
+      return orderA - orderB;
+    },
+  );
+
+  const institution =
+    registration?.institution ||
+    (typeof members[0] === "object" && members[0] !== null && "institution" in members[0]
+      ? (members[0].institution ?? "")
+      : "") ||
+    "";
+
+  const memberName = (index: number) => {
+    const m = members[index];
+    if (!m) return "";
+    if (typeof m === "string") return m;
+    if ("name" in m && typeof m.name === "string") return m.name;
+    return "";
+  };
+
+  if (category === "Hackathon") {
+    return {
+      namaTeam: registration?.teamName ?? "",
+      namaKetua: memberName(0),
+      asalInstitusi: institution,
+      anggota1: memberName(1),
+      anggota2: memberName(2),
+      anggota3: memberName(3),
+      anggota4: memberName(4),
+      ktm: null,
+      paymentProof: null,
+    };
+  }
+  if (category === "UI/UX") {
+    return {
+      namaTeam: registration?.teamName ?? "",
+      namaKetua: memberName(0),
+      asalInstitusi: institution,
+      anggota1: memberName(1),
+      anggota2: memberName(2),
+      ktm: null,
+      paymentProof: null,
+    };
+  }
+  return {
+    namaPemain: memberName(0),
+    asalInstitusi: institution,
+    paymentProof: null,
+  };
+};
+
 export default function Apply() {
   const { darkMode } = useTheme();
   const location = useLocation();
   const initialCategory =
-    (location.state?.category as Category | undefined) ?? "Hackathon";
+    categoryFromName(location.state?.competition) ??
+    (location.state?.category as Category | undefined) ??
+    "Hackathon";
+  const initialRegistrationId = Number(location.state?.registrationId);
+  const isReviewFlow =
+    Boolean(location.state?.reviewRegistration) ||
+    (Number.isInteger(initialRegistrationId) && initialRegistrationId > 0);
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(initialCategory);
 
@@ -47,12 +152,156 @@ export default function Apply() {
   const [validationMessage, setValidationMessage] = useState("");
   const [toastType, setToastType] = useState<"error" | "success">("error");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeRegistrationId, setActiveRegistrationId] = useState<number | null>(
+    Number.isInteger(initialRegistrationId) && initialRegistrationId > 0
+      ? initialRegistrationId
+      : null,
+  );
+  const [myRegistrations, setMyRegistrations] = useState<
+    Awaited<ReturnType<typeof getMyRegistrationById>>[]
+  >([]);
+  const [availableCompetitions, setAvailableCompetitions] = useState<
+    Awaited<ReturnType<typeof getCompetitions>>
+  >([]);
+  const [loadingExistingRegistration, setLoadingExistingRegistration] =
+    useState(false);
+  const [existingFiles, setExistingFiles] = useState<RegistrationFile[]>([]);
+  const [existingRegistration, setExistingRegistration] = useState<
+    Awaited<ReturnType<typeof getMyRegistrationById>> | null
+  >(null);
 
   const { steps: stepLabels } = applyFormConfig[selectedCategory];
   const totalSteps = stepLabels.length;
 
+  useEffect(() => {
+    let cancelled = false;
+    const loadRegistrationsAndCompetitions = async () => {
+      setLoadingExistingRegistration(true);
+      try {
+        const [registrations, competitions] = await Promise.all([
+          getMyRegistrations(),
+          getCompetitions(),
+        ]);
+        if (cancelled) return;
+        setMyRegistrations(registrations);
+        setAvailableCompetitions(competitions);
+
+        const targetRegId = initialRegistrationId;
+        const targetCategory = initialCategory;
+
+        if (targetRegId && Number.isInteger(targetRegId) && targetRegId > 0) {
+          let registration = registrations.find((r) => r.id === targetRegId);
+          if (!registration) {
+            try {
+              registration = await getMyRegistrationById(targetRegId);
+            } catch (e) {
+              console.error("Failed to fetch registration by id:", e);
+            }
+          }
+
+          if (registration) {
+            const slug = competitions.find(
+              (competition) => competition.id === registration.competitionId,
+            )?.slug;
+            const category =
+              categoryFromSlug(slug) ??
+              categoryFromName(registration.competition?.name) ??
+              targetCategory;
+
+            if (cancelled) return;
+            setSelectedCategory(category);
+            setActiveRegistrationId(registration.id);
+            setExistingRegistration(registration);
+            setExistingFiles(getRegistrationFiles(registration));
+            setFormData((current) =>
+              ({ ...current, [category]: formDataFromRegistration(category, registration) }) as ApplyFormDataMap,
+            );
+            return;
+          }
+        }
+
+        // Check if user has a registration for the default selected category
+        const comp = competitions.find(
+          ({ slug }) => slug === competitionSlugMap[targetCategory],
+        );
+        const matchedReg = registrations.find(
+          (r) => r.competitionId === comp?.id,
+        );
+
+        if (matchedReg) {
+          const details = matchedReg.members ? matchedReg : await getMyRegistrationById(matchedReg.id);
+          if (cancelled) return;
+          if (details) {
+            setActiveRegistrationId(details.id);
+            setExistingRegistration(details);
+            setExistingFiles(details.files ?? []);
+            setFormData((current) =>
+              ({
+                ...current,
+                [targetCategory]: formDataFromRegistration(targetCategory, details),
+              }) as ApplyFormDataMap,
+            );
+          } else {
+            setActiveRegistrationId(null);
+            setExistingRegistration(null);
+            setExistingFiles([]);
+          }
+        } else {
+          setActiveRegistrationId(null);
+          setExistingRegistration(null);
+          setExistingFiles([]);
+        }
+      } catch (error) {
+        console.error("Failed to load registrations for apply:", error);
+      } finally {
+        if (!cancelled) setLoadingExistingRegistration(false);
+      }
+    };
+
+    void loadRegistrationsAndCompetitions();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialCategory, initialRegistrationId, location.key]);
+
+  const getFormMissingFields = (
+    category: Category,
+    step: number,
+    categoryData: Record<string, string | File | null>,
+  ) => {
+    const missing = getMissingFields(category, step, categoryData);
+    const ktmRejected =
+      existingRegistration?.ktmStatus?.toLowerCase() === "rejected" ||
+      existingRegistration?.ktmStatus?.toLowerCase() === "declined";
+    const paymentRejected =
+      existingRegistration?.paymentStatus?.toLowerCase() === "rejected" ||
+      existingRegistration?.paymentStatus?.toLowerCase() === "declined";
+
+    let ktmInvalid = ktmRejected;
+    let paymentInvalid = paymentRejected;
+
+    if (category === "UI/UX" || category === "Hackathon") {
+      const bothRejected = ktmRejected && paymentRejected;
+      ktmInvalid = bothRejected;
+      paymentInvalid = bothRejected;
+    }
+
+    const hasExistingIdentity =
+      !ktmInvalid &&
+      existingFiles.some((file) => file.kind === "identity");
+    const hasExistingPaymentProof =
+      !paymentInvalid &&
+      existingFiles.some((file) => file.kind === "payment_proof");
+
+    return missing.filter((field) => {
+      if (field === "ktm" && hasExistingIdentity) return false;
+      if (field === "paymentProof" && hasExistingPaymentProof) return false;
+      return true;
+    });
+  };
+
   // Handle category selection
-  const handleSelectCategory = (category: Category) => {
+  const handleSelectCategory = async (category: Category) => {
     const eventMap: Record<Category, string> = {
       Hackathon: "hackathon",
       "E-Football": "e-football",
@@ -72,6 +321,44 @@ export default function Apply() {
     setSelectedCategory(category);
     setCurrentStep(1);
     setShowValidationToast(false);
+
+    const competition = availableCompetitions.find(
+      ({ slug }) => slug === competitionSlugMap[category],
+    );
+    const registration = myRegistrations.find(
+      (item) => item.competitionId === competition?.id,
+    );
+    if (!registration) {
+      setActiveRegistrationId(null);
+      setExistingRegistration(null);
+      setExistingFiles([]);
+      setFormData((current) => ({
+        ...current,
+        [category]: initialApplyFormData[category],
+      }));
+      return;
+    }
+
+    setLoadingExistingRegistration(true);
+    try {
+      const details = await getMyRegistrationById(registration.id);
+      setActiveRegistrationId(details.id);
+      setExistingRegistration(details);
+      setExistingFiles(getRegistrationFiles(details));
+      setFormData((current) =>
+        ({
+          ...current,
+          [category]: formDataFromRegistration(category, details),
+        }) as ApplyFormDataMap,
+      );
+    } catch (error) {
+      console.error("Failed to load registration for review:", error);
+      setActiveRegistrationId(null);
+      setExistingRegistration(null);
+      setExistingFiles([]);
+    } finally {
+      setLoadingExistingRegistration(false);
+    }
   };
 
   // Handle input changes for form fields
@@ -98,7 +385,7 @@ export default function Apply() {
       string | File | null
     >;
 
-    const missingFields = getMissingFields(
+    const missingFields = getFormMissingFields(
       selectedCategory,
       currentStep,
       categoryData,
@@ -245,7 +532,7 @@ export default function Apply() {
         string | File | null
       >;
 
-      const missingFields = getMissingFields(
+      const missingFields = getFormMissingFields(
         selectedCategory,
         currentStep,
         categoryData,
@@ -278,18 +565,32 @@ export default function Apply() {
         throw new Error(`Competition not found for ${selectedCategory}`);
       }
 
-      const response = await registerCompetition(competition.id, payload);
+      const response = activeRegistrationId
+        ? await updateRegistration(activeRegistrationId, payload)
+        : await registerCompetition(competition.id, payload);
 
       console.log("REGISTER SUCCESS:", response);
       window.dispatchEvent(new Event("firetech-registration-updated"));
+      if (isReviewFlow) {
+        void getMyRegistrations()
+          .then(setMyRegistrations)
+          .catch((error) =>
+            console.error("Failed to refresh registration statuses:", error),
+          );
+      }
 
-      setFormData(initialApplyFormData);
-
-      setCurrentStep(1);
+      if (!activeRegistrationId) {
+        setFormData(initialApplyFormData);
+        setCurrentStep(1);
+      }
 
       setToastType("success");
 
-      setValidationMessage("Pendaftaran berhasil dikirim! Silakan tunggu konfirmasi dari panitia.");
+      setValidationMessage(
+        activeRegistrationId
+          ? "Perubahan pendaftaran berhasil dikirim. Silakan tunggu konfirmasi panitia."
+          : "Pendaftaran berhasil dikirim! Silakan tunggu konfirmasi dari panitia.",
+      );
 
       setShowValidationToast(true);
     } catch (error: unknown) {
@@ -367,6 +668,8 @@ export default function Apply() {
           <HackathonForm
             step={currentStep}
             formData={formData.Hackathon}
+            existingFiles={existingFiles}
+            registrationId={activeRegistrationId}
             onChange={handleInputChange}
           />
         );
@@ -375,6 +678,8 @@ export default function Apply() {
           <UiUxForm
             step={currentStep}
             formData={formData["UI/UX"]}
+            existingFiles={existingFiles}
+            registrationId={activeRegistrationId}
             onChange={handleInputChange}
           />
         );
@@ -383,6 +688,8 @@ export default function Apply() {
           <EfootballForm
             step={currentStep}
             formData={formData["E-Football"]}
+            existingFiles={existingFiles}
+            registrationId={activeRegistrationId}
             onChange={handleInputChange}
           />
         );
@@ -407,10 +714,19 @@ export default function Apply() {
         >
           {categories.map((category) => {
             const Icon = categoryIcons[category];
+            const eventCompetition = availableCompetitions.find(
+              ({ slug }) => slug === competitionSlugMap[category],
+            );
+            const eventRegistration = myRegistrations.find(
+              (registration) =>
+                registration.competitionId === eventCompetition?.id,
+            );
 
             return (
               <button
                 key={category}
+                type="button"
+                disabled={loadingExistingRegistration}
                 onClick={() => handleSelectCategory(category)}
                 className={`
                 group
@@ -460,7 +776,25 @@ export default function Apply() {
                 `}
                 />
 
-                <span>{category}</span>
+                <span className="flex flex-col items-start text-left">
+                  <span>{category}</span>
+                  {isReviewFlow && (
+                    <span className="mt-1 text-xs font-medium opacity-75">
+                      {eventRegistration
+                        ? [
+                            eventCompetition?.requiresKtm
+                              ? `KTM: ${eventRegistration.ktmStatus}`
+                              : null,
+                            eventCompetition?.requiresPayment
+                              ? `Pembayaran: ${eventRegistration.paymentStatus}`
+                              : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ") || "Terdaftar"
+                        : "Belum mendaftar"}
+                    </span>
+                  )}
+                </span>
               </button>
             );
           })}
@@ -551,7 +885,36 @@ export default function Apply() {
               </div>
 
               {/* Form Content */}
-              <div className="space-y-6">{renderActiveForm()}</div>
+              {activeRegistrationId && (
+                <div className="mb-5 rounded-xl border border-blue-400/30 bg-blue-500/10 p-4 text-sm text-white">
+                  <p className="font-bold">Tinjau kembali pendaftaran</p>
+                  <p className="mt-1 text-white/75">
+                    Data sudah diisi dari pendaftaran sebelumnya. Berkas yang
+                    tidak diganti akan tetap digunakan.
+                  </p>
+                  {existingFiles.length > 0 && (
+                    <ul className="mt-2 space-y-1 text-white/80">
+                      {existingFiles.map((file) => (
+                        <li key={file.id}>
+                          {file.kind === "identity" ? "KTM" : "Bukti pembayaran"}: {file.originalName ?? "Berkas tersimpan"}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {existingRegistration?.message && (
+                    <p className="mt-2 text-amber-200">
+                      Catatan panitia: {existingRegistration.message}
+                    </p>
+                  )}
+                </div>
+              )}
+              {loadingExistingRegistration ? (
+                <p className="py-10 text-center text-white/75">
+                  Memuat data pendaftaran...
+                </p>
+              ) : (
+                <div className="space-y-6">{renderActiveForm()}</div>
+              )}
               {/* Navigation Buttons */}
               <div
                 className="mt-8 flex items-center justify-between gap-4 animate-slideInUp"
@@ -584,9 +947,13 @@ export default function Apply() {
 
                 {/* Next Button */}
                 <button
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || loadingExistingRegistration}
                   onClick={
-                    currentStep === totalSteps ? handleSubmit : handleNext
+                    loadingExistingRegistration
+                      ? undefined
+                      : currentStep === totalSteps
+                        ? handleSubmit
+                        : handleNext
                   }
                   className={`group relative flex-1 overflow-hidden rounded-full px-8 py-3 font-bold text-white transition-all duration-300 ${
                     isSubmitting
@@ -625,7 +992,11 @@ export default function Apply() {
                       </>
                     ) : (
                       <span>
-                        {currentStep === totalSteps ? "SUBMIT" : "NEXT"}
+                        {currentStep === totalSteps
+                          ? activeRegistrationId
+                            ? "SAVE CHANGES"
+                            : "SUBMIT"
+                          : "NEXT"}
                       </span>
                     )}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">

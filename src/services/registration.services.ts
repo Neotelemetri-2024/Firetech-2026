@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./api";
 import { fetchAllPages } from "./pagination";
 
@@ -90,6 +91,19 @@ export const registerCompetition = async (
 ) => {
   const response = await api.post(
     `/api/competitions/${competitionId}/register`,
+    formData,
+  );
+
+  return response.data;
+};
+
+/** PUT /api/registrations/:id — kirim ulang perubahan pendaftaran. */
+export const updateRegistration = async (
+  registrationId: number,
+  formData: FormData,
+) => {
+  const response = await api.put(
+    `/api/registrations/${registrationId}`,
     formData,
   );
 
@@ -211,4 +225,30 @@ export const verifyPayment = async (
   );
 
   return response.data;
+};
+
+/** Delete an admin registration, trying supported API route variants. */
+export const deleteRegistration = async (registrationId: number) => {
+  const endpoints = [
+    () => api.delete(`/admin/registrations/${registrationId}`),
+    () => api.delete(`/api/admin/registrations/${registrationId}`),
+    () => api.delete(`/api/registrations/${registrationId}`),
+    () => api.post(`/admin/registrations/${registrationId}/delete`),
+    () => api.post(`/api/registrations/${registrationId}/delete`),
+  ];
+
+  let lastError: unknown;
+  for (const fn of endpoints) {
+    try {
+      const response = await fn();
+      return response.data;
+    } catch (error) {
+      lastError = error;
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw lastError;
 };

@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useTheme } from "../../../context/themecontext";
-import { headingVariants } from "../../animations/headingvariants";
 import gallery1Img from "../../../assets/gallery/gallery1.webp";
 import gallery2Img from "../../../assets/gallery/gallery2.webp";
 import gallery3Img from "../../../assets/gallery/gallery3.webp";
@@ -14,6 +12,8 @@ type GalleryItem = {
   name: string;
   image: string;
 };
+
+const SLIDE_INTERVAL = 3500;
 
 // Data array galeri - 4 foto dokumentasi kegiatan sebelumnya
 const galleryItems: GalleryItem[] = [
@@ -43,167 +43,76 @@ const galleryItems: GalleryItem[] = [
   },
 ];
 
-// Interval auto-slide dalam milidetik
-const SLIDE_INTERVAL = 2500;
-
-// Durasi satu pergerakan slide (detik) - makin besar makin smooth/lambat
-const SLIDE_DURATION = 1.2;
-
-// Easing eksponensial ease-out - meluncur lalu mengerem halus
-const SLIDE_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
-
-// Track berisi 3x copy slides agar bisa looping seamless dua arah
-const TRACK_COPIES = 3;
-const ITEM_COUNT = galleryItems.length;
-const TRACK_COUNT = ITEM_COUNT * TRACK_COPIES;
-
-// Posisi awal menunjuk ke copy tengah sehingga bisa geser maju/mundur bebas
-const BASE_INDEX = ITEM_COUNT;
-
-// Lebar 1 slide dalam persen terhadap lebar track (translateX % = relatif elemen)
-const SLIDE_WIDTH_PERCENT = 100 / TRACK_COUNT;
-
 // Main component untuk menampilkan galeri kegiatan dengan auto-slide
 export default function Gallery() {
   const { darkMode } = useTheme();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  // State track: posisi aktif + flag "lompatan instan" saat wrap antar-copy
-  const [trackState, setTrackState] = useState({
-    position: BASE_INDEX,
-    instant: false,
-  });
-  // Pause auto-slide saat hover/kursor di atas carousel
-  const [isPaused, setIsPaused] = useState(false);
-  const frameRef = useRef<number | null>(null);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentIndex((index) => (index + 1) % galleryItems.length);
+    }, SLIDE_INTERVAL);
 
-  const { position, instant } = trackState;
-
-  // Index slide yang terlihat (0..ITEM_COUNT-1)
-  const currentIndex = position % ITEM_COUNT;
-
-  // Pindah slide; saat melewati ujung track, lompat ke copy sisi lain secara
-  // instan (gambar identik) sehingga looping terasa kontinu tanpa jeda
-  const moveBy = useCallback((delta: number) => {
-    setTrackState(({ position: current }) => {
-      let next = current + delta;
-      if (next >= TRACK_COUNT) {
-        next -= TRACK_COUNT;
-        return { position: next, instant: true };
-      }
-      if (next < 0) {
-        next += TRACK_COUNT;
-        return { position: next, instant: true };
-      }
-      return { position: next, instant: false };
-    });
+    return () => window.clearInterval(timer);
   }, []);
-
-  // Setelah lompatan instan selesai di-render, aktifkan kembali transisi halus
-  useEffect(() => {
-    if (!instant) return;
-    frameRef.current = requestAnimationFrame(() => {
-      setTrackState((state) =>
-        state.instant ? { ...state, instant: false } : state,
-      );
-    });
-    return () => {
-      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
-    };
-  }, [instant]);
-
-  // Auto-slide otomatis setiap interval; di-reset tiap kali posisi berubah
-  useEffect(() => {
-    if (isPaused) return;
-    const timer = setInterval(() => moveBy(1), SLIDE_INTERVAL);
-    return () => clearInterval(timer);
-  }, [isPaused, position, moveBy]);
-
-  // Geser langsung ke slide tertentu (untuk dots) lewat jarak terpendek
-  const goToIndex = (targetIndex: number) => {
-    if (targetIndex === currentIndex) return;
-    const forwardDelta = (targetIndex - currentIndex + ITEM_COUNT) % ITEM_COUNT;
-    const shortestDelta =
-      forwardDelta <= ITEM_COUNT / 2 ? forwardDelta : forwardDelta - ITEM_COUNT;
-    moveBy(shortestDelta);
-  };
-
-  // Posisi translateX track dalam persen
-  const translateX = -position * SLIDE_WIDTH_PERCENT;
 
   return (
     <section className="relative overflow-hidden py-18">
       {/* Main content container */}
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Section header dengan title dan description */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
-          className="mx-auto mb-16 max-w-3xl text-center"
-        >
+        <div className="mx-auto mb-16 max-w-3xl text-center">
           {/* Heading */}
-          <motion.h2
-            variants={headingVariants.title}
+          <h2
             className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
-            } animate-[floating_5s_ease-in-out_infinite]`}
+            }`}
           >
             OUR GALLERY
-          </motion.h2>
+          </h2>
 
-          <motion.div
-            custom={2}
-            variants={headingVariants}
+          <div
             className={`mx-auto mt-4 h-1 w-32 rounded-full ${
               darkMode ? "bg-blue-700" : "bg-red-700"
             }`}
           />
-        </motion.div>
+        </div>
 
         {/* ===== GALLERY CONTENT ===== */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+        <div
           className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16"
         >
           {/* ===== Kiri: Auto-slide carousel ===== */}
-          <motion.div variants={headingVariants.card} className="w-full">
+          <div className="w-full">
             <div
               className={`group relative aspect-4/3 w-full overflow-hidden rounded-2xl border cursor-pointer ${
                 darkMode ? "border-slate-300" : "border-white/10"
               }`}
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
             >
-              {/* Track slide - semua gambar ter-mount & digeser pakai translateX */}
+              {/* Keep the slide transition on the compositor so scrolling stays responsive. */}
               <div
-                className="flex h-full w-full"
+                className="flex h-full transition-transform duration-500 ease-out motion-reduce:transition-none"
                 style={{
-                  width: `${TRACK_COUNT * 100}%`,
-                  transform: `translateX(${translateX}%)`,
-                  transition: instant
-                    ? "none"
-                    : `transform ${SLIDE_DURATION}s ${SLIDE_EASING}`,
+                  width: `${galleryItems.length * 100}%`,
+                  transform: `translate3d(-${(currentIndex * 100) / galleryItems.length}%, 0, 0)`,
                   willChange: "transform",
                 }}
               >
-                {Array.from({ length: TRACK_COUNT }, (_, i) => {
-                  const item = galleryItems[i % ITEM_COUNT];
-                  return (
-                    <div
-                      key={`${item.name}-${i}`}
-                      className="relative h-full shrink-0"
-                      style={{ width: `${SLIDE_WIDTH_PERCENT}%` }}
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  );
-                })}
+                {galleryItems.map((item, index) => (
+                  <div
+                    key={`${item.name}-${index}`}
+                    className="relative h-full shrink-0"
+                    style={{ width: `${100 / galleryItems.length}%` }}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="h-full w-full object-cover"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                  </div>
+                ))}
               </div>
 
               {/* Indikator dots */}
@@ -212,7 +121,7 @@ export default function Gallery() {
                   <button
                     key={item.name}
                     type="button"
-                    onClick={() => goToIndex(i)}
+                    onClick={() => setCurrentIndex(i)}
                     aria-label={`Lihat ${item.name}`}
                     className={`h-2.5 rounded-full transition-all duration-300 ${
                       i === currentIndex
@@ -225,13 +134,10 @@ export default function Gallery() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* ===== Kanan: Deskripsi galeri ===== */}
-          <motion.div
-            variants={headingVariants.subtitle}
-            className="text-center lg:text-left"
-          >
+          <div className="text-center lg:text-left">
             <p
               className={`font-orbitron text-2xl font-bold font-orbitron ${
                 darkMode ? "text-black" : "text-white"
@@ -248,7 +154,7 @@ export default function Gallery() {
 
             <p
               className={`mx-auto mt-7 max-w-xl text-left font-jakarta text-base leading-7 sm:text-lg sm:leading-8 lg:mx-0 lg:text-justify ${
-                darkMode ? "text-slate-600" : "text-slate-400"
+                darkMode ? "text-black" : "text-white"
               }`}
             >
               Rasakan kembali keseruan, energi, dan inovasi dari penyelenggaraan
@@ -260,15 +166,15 @@ export default function Gallery() {
 
             <p
               className={`mx-auto mt-4 max-w-xl text-left font-jakarta text-base leading-7 sm:text-lg sm:leading-8 lg:mx-0 lg:text-justify ${
-                darkMode ? "text-slate-600" : "text-slate-400"
+                darkMode ? "text-black" : "text-white"
               }`}
             >
               Mulai dari sengitnya kompetisi hackathon hingga keseruan
               pertandingan e-football, setiap foto menyimpan cerita yang layak
               dikenang. Jadilah bagian dari babak selanjutnya di Firetech 2026.
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

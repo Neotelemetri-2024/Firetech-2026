@@ -2,10 +2,10 @@
 import { useTheme } from "../../../context/themecontext";
 import { motion } from "framer-motion";
 import Call from "../../button/call";
-import lombaTeknoLogo from "../../../assets/mediapartner/Logo LombaTekno.png";
-import lombaUiuxLogo from "../../../assets/mediapartner/Logo LombaUIUX.png";
-import teknoEventCampusLogo from "../../../assets/mediapartner/Logo TeknoEventCampus25.png";
-import lowoTeknoEventLogo from "../../../assets/mediapartner/LowoTeknoEvent251.png";
+import lombaTeknoLogo from "../../../assets/mediapartner/lombatekno.webp";
+import lombaUiuxLogo from "../../../assets/mediapartner/lombauiux.webp";
+import teknoEventCampusLogo from "../../../assets/mediapartner/teknoeventcampus.webp";
+import logoTeknoEventLogo from "../../../assets/mediapartner/teknoevent.webp";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -29,7 +29,7 @@ const mediaPartners: MediaPartner[] = [
   },
   {
     name: "Media Partner 4",
-    logo: lowoTeknoEventLogo,
+    logo: logoTeknoEventLogo,
   },
 ];
 
@@ -44,16 +44,13 @@ export default function MediaPartner() {
         {/* Section header dengan title dan description */}
         <div className="mx-auto mb-24 max-w-3xl text-center">
           {/* Heading */}
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+          <h2
             className={`text-5xl font-black font-orbitron md:text-6xl ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
             OUR MEDIA PARTNER
-          </motion.h2>
+          </h2>
 
           <div
             className={`mx-auto mt-4 h-1 w-32 rounded-full  ${
@@ -62,133 +59,32 @@ export default function MediaPartner() {
           />
 
           {/* Deskripsi section */}
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+          <p
             className={`mx-auto mt-7 max-w-3xl font-jakarta text-lg leading-8  ${
               darkMode ? "text-black" : "text-white"
             }`}
           >
             Bersama mitra media kami, Firetech memperluas jangkauan inovasi,
             teknologi, dan kewirausahaan kepada audiens yang lebih luas.
-          </motion.p>
+          </p>
         </div>
-        {/* ===== MEDIA PARTNER CARDS SECTION ===== */}
-        {/* ===== Desktop Media Partner ===== */}
-
-        <div className="hidden lg:block mp-marquee-wrapper relative mb-24 min-h-64 overflow-hidden">
-          <div className="mp-marquee-track flex w-max gap-12">
-            {[...mediaPartners, ...mediaPartners].map((item, index) => (
-              <motion.div
-                key={`${item.name}-${index}`}
-                whileHover={{
-                  y: -8,
-                  scale: 1.05,
-                }}
-                className="
-          mp-card
-          group
-          relative
-          w-64
-          shrink-0
-          overflow-hidden
-          p-12
-          cursor-pointer
-          perspective-1000
-        "
-              >
-                <img
-                  src={item.logo}
-                  alt={item.name}
-                  className="
-            mp-logo
-            relative
-            z-20
-            mx-auto
-            h-24
-            object-contain
-            transition-all
-            duration-500
-            transform-3d
-            group-hover:scale-110
-          "
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ===== Coming Soon Overlay - Desktop ===== */}
-          {/* <div className=" pointer-events-none absolute inset-0 z-30 flex items-center justify-center backdrop-blur-[2px]">
+        {/* ===== Media partner grid ===== */}
+        <div className="mx-auto mb-24 grid max-w-5xl grid-cols-2 gap-6 lg:grid-cols-4">
+          {mediaPartners.map((item) => (
             <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{
-                duration: 2.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className={`inline-flex items-center gap-3 rounded-full border-2 border-dashed px-8 py-4 font-syncopate text-2xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:px-10 sm:py-5 sm:text-3xl ${
-                darkMode
-                  ? "border-blue-700 bg-white/80 text-blue-700"
-                  : "border-red-700 bg-black/70 text-red-700"
-              }`}
+              key={item.name}
+              whileHover={{ y: -4, scale: 1.03 }}
+              className="flex min-h-40 items-center cursor-pointer justify-center rounded-2xl border border-white/10 p-6 sm:min-h-48 sm:p-8"
             >
-              <span className="relative flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-current" />
-              </span>
-              Coming Soon
+              <img
+                src={item.logo}
+                alt={item.name}
+                className="h-20 max-w-full object-contain sm:h-24"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.div>
-          </div> */}
-        </div>
-
-        {/* ===== Mobile Media Partner ===== */}
-        <div className="relative min-h-48 lg:hidden">
-          <div className="grid grid-cols-2 gap-6">
-            {mediaPartners.map((item) => (
-              <div
-                key={item.name}
-                className="
-                flex
-                items-center
-                justify-center
-                rounded-2xl
-                border
-                border-white/10
-                p-6
-              "
-              >
-                <img
-                  src={item.logo}
-                  alt={item.name}
-                  className="h-16 object-contain"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* ===== Coming Soon Overlay - Mobile ===== */}
-          {/* <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center rounded-2xl backdrop-blur-[2px] ">
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{
-                duration: 2.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className={`inline-flex items-center gap-2 rounded-full border-2 border-dashed px-5 py-3 font-syncopate text-base font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(0,0,0,0.25)] ${
-                darkMode
-                  ? "border-blue-700 bg-white/80 text-blue-700"
-                  : "border-red-700 bg-black/70 text-red-700"
-              }`}
-            >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-current" />
-              </span>
-              Coming Soon
-            </motion.div>
-          </div> */}
+          ))}
         </div>
 
         <div className="mx-auto mt-10 max-w-4xl">
@@ -200,17 +96,14 @@ export default function MediaPartner() {
         </div>
 
         {/* ===== Note ===== */}
-        <motion.p
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
+        <p
           className={`mt-2 text-center font-space text-sm italic ${
             darkMode ? "text-slate-500" : "text-slate-500"
           }`}
         >
           * Daftar mitra media akan segera hadir — daftar resminya akan
           diumumkan dalam waktu dekat.
-        </motion.p>
+        </p>
       </div>
     </section>
   );

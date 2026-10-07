@@ -2,14 +2,23 @@ import type { UiUxFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import AddMember from "./addmember";
 import Payment from "./payment";
+import type { RegistrationFile } from "../../services/registration.services";
 
 type UiUxFormProps = {
   step: number;
   formData: UiUxFormData;
+  existingFiles?: RegistrationFile[];
+  registrationId?: number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
+export default function UiUxForm({
+  step,
+  formData,
+  existingFiles,
+  registrationId,
+  onChange,
+}: UiUxFormProps) {
   if (step === 1) {
     return (
       <div className="space-y-8 animate-fadeIn">
@@ -58,6 +67,8 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
         </p>
         <AddMember
           formData={formData}
+          existingFiles={existingFiles}
+          registrationId={registrationId}
           maxAdditionalMembers={2}
           requiredAdditionalMembers={1}
           onChange={onChange}
@@ -70,6 +81,8 @@ export default function UiUxForm({ step, formData, onChange }: UiUxFormProps) {
     <Payment
       amount={50000}
       paymentProof={formData.paymentProof}
+      existingFiles={existingFiles}
+      registrationId={registrationId}
       onChange={onChange}
     />
   );

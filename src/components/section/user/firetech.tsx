@@ -150,7 +150,7 @@ export default function Firetech() {
                     loop
                     muted
                     playsInline
-                    className="h-65 w-85 object-cover scale-[1.24] transition-all duration-700  sm:h-80 sm:w-112.5 lg:h-90 lg:w-130"
+                    className="h-65 w-85 object-cover scale-[1.24] transition-all duration-700  sm:h-80 sm:w-112.5 lg:h-90 lg:w-3xl"
                   />
                 </div>
 

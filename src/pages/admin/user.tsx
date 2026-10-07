@@ -6,7 +6,7 @@ import {
   Eye,
   CalendarDays,
   X,
-  Trash2,
+  // Trash2,
   CreditCard,
   FileCheck,
   CheckCircle,
@@ -34,7 +34,11 @@ import type {
 import { getStatusColor } from "../../utils/status";
 import { getRegistrations } from "../../services/registration.services";
 import type { Registration } from "../../services/registration.services";
-import { getUsers } from "../../services/user.services";
+import {
+  findPhoneNumber,
+  getUserById,
+  getUsers,
+} from "../../services/user.services";
 import { EVENTS } from "../../constants/event";
 
 /** Nama lomba sudah ikut di tiap pendaftaran dari backend, tidak perlu request terpisah. */
@@ -112,7 +116,7 @@ function StatusBadge({
 function UserCard({
   user,
   onView,
-  onDelete,
+  // onDelete,
 }: {
   user: UserItem;
   onView: () => void;
@@ -249,14 +253,14 @@ function UserCard({
                 <Eye className="h-4 w-4" />
               </button>
 
-              <button
+              {/* <button
                 type="button"
                 onClick={onDelete}
                 aria-label={`Hapus ${user.name}`}
                 className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
               >
                 <Trash2 className="h-4 w-4" />
-              </button>
+              </button> */}
             </div>
           </div>
         )}
@@ -480,6 +484,13 @@ export default function AdminUser() {
           const payments = userRegistrations.map((registration) =>
             mapPaymentStatus(registration.paymentStatus),
           );
+          const whatsappPhone = findPhoneNumber(
+            user,
+            userRegistrations.map((registration) => ({
+              ...registration,
+              leader: registration.members?.[0],
+            })),
+          );
 
           return {
             id: user.id,
@@ -492,21 +503,7 @@ export default function AdminUser() {
 
             hasRegistration: userRegistrations.length > 0,
 
-            phone:
-              user.phone ||
-              user.whatsapp ||
-              user.phoneNumber ||
-              user.whatsappNumber ||
-              user.phone_number ||
-              user.whatsapp_number ||
-              user.profile?.phone ||
-              user.profile?.whatsapp ||
-              user.profile?.phoneNumber ||
-              user.profile?.whatsappNumber ||
-              user.profile?.phone_number ||
-              user.profile?.whatsapp_number ||
-              userRegistrations[0]?.members?.[0]?.phone ||
-              "-",
+            phone: whatsappPhone ?? "",
 
             school: userRegistrations[0]?.institution ?? "-",
 
@@ -610,9 +607,11 @@ export default function AdminUser() {
     fetchData();
     window.addEventListener("focus", fetchData);
     window.addEventListener("registrations:updated", fetchData);
+    window.addEventListener("user:updated", fetchData);
     return () => {
       window.removeEventListener("focus", fetchData);
       window.removeEventListener("registrations:updated", fetchData);
+      window.removeEventListener("user:updated", fetchData);
     };
   }, []);
 
@@ -737,9 +736,27 @@ export default function AdminUser() {
                       <UserCard
                         key={`${user.email}-${index}`}
                         user={user}
-                        onView={() => {
+                        onView={async () => {
                           setSelectedUser(user);
                           setIsModalOpen(true);
+                          if (user.phone) return;
+                          try {
+                            const userDetail = await getUserById(user.id);
+                            const detailPhone = findPhoneNumber(userDetail);
+                            setSelectedUser((current) =>
+                              current?.id === user.id
+                                ? {
+                                    ...current,
+                                    name: userDetail.name,
+                                    email: userDetail.email,
+                                    phone: detailPhone || current.phone,
+                                  }
+                                : current,
+                            );
+                          } catch {
+                            // Endpoint detail bisa belum tersedia di server produksi.
+                            // Nomor dari daftar/pendaftaran tetap dipakai sebagai fallback.
+                          }
                         }}
                         onDelete={() => {
                           setUserToDelete(user);
@@ -772,6 +789,7 @@ export default function AdminUser() {
             <UserDetail
               open={isModalOpen}
               onClose={() => setIsModalOpen(false)}
+              userId={selectedUser?.id}
               name={selectedUser?.name ?? ""}
               email={selectedUser?.email ?? ""}
               phone={selectedUser?.phone ?? ""}

@@ -772,6 +772,12 @@ export default function Navbar() {
         onLogin={handleLoginClick}
         onCloseProfile={() => setProfileOpen(false)}
         onOpenEditProfile={() => setEditProfileOpen(true)}
+        onReviewRegistration={(registrationId, competition) => {
+          setProfileOpen(false);
+          navigate("/home/apply", {
+            state: { registrationId, competition, reviewRegistration: true },
+          });
+        }}
         onCloseEditProfile={() => setEditProfileOpen(false)}
         onSaveProfile={handleSaveProfile}
       />

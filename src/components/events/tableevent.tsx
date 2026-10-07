@@ -6,7 +6,7 @@ import {
   ChevronsUpDown,
   Eye,
   Pencil,
-  Trash2,
+  // Trash2,
   X,
   CalendarCheck,
   CalendarX,
@@ -152,7 +152,7 @@ export default function EventsTable({
   events,
   resetPage,
   onEdit,
-  onDelete,
+  // onDelete,
   onView,
   onToggleRegistration,
   pageSize = 5,
@@ -424,7 +424,7 @@ export default function EventsTable({
                                 <Pencil className="h-4 w-4" />
                               </button>
                             )}
-                            {onDelete && (
+                            {/* {onDelete && (
                               <button
                                 type="button"
                                 onClick={() => onDelete(event)}
@@ -433,7 +433,7 @@ export default function EventsTable({
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
-                            )}
+                            )} */}
                           </div>
                         </td>
                       </tr>

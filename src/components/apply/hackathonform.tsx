@@ -1,10 +1,13 @@
 import type { HackathonFormData } from "../../types/applysevent";
 import FormField from "./formfield";
 import AddMember from "./addmember";
+import type { RegistrationFile } from "../../services/registration.services";
 
 type HackathonFormProps = {
   step: number;
   formData: HackathonFormData;
+  existingFiles?: RegistrationFile[];
+  registrationId?: number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -12,6 +15,8 @@ type HackathonFormProps = {
 export default function HackathonForm({
   step,
   formData,
+  existingFiles,
+  registrationId,
   onChange,
 }: HackathonFormProps) {
   if (step === 1) {
@@ -55,6 +60,8 @@ export default function HackathonForm({
     return (
       <AddMember
         formData={formData}
+        existingFiles={existingFiles}
+        registrationId={registrationId}
         requiredAdditionalMembers={3}
         onChange={onChange}
       />

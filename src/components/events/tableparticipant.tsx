@@ -11,7 +11,7 @@ import {
   ArrowLeft,
   ChevronRight,
   Eye,
-  Trash2,
+  // Trash2,
 } from "lucide-react";
 import type { Registration } from "../../services/registration.services";
 import Pagination from "../pagination";
@@ -416,7 +416,7 @@ export default function ParticipantsTable({
                                     <Eye className="h-4 w-4" />
                                   </button>
                                 )}
-                              {onDelete && participant.registration && (
+                              {/* {onDelete && participant.registration && (
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -427,7 +427,7 @@ export default function ParticipantsTable({
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>
-                              )}
+                              )} */}
                             </div>
                           </td>
                         )}
@@ -519,6 +519,7 @@ export default function ParticipantsTable({
         key={registrationDetail?.id ?? "closed"}
         open={registrationDetail !== null}
         onClose={() => setRegistrationDetail(null)}
+        userId={registrationDetail?.userId}
         name={registrationDetail?.user.name ?? ""}
         email={registrationDetail?.user.email ?? ""}
         phone={

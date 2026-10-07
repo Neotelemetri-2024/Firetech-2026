@@ -1,19 +1,30 @@
 import QRCodePNG from "../../assets/qrfiretech.jpeg";
 import { useTheme } from "../../context/themecontext";
 import FileUpload from "../ui/fileupload";
+import type { RegistrationFile } from "../../services/registration.services";
 
 type PaymentProps = {
   amount: number;
   paymentProof: File | null;
+  existingFiles?: RegistrationFile[];
+  registrationId?: number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function Payment({
   amount,
   paymentProof,
+  existingFiles = [],
+  registrationId,
   onChange,
 }: PaymentProps) {
   const { darkMode } = useTheme();
+
+  const existingPaymentProof = existingFiles.find(
+    (file) =>
+      file.kind === "payment_proof" ||
+      /payment|bukti|transfer/i.test(file.kind),
+  );
 
   return (
     <section className="w-full">
@@ -45,6 +56,8 @@ export default function Payment({
                 label="Unggah Bukti Pembayaran"
                 name="paymentProof"
                 file={paymentProof}
+                existingFile={existingPaymentProof}
+                registrationId={registrationId}
                 // Bukti pembayaran hanya gambar; backend menolak PDF dengan 400.
                 accept=".jpg,.jpeg,.png"
                 hint="JPEG,JPG, PNG • Max 5 MB"
