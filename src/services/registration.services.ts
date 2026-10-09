@@ -129,7 +129,17 @@ export const getMyRegistrationById = async (
 ): Promise<Registration> => {
   const response = await api.get(`/api/registrations/${registrationId}`);
 
-  return response.data.data.registration;
+  const data = response.data?.data;
+  const registration: Registration | undefined =
+    data?.registration ?? data;
+
+  if (!registration || typeof registration.id !== "number") {
+    throw new Error(
+      `Registration ${registrationId} was not found in the API response.`,
+    );
+  }
+
+  return registration;
 };
 
 /**

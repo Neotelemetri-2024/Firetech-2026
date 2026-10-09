@@ -233,7 +233,14 @@ export function useApplyForm() {
 
     setLoadingExistingRegistration(true);
     try {
-      const details = await getMyRegistrationById(registration.id);
+      const details = Array.isArray(registration.members)
+        ? registration
+        : await getMyRegistrationById(registration.id);
+      if (!details) {
+        throw new Error(
+          `Registration ${registration.id} was not returned by the API.`,
+        );
+      }
       setActiveRegistrationId(details.id);
       setExistingRegistration(details);
       setExistingFiles(getRegistrationFiles(details));
@@ -248,6 +255,11 @@ export function useApplyForm() {
       setActiveRegistrationId(null);
       setExistingRegistration(null);
       setExistingFiles([]);
+      setToastType("error");
+      setValidationMessage(
+        "Data pendaftaran gagal dimuat. Silakan pilih kategori lagi untuk mencoba ulang.",
+      );
+      setShowValidationToast(true);
     } finally {
       setLoadingExistingRegistration(false);
     }

@@ -12,6 +12,8 @@ type MobileEventModalProps = {
   description: string;
   image: string;
   color: string;
+  status: "upcoming" | "open" | "closed" | "ongoing" | "finished";
+  isFull: boolean;
 };
 export default function MobileEventModal({
   open,
@@ -22,6 +24,8 @@ export default function MobileEventModal({
   description,
   image,
   color,
+  status,
+  isFull,
 }: MobileEventModalProps) {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
@@ -48,6 +52,82 @@ export default function MobileEventModal({
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  const canRegister = status === "open" && !isFull;
+
+  const buttonLabel = isFull
+    ? "Quota Full"
+    : status === "open"
+      ? title === "Fast Typing"
+        ? "Go to Website"
+        : "Register"
+      : status === "upcoming"
+        ? "Coming Soon"
+        : status === "closed"
+          ? "Registration Closed"
+          : status === "ongoing"
+            ? "Competition Ongoing"
+            : "Event Finished";
+
+  const handleExploreChallenge = () => {
+    if (!canRegister) return;
+
+    if (title === "Fast Typing") {
+      window.open(
+        "https://fast-typing-firetech2026.vercel.app/",
+        "_blank",
+        "noopener,noreferrer",
+      );
+      return;
+    }
+
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/login");
+      return;
+    }
+
+    let storedUser: { phone?: string; whatsapp?: string; role?: string } = {};
+    try {
+      storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      storedUser = {};
+    }
+
+    const role = String(
+      storedUser.role || localStorage.getItem("role") || "",
+    ).toUpperCase();
+    const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+
+    if (
+      !isAdmin &&
+      !(storedUser.phone || storedUser.whatsapp || "").trim()
+    ) {
+      window.dispatchEvent(new Event("firetech-open-profile-modal"));
+      return;
+    }
+
+    const eventMap: Record<string, string> = {
+      Hackathon: "hackathon",
+      "E-Football": "e-football",
+      "UI/UX": "ui-ux-competition",
+    };
+
+    const selectedEventSlug = eventMap[title] ?? "hackathon";
+
+    sessionStorage.setItem("activeEvent", selectedEventSlug);
+
+    window.dispatchEvent(
+      new CustomEvent("firetech-event-change", {
+        detail: selectedEventSlug,
+      }),
+    );
+
+    navigate("/home/apply", {
+      state: {
+        category: title,
+      },
+    });
+  };
   return (
     <AnimatePresence>
       {" "}
@@ -129,26 +209,31 @@ export default function MobileEventModal({
                 {description}{" "}
               </p>{" "}
               <button
+                disabled={!canRegister}
                 onClick={() => {
-                  if (title === "Fast Typing") {
-                    window.open(
-                      "https://fast-typing-firetech2026.vercel.app/",
-                      "_blank",
-                      "noopener,noreferrer",
-                    );
-                    return;
-                  }
-
-                  navigate("/home/apply", {
-                    state: {
-                      category: title,
-                    },
-                  });
+                  if (!canRegister) return;
+                  handleExploreChallenge();
                 }}
-                className=" mt-8 w-full rounded-full bg-linear-to-r from-red-500 to-blue-500 px-6 py-4 font-semibold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] "
+                className={`
+                mt-8
+                w-full
+                rounded-full
+                px-6
+                py-4
+                font-semibold
+                transition-all
+                duration-300
+                ${
+                  canRegister
+                    ? darkMode
+                      ? "bg-linear-to-br from-blue-600 to-red-600 text-white hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                      : "bg-linear-to-br from-red-500 to-blue-500 text-white hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                    : "bg-gray-700 text-gray-400 cursor-not-allowed opacity-70"
+                }
+              `}
               >
-                {" "}
-                Explore Challenge{" "}
+                {buttonLabel}
+                {canRegister && <span className="ml-2">→</span>}
               </button>{" "}
             </div>{" "}
           </motion.div>{" "}

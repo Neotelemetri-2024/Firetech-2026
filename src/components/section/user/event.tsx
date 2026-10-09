@@ -368,6 +368,16 @@ export default function Event() {
         description={selectedEvent?.description ?? ""}
         image={selectedEvent?.image ?? ""}
         color={selectedEvent?.color ?? "#ffffff"}
+        status={
+          selectedEvent
+            ? (competitionStatuses[selectedEvent.slug] ?? "upcoming")
+            : "upcoming"
+        }
+        isFull={
+          selectedEvent
+            ? (competitionFullMap[selectedEvent.slug] ?? false)
+            : false
+        }
       />
     </section>
   );

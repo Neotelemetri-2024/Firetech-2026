@@ -625,12 +625,28 @@ export default function AdminUser() {
                 title="Managemen User"
                 subtitle="Tinjau peserta yang terdaftar, filter status mereka, dan pindai partisipasi acara."
               />
-              <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-100/90">
-                Badge pada menu User menghitung status yang masih perlu
-                ditindaklanjuti: pembayaran selain <strong>Paid</strong> dan
-                pengumpulan KTM selain <strong>Submitted</strong>. Kedua
-                kategori dihitung terpisah untuk setiap pendaftaran.
-              </p>
+              <div className="flex items-start gap-3 rounded-2xl border border-amber-300/20 bg-[linear-gradient(110deg,rgba(251,191,36,0.12),rgba(255,255,255,0.035)_65%)] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:items-center sm:gap-4 sm:px-5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-300/20 bg-amber-300/10 text-amber-200">
+                  <BadgeCheck aria-hidden="true" className="h-5 w-5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-amber-200/90">
+                    Perhitungan badge User
+                  </p>
+                  <p className="text-sm leading-relaxed  text-amber-50/80">
+                    Menandai status yang masih perlu ditindaklanjuti: pembayaran
+                    selain{" "}
+                    <strong className="rounded-md border border-amber-200/20 bg-amber-200/10 px-1.5 py-0.5 font-ultrabold text-amber-100">
+                      Paid
+                    </strong>{" "}
+                    dan pengumpulan KTM selain{" "}
+                    <strong className="rounded-md border border-amber-200/20 bg-amber-200/10 px-1.5 py-0.5 font-ultrabold text-amber-100">
+                      Submitted
+                    </strong>
+                    . Kedua kategori dihitung terpisah untuk setiap pendaftaran.
+                  </p>
+                </div>
+              </div>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
                 {stats.map((stat) => (
                   <InfoChip

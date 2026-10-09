@@ -130,13 +130,16 @@ const Dashboard = () => {
                 <h1
                   className="
                   mt-8
-                  text-6xl
+                  text-4xl
                   font-black
                   font-orbitron
                   uppercase
                   leading-[0.85]
-                  tracking-[4px]
+                  tracking-[2px]
+                  sm:text-5xl
+                  sm:tracking-[3px]
                   lg:text-7xl
+                  lg:tracking-[4px]
                 "
                 >
                   <span className={darkMode ? "text-blue-700" : "text-red-700"}>
@@ -188,10 +191,13 @@ const Dashboard = () => {
                 variants={itemVariants}
                 className={`
                 mt-6
+                w-full
                 text-xl
                 font-extrabold
                 font-orbitron
                 tracking-wide
+                text-center
+                lg:text-left
                 bg-linear-to-r
                 ${darkMode ? "text-blue-700" : "text-red-700"}
                 bg-clip-text
