@@ -17,7 +17,7 @@ export function StepIndicator({
 }: StepIndicatorProps) {
   return (
     <div
-      className={`mb-8 flex items-center overflow-x-auto sm:overflow-visible ${
+      className={`mb-8 flex w-full min-w-0 items-center overflow-hidden sm:overflow-visible ${
         totalSteps <= 2 ? "w-full" : "justify-between"
       }`}
     >
@@ -26,13 +26,15 @@ export function StepIndicator({
         return (
           <div
             key={label}
-            className={`flex shrink-0 items-center ${
+            className={`flex shrink-0 items-center max-sm:min-w-0 ${
+              step < totalSteps ? "max-sm:flex-1" : ""
+            } ${
               totalSteps <= 2 && index === 0 ? "flex-1" : ""
             }`}
           >
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 max-sm:gap-1">
               <div
-                className={`flex h-10 w-10 sm:h-12 sm:w-12 cursor-pointer items-center justify-center rounded-full text-base sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${getStepColor(step)}`}
+                className={`flex h-10 w-10 shrink-0 sm:h-12 sm:w-12 cursor-pointer items-center justify-center rounded-full text-base sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${getStepColor(step)}`}
               >
                 {step}
               </div>
@@ -46,7 +48,7 @@ export function StepIndicator({
             </div>
             {step < totalSteps && (
               <div
-                className={`relative mx-2 sm:mx-4 h-1 flex-1 overflow-hidden rounded-full transition-all duration-500 ${
+                className={`relative mx-2 sm:mx-4 h-1 min-w-0 flex-1 overflow-hidden rounded-full transition-all duration-500 max-sm:mx-1 max-sm:w-auto ${
                   totalSteps <= 2 ? "flex-1" : "w-20 sm:w-18 lg:w-28"
                 } ${
                   getStepStatus(step) === "completed"
