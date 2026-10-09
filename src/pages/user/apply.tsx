@@ -1,31 +1,17 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { Code2, Palette, Gamepad2 } from "lucide-react";
-import axios from "axios";
-
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/applysevent";
-import type { ApplyFormDataMap } from "../../types/applysevent";
-import {
-  applyFormConfig,
-  initialApplyFormData,
-} from "../../config/applyformconfig";
-import { getMissingFields, fieldLabels } from "../../config/applyvalidation";
 import HackathonForm from "../../components/apply/hackathonform";
 import UiUxForm from "../../components/apply/uiuxform";
 import EfootballForm from "../../components/apply/efootballform";
 import RegistrationProgress from "../../components/apply/registrationprogres";
 import Toast from "../../components/ui/toast";
 import { useTheme } from "../../context/themecontext";
-import {
-  getMyRegistrationById,
-  getMyRegistrations,
-  registerCompetition,
-  updateRegistration,
-  type RegistrationFile,
-  type RegistrationMember,
-} from "../../services/registration.services";
-import { getCompetitions } from "../../services/competition.services";
+import { CategoryTabs } from "../../components/apply/categorytabs";
+import { StepIndicator } from "../../components/apply/stepindicator";
+import { ReviewRegistrationNotice } from "../../components/apply/reviewregistrationnotice";
+import { FormNavigationButtons } from "../../components/apply/formnavigationbuttons";
+import { useApplyForm } from "../../hooks/useApplyForm";
 
 const categoryIcons: Record<Category, LucideIcon> = {
   Hackathon: Code2,
@@ -35,632 +21,36 @@ const categoryIcons: Record<Category, LucideIcon> = {
 
 const categories: Category[] = ["Hackathon", "UI/UX", "E-Football"];
 
-const competitionSlugMap: Record<Category, string> = {
-  Hackathon: "hackathon",
-  "UI/UX": "ui-ux-competition",
-  "E-Football": "e-football",
-};
-
-const categoryFromSlug = (slug?: string): Category | null => {
-  if (slug === "hackathon") return "Hackathon";
-  if (slug === "ui-ux-competition") return "UI/UX";
-  if (slug === "e-football") return "E-Football";
-  return null;
-};
-
-const categoryFromName = (name?: string): Category | null => {
-  const normalized = name?.toLowerCase() ?? "";
-  if (normalized.includes("hackathon")) return "Hackathon";
-  if (normalized.includes("ui/ux") || normalized.includes("ui-ux")) return "UI/UX";
-  if (normalized.includes("e-football") || normalized.includes("efootball")) {
-    return "E-Football";
-  }
-  return null;
-};
-
-const getRegistrationFiles = (
-  reg: Awaited<ReturnType<typeof getMyRegistrationById>> | null | undefined,
-): RegistrationFile[] => {
-  if (!reg) return [];
-  return [
-    ...(reg.files ?? []),
-    ...(reg.members?.flatMap((m) => m.files ?? []) ?? []),
-  ];
-};
-
-type RegistrationMemberLike =
-  | RegistrationMember
-  | { order?: number; institution?: string; name?: string }
-  | string;
-
-const formDataFromRegistration = (
-  category: Category,
-  registration: Awaited<ReturnType<typeof getMyRegistrationById>> | null | undefined,
-): ApplyFormDataMap[Category] => {
-  const rawMembers = registration?.members ?? [];
-  const members: RegistrationMemberLike[] = [...rawMembers].sort(
-    (a, b) => {
-      const orderA = typeof a === "string" ? 0 : (a.order ?? 0);
-      const orderB = typeof b === "string" ? 0 : (b.order ?? 0);
-      return orderA - orderB;
-    },
-  );
-
-  const institution =
-    registration?.institution ||
-    (typeof members[0] === "object" && members[0] !== null && "institution" in members[0]
-      ? (members[0].institution ?? "")
-      : "") ||
-    "";
-
-  const memberName = (index: number) => {
-    const m = members[index];
-    if (!m) return "";
-    if (typeof m === "string") return m;
-    if ("name" in m && typeof m.name === "string") return m.name;
-    return "";
-  };
-
-  if (category === "Hackathon") {
-    return {
-      namaTeam: registration?.teamName ?? "",
-      namaKetua: memberName(0),
-      asalInstitusi: institution,
-      anggota1: memberName(1),
-      anggota2: memberName(2),
-      anggota3: memberName(3),
-      anggota4: memberName(4),
-      ktm: null,
-      paymentProof: null,
-    };
-  }
-  if (category === "UI/UX") {
-    return {
-      namaTeam: registration?.teamName ?? "",
-      namaKetua: memberName(0),
-      asalInstitusi: institution,
-      anggota1: memberName(1),
-      anggota2: memberName(2),
-      ktm: null,
-      paymentProof: null,
-    };
-  }
-  return {
-    namaPemain: memberName(0),
-    asalInstitusi: institution,
-    paymentProof: null,
-  };
-};
-
 export default function Apply() {
   const { darkMode } = useTheme();
-  const location = useLocation();
-  const initialCategory =
-    categoryFromName(location.state?.competition) ??
-    (location.state?.category as Category | undefined) ??
-    "Hackathon";
-  const initialRegistrationId = Number(location.state?.registrationId);
-  const isReviewFlow =
-    Boolean(location.state?.reviewRegistration) ||
-    (Number.isInteger(initialRegistrationId) && initialRegistrationId > 0);
-  const [selectedCategory, setSelectedCategory] =
-    useState<Category>(initialCategory);
+  const {
+    selectedCategory,
+    currentStep,
+    formData,
+    showValidationToast,
+    setShowValidationToast,
+    validationMessage,
+    toastType,
+    isSubmitting,
+    activeRegistrationId,
+    myRegistrations,
+    availableCompetitions,
+    loadingExistingRegistration,
+    existingFiles,
+    existingRegistration,
+    stepLabels,
+    totalSteps,
+    isReviewFlow,
+    competitionSlugMap,
+    handleSelectCategory,
+    handleInputChange,
+    handleNext,
+    handleSubmit,
+    handleBack,
+    getStepStatus,
+    getStepColor,
+  } = useApplyForm();
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState(initialApplyFormData);
-  const [showValidationToast, setShowValidationToast] = useState(false);
-  const [validationMessage, setValidationMessage] = useState("");
-  const [toastType, setToastType] = useState<"error" | "success">("error");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeRegistrationId, setActiveRegistrationId] = useState<number | null>(
-    Number.isInteger(initialRegistrationId) && initialRegistrationId > 0
-      ? initialRegistrationId
-      : null,
-  );
-  const [myRegistrations, setMyRegistrations] = useState<
-    Awaited<ReturnType<typeof getMyRegistrationById>>[]
-  >([]);
-  const [availableCompetitions, setAvailableCompetitions] = useState<
-    Awaited<ReturnType<typeof getCompetitions>>
-  >([]);
-  const [loadingExistingRegistration, setLoadingExistingRegistration] =
-    useState(false);
-  const [existingFiles, setExistingFiles] = useState<RegistrationFile[]>([]);
-  const [existingRegistration, setExistingRegistration] = useState<
-    Awaited<ReturnType<typeof getMyRegistrationById>> | null
-  >(null);
-
-  const { steps: stepLabels } = applyFormConfig[selectedCategory];
-  const totalSteps = stepLabels.length;
-
-  useEffect(() => {
-    let cancelled = false;
-    const loadRegistrationsAndCompetitions = async () => {
-      setLoadingExistingRegistration(true);
-      try {
-        const [registrations, competitions] = await Promise.all([
-          getMyRegistrations(),
-          getCompetitions(),
-        ]);
-        if (cancelled) return;
-        setMyRegistrations(registrations);
-        setAvailableCompetitions(competitions);
-
-        const targetRegId = initialRegistrationId;
-        const targetCategory = initialCategory;
-
-        if (targetRegId && Number.isInteger(targetRegId) && targetRegId > 0) {
-          let registration = registrations.find((r) => r.id === targetRegId);
-          if (!registration) {
-            try {
-              registration = await getMyRegistrationById(targetRegId);
-            } catch (e) {
-              console.error("Failed to fetch registration by id:", e);
-            }
-          }
-
-          if (registration) {
-            const slug = competitions.find(
-              (competition) => competition.id === registration.competitionId,
-            )?.slug;
-            const category =
-              categoryFromSlug(slug) ??
-              categoryFromName(registration.competition?.name) ??
-              targetCategory;
-
-            if (cancelled) return;
-            setSelectedCategory(category);
-            setActiveRegistrationId(registration.id);
-            setExistingRegistration(registration);
-            setExistingFiles(getRegistrationFiles(registration));
-            setFormData((current) =>
-              ({ ...current, [category]: formDataFromRegistration(category, registration) }) as ApplyFormDataMap,
-            );
-            return;
-          }
-        }
-
-        // Check if user has a registration for the default selected category
-        const comp = competitions.find(
-          ({ slug }) => slug === competitionSlugMap[targetCategory],
-        );
-        const matchedReg = registrations.find(
-          (r) => r.competitionId === comp?.id,
-        );
-
-        if (matchedReg) {
-          const details = matchedReg.members ? matchedReg : await getMyRegistrationById(matchedReg.id);
-          if (cancelled) return;
-          if (details) {
-            setActiveRegistrationId(details.id);
-            setExistingRegistration(details);
-            setExistingFiles(details.files ?? []);
-            setFormData((current) =>
-              ({
-                ...current,
-                [targetCategory]: formDataFromRegistration(targetCategory, details),
-              }) as ApplyFormDataMap,
-            );
-          } else {
-            setActiveRegistrationId(null);
-            setExistingRegistration(null);
-            setExistingFiles([]);
-          }
-        } else {
-          setActiveRegistrationId(null);
-          setExistingRegistration(null);
-          setExistingFiles([]);
-        }
-      } catch (error) {
-        console.error("Failed to load registrations for apply:", error);
-      } finally {
-        if (!cancelled) setLoadingExistingRegistration(false);
-      }
-    };
-
-    void loadRegistrationsAndCompetitions();
-    return () => {
-      cancelled = true;
-    };
-  }, [initialCategory, initialRegistrationId, location.key]);
-
-  const getFormMissingFields = (
-    category: Category,
-    step: number,
-    categoryData: Record<string, string | File | null>,
-  ) => {
-    const missing = getMissingFields(category, step, categoryData);
-    const ktmRejected =
-      existingRegistration?.ktmStatus?.toLowerCase() === "rejected" ||
-      existingRegistration?.ktmStatus?.toLowerCase() === "declined";
-    const paymentRejected =
-      existingRegistration?.paymentStatus?.toLowerCase() === "rejected" ||
-      existingRegistration?.paymentStatus?.toLowerCase() === "declined";
-
-    let ktmInvalid = ktmRejected;
-    let paymentInvalid = paymentRejected;
-
-    if (category === "UI/UX" || category === "Hackathon") {
-      const bothRejected = ktmRejected && paymentRejected;
-      ktmInvalid = bothRejected;
-      paymentInvalid = bothRejected;
-    }
-
-    const hasExistingIdentity =
-      !ktmInvalid &&
-      existingFiles.some((file) => file.kind === "identity");
-    const hasExistingPaymentProof =
-      !paymentInvalid &&
-      existingFiles.some((file) => file.kind === "payment_proof");
-
-    return missing.filter((field) => {
-      if (field === "ktm" && hasExistingIdentity) return false;
-      if (field === "paymentProof" && hasExistingPaymentProof) return false;
-      return true;
-    });
-  };
-
-  // Handle category selection
-  const handleSelectCategory = async (category: Category) => {
-    const eventMap: Record<Category, string> = {
-      Hackathon: "hackathon",
-      "E-Football": "e-football",
-      "UI/UX": "ui-ux-competition",
-    };
-
-    const eventId = eventMap[category];
-
-    sessionStorage.setItem("activeEvent", eventId);
-
-    window.dispatchEvent(
-      new CustomEvent("firetech-event-change", {
-        detail: eventId,
-      }),
-    );
-
-    setSelectedCategory(category);
-    setCurrentStep(1);
-    setShowValidationToast(false);
-
-    const competition = availableCompetitions.find(
-      ({ slug }) => slug === competitionSlugMap[category],
-    );
-    const registration = myRegistrations.find(
-      (item) => item.competitionId === competition?.id,
-    );
-    if (!registration) {
-      setActiveRegistrationId(null);
-      setExistingRegistration(null);
-      setExistingFiles([]);
-      setFormData((current) => ({
-        ...current,
-        [category]: initialApplyFormData[category],
-      }));
-      return;
-    }
-
-    setLoadingExistingRegistration(true);
-    try {
-      const details = await getMyRegistrationById(registration.id);
-      setActiveRegistrationId(details.id);
-      setExistingRegistration(details);
-      setExistingFiles(getRegistrationFiles(details));
-      setFormData((current) =>
-        ({
-          ...current,
-          [category]: formDataFromRegistration(category, details),
-        }) as ApplyFormDataMap,
-      );
-    } catch (error) {
-      console.error("Failed to load registration for review:", error);
-      setActiveRegistrationId(null);
-      setExistingRegistration(null);
-      setExistingFiles([]);
-    } finally {
-      setLoadingExistingRegistration(false);
-    }
-  };
-
-  // Handle input changes for form fields
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files, type } = e.target;
-
-    const nextValue = type === "file" ? (files?.[0] ?? null) : value;
-
-    setFormData((prev) => ({
-      ...prev,
-      [selectedCategory]: {
-        ...(prev[selectedCategory] as Record<string, string | File | null>),
-        [name]: nextValue,
-      },
-    }));
-
-    setShowValidationToast(false);
-  };
-
-  // Handle "Next" button click
-  const handleNext = () => {
-    const categoryData = formData[selectedCategory] as Record<
-      string,
-      string | File | null
-    >;
-
-    const missingFields = getFormMissingFields(
-      selectedCategory,
-      currentStep,
-      categoryData,
-    );
-
-    if (missingFields.length > 0) {
-      const missingLabels = missingFields
-        .map((field) => fieldLabels[field] ?? field)
-        .join(", ");
-
-      setValidationMessage(
-        `Harap lengkapi kolom wajib berikut sebelum melanjutkan: ${missingLabels}`,
-      );
-
-      setShowValidationToast(true);
-      return;
-    }
-
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-      return;
-    }
-
-    // submit logic nanti di sini
-    console.log("Form valid, ready to submit");
-  };
-
-  // Hackathon
-  const buildHackathonPayload = () => {
-    const data = formData.Hackathon;
-
-    const members = [
-      data.namaKetua,
-      data.anggota1,
-      data.anggota2,
-      data.anggota3,
-      data.anggota4,
-    ].filter(Boolean);
-
-    const payload = new FormData();
-
-    payload.append(
-      "fields",
-      JSON.stringify({
-        teamName: data.namaTeam,
-        institution: data.asalInstitusi,
-      }),
-    );
-
-    payload.append("members", JSON.stringify(members));
-
-    payload.append("message", "");
-
-    if (data.ktm) {
-      payload.append("memberIdentities", data.ktm);
-    }
-
-    if (data.paymentProof) {
-      payload.append("paymentProof", data.paymentProof);
-    }
-
-    return payload;
-  };
-
-  const buildUiUxPayload = () => {
-    const data = formData["UI/UX"];
-    const members = [data.namaKetua, data.anggota1, data.anggota2].filter(
-      Boolean,
-    );
-
-    const payload = new FormData();
-
-    payload.append(
-      "fields",
-      JSON.stringify({
-        teamName: data.namaTeam,
-        institution: data.asalInstitusi,
-      }),
-    );
-
-    payload.append("members", JSON.stringify(members));
-
-    payload.append("message", "");
-
-    if (data.ktm) {
-      payload.append("memberIdentities", data.ktm);
-    }
-
-    if (data.paymentProof) {
-      payload.append("paymentProof", data.paymentProof);
-    }
-
-    return payload;
-  };
-  const buildEfootballPayload = () => {
-    const data = formData["E-Football"];
-    
-
-    const payload = new FormData();
-
-    payload.append(
-      "fields",
-      JSON.stringify({
-        institution: data.asalInstitusi,
-      }),
-    );
-
-    payload.append("members", JSON.stringify([data.namaPemain]));
-
-    payload.append("message", "");
-
-    if (data.paymentProof) {
-      payload.append("paymentProof", data.paymentProof);
-    }
-
-    return payload;
-  };
-
-  const buildPayload = () => {
-    switch (selectedCategory) {
-      case "Hackathon":
-        return buildHackathonPayload();
-
-      case "UI/UX":
-        return buildUiUxPayload();
-
-      case "E-Football":
-        return buildEfootballPayload();
-
-      default:
-        throw new Error(`${selectedCategory} not implemented`);
-    }
-  };
-
-  // Handle submit form submission final
-  const handleSubmit = async () => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const categoryData = formData[selectedCategory] as Record<
-        string,
-        string | File | null
-      >;
-
-      const missingFields = getFormMissingFields(
-        selectedCategory,
-        currentStep,
-        categoryData,
-      );
-
-      if (missingFields.length > 0) {
-        const missingLabels = missingFields
-          .map((field) => fieldLabels[field] ?? field)
-          .join(", ");
-
-        setToastType("error");
-
-        setValidationMessage(
-          `Harap lengkapi kolom wajib berikut sebelum melanjutkan: ${missingLabels}`,
-        );
-
-        setShowValidationToast(true);
-
-        return;
-      }
-
-      const payload = buildPayload();
-
-      const competitions = await getCompetitions();
-      const competition = competitions.find(
-        ({ slug }) => slug === competitionSlugMap[selectedCategory],
-      );
-
-      if (!competition) {
-        throw new Error(`Competition not found for ${selectedCategory}`);
-      }
-
-      const response = activeRegistrationId
-        ? await updateRegistration(activeRegistrationId, payload)
-        : await registerCompetition(competition.id, payload);
-
-      console.log("REGISTER SUCCESS:", response);
-      window.dispatchEvent(new Event("firetech-registration-updated"));
-      if (isReviewFlow) {
-        void getMyRegistrations()
-          .then(setMyRegistrations)
-          .catch((error) =>
-            console.error("Failed to refresh registration statuses:", error),
-          );
-      }
-
-      if (!activeRegistrationId) {
-        setFormData(initialApplyFormData);
-        setCurrentStep(1);
-      }
-
-      setToastType("success");
-
-      setValidationMessage(
-        activeRegistrationId
-          ? "Perubahan pendaftaran berhasil dikirim. Silakan tunggu konfirmasi panitia."
-          : "Pendaftaran berhasil dikirim! Silakan tunggu konfirmasi dari panitia.",
-      );
-
-      setShowValidationToast(true);
-    } catch (error: unknown) {
-      console.error("REGISTER ERROR:", error);
-
-      let errorMessage = "Gagal mengirim pendaftaran.";
-
-      if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data as
-          | {
-              message?: string;
-              errors?: { field?: string; message?: string }[];
-            }
-          | undefined;
-        const validationDetails = responseData?.errors
-          ?.map(({ field, message }) =>
-            [field, message].filter(Boolean).join(": "),
-          )
-          .filter(Boolean)
-          .join("; ");
-
-        errorMessage =
-          [responseData?.message, validationDetails]
-            .filter(Boolean)
-            .join(": ") || "Gagal mengirim pendaftaran.";
-      }
-
-      setToastType("error");
-
-      setValidationMessage(errorMessage);
-
-      setShowValidationToast(true);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Handle "Back" button click
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  // Determine the status of a step (completed, active, or pending)
-  const getStepStatus = (step: number) => {
-    if (step < currentStep) {
-      return "completed";
-    }
-    if (step === currentStep) {
-      return "active";
-    }
-    return "pending";
-  };
-
-  // Determine the color classes for a step based on its status and theme
-  const getStepColor = (step: number) => {
-    const status = getStepStatus(step);
-    const isDark = darkMode;
-    if (status === "completed" || status === "active") {
-      return isDark
-        ? "border-2 border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-        : "border-2 border-red-600 bg-red-600 text-white shadow-lg shadow-red-600/30";
-    }
-    return isDark
-      ? "border-2 border-slate-300 bg-transparent text-slate-700 hover:border-blue-600 "
-      : "border-2 border-slate-600 bg-transparent text-slate-300 hover:border-red-600 ";
-  };
-
-  // Render the active form component based on the selected category and current step
   const renderActiveForm = () => {
     switch (selectedCategory) {
       case "Hackathon":
@@ -699,106 +89,19 @@ export default function Apply() {
   return (
     <main className="min-h-screen py-40">
       <div className="mx-auto max-w-7xl px-6">
-        {/* Category Tabs */}
-        <div
-          className="
-          mb-12
-          grid
-          grid-cols-2
-          gap-4
-          animate-slideInDown
-          lg:flex
-          lg:flex-wrap
-          lg:justify-center
-        "
-        >
-          {categories.map((category) => {
-            const Icon = categoryIcons[category];
-            const eventCompetition = availableCompetitions.find(
-              ({ slug }) => slug === competitionSlugMap[category],
-            );
-            const eventRegistration = myRegistrations.find(
-              (registration) =>
-                registration.competitionId === eventCompetition?.id,
-            );
+        <CategoryTabs
+          categories={categories}
+          selectedCategory={selectedCategory}
+          categoryIcons={categoryIcons}
+          availableCompetitions={availableCompetitions}
+          myRegistrations={myRegistrations}
+          isReviewFlow={isReviewFlow}
+          loadingExistingRegistration={loadingExistingRegistration}
+          darkMode={darkMode}
+          competitionSlugMap={competitionSlugMap}
+          onSelectCategory={(cat) => void handleSelectCategory(cat)}
+        />
 
-            return (
-              <button
-                key={category}
-                type="button"
-                disabled={loadingExistingRegistration}
-                onClick={() => handleSelectCategory(category)}
-                className={`
-                group
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-3
-                rounded-2xl
-                px-5
-                py-3
-                cursor-pointer
-                font-semibold
-                transition-all
-                duration-300
-                hover:scale-105
-                active:scale-95
-
-                lg:w-56.25
-
-                ${
-                  selectedCategory === category
-                    ? darkMode
-                      ? "border-2 border-blue-600 text-black"
-                      : "border-2 border-red-600 text-white"
-                    : darkMode
-                      ? "border-2 border-slate-300 bg-white/70 text-slate-700 hover:border-blue-600"
-                      : "border-2 border-slate-700 bg-slate-900/50 text-slate-300 hover:border-red-600"
-                }
-              `}
-              >
-                <Icon
-                  size={22}
-                  strokeWidth={2.3}
-                  className={`
-                  transition-all
-                  duration-300
-                  group-hover:scale-110
-                  group-hover:-translate-y-0.5
-                  ${
-                    selectedCategory === category
-                      ? darkMode
-                        ? "text-blue-600 drop-shadow-[0_0_8px_rgba(37,99,235,.45)]"
-                        : "text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,.45)]"
-                      : ""
-                  }
-                `}
-                />
-
-                <span className="flex flex-col items-start text-left">
-                  <span>{category}</span>
-                  {isReviewFlow && (
-                    <span className="mt-1 text-xs font-medium opacity-75">
-                      {eventRegistration
-                        ? [
-                            eventCompetition?.requiresKtm
-                              ? `KTM: ${eventRegistration.ktmStatus}`
-                              : null,
-                            eventCompetition?.requiresPayment
-                              ? `Pembayaran: ${eventRegistration.paymentStatus}`
-                              : null,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ") || "Terdaftar"
-                        : "Belum mendaftar"}
-                    </span>
-                  )}
-                </span>
-              </button>
-            );
-          })}
-        </div>
         {/* Mobile Registration Progress */}
         <div className="mb-8 lg:hidden">
           <RegistrationProgress
@@ -827,87 +130,21 @@ export default function Apply() {
                   : "border-slate-700 bg-slate-900/50 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20"
               }`}
             >
-              {/* Step Indicator */}
-              <div
-                className={`mb-8 flex items-center overflow-x-auto sm:overflow-visible ${
-                  totalSteps <= 2 ? "w-full" : "justify-between"
-                }`}
-              >
-                {stepLabels.map((label, index) => {
-                  const step = index + 1;
-                  return (
-                    <div
-                      key={label}
-                      className={`flex shrink-0 items-center ${
-                        totalSteps <= 2 && index === 0 ? "flex-1" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 sm:gap-4">
-                        <div
-                          className={`flex h-10 w-10 sm:h-12 sm:w-12 cursor-pointer items-center justify-center rounded-full text-base sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${getStepColor(step)}`}
-                        >
-                          {step}
-                        </div>
-                        <span
-                          className={`hidden text-sm font-semibold md:inline ${
-                            darkMode ? "text-black" : "text-white"
-                          }`}
-                        >
-                          {label}
-                        </span>
-                      </div>
-                      {step < totalSteps && (
-                        <div
-                          className={`relative mx-2 sm:mx-4 h-1 flex-1 overflow-hidden rounded-full transition-all duration-500 ${
-                            totalSteps <= 2 ? "flex-1" : "w-20 sm:w-18 lg:w-28"
-                          } ${
-                            getStepStatus(step) === "completed"
-                              ? darkMode
-                                ? "bg-blue-600"
-                                : "bg-red-600"
-                              : getStepStatus(step) === "active"
-                                ? darkMode
-                                  ? "bg-blue-600"
-                                  : "bg-red-600"
-                                : darkMode
-                                  ? "bg-slate-300"
-                                  : "bg-slate-700"
-                          }`}
-                        >
-                          {getStepStatus(step) === "completed" && (
-                            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer" />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              <StepIndicator
+                stepLabels={stepLabels}
+                totalSteps={totalSteps}
+                currentStep={currentStep}
+                darkMode={darkMode}
+                getStepStatus={getStepStatus}
+                getStepColor={(step) => getStepColor(step, darkMode)}
+              />
 
-              {/* Form Content */}
-              {activeRegistrationId && (
-                <div className="mb-5 rounded-xl border border-blue-400/30 bg-blue-500/10 p-4 text-sm text-white">
-                  <p className="font-bold">Tinjau kembali pendaftaran</p>
-                  <p className="mt-1 text-white/75">
-                    Data sudah diisi dari pendaftaran sebelumnya. Berkas yang
-                    tidak diganti akan tetap digunakan.
-                  </p>
-                  {existingFiles.length > 0 && (
-                    <ul className="mt-2 space-y-1 text-white/80">
-                      {existingFiles.map((file) => (
-                        <li key={file.id}>
-                          {file.kind === "identity" ? "KTM" : "Bukti pembayaran"}: {file.originalName ?? "Berkas tersimpan"}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {existingRegistration?.message && (
-                    <p className="mt-2 text-amber-200">
-                      Catatan panitia: {existingRegistration.message}
-                    </p>
-                  )}
-                </div>
-              )}
+              <ReviewRegistrationNotice
+                activeRegistrationId={activeRegistrationId}
+                existingFiles={existingFiles}
+                existingRegistration={existingRegistration}
+              />
+
               {loadingExistingRegistration ? (
                 <p className="py-10 text-center text-white/75">
                   Memuat data pendaftaran...
@@ -915,120 +152,21 @@ export default function Apply() {
               ) : (
                 <div className="space-y-6">{renderActiveForm()}</div>
               )}
-              {/* Navigation Buttons */}
-              <div
-                className="mt-8 flex items-center justify-between gap-4 animate-slideInUp"
-                style={{ animationDelay: "0.4s" }}
-              >
-                {/* Back Button */}
-                <button
-                  onClick={handleBack}
-                  className={`cursor-pointer group relative flex-1 overflow-hidden rounded-full border px-8 py-3 font-bold backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 ${
-                    darkMode
-                      ? "border-slate-300 bg-white/70 text-slate-800 hover:border-blue-600 hover:bg-blue-600/10 hover:shadow-lg hover:shadow-blue-600/20"
-                      : "border-white/20 bg-white/5 text-white hover:border-red-600 hover:bg-red-600/10 hover:shadow-lg hover:shadow-red-600/20"
-                  }`}
-                >
-                  <span className="relative z-10 flex items-center justify-center gap-2 cursor-pointer">
-                    <span className="transition-transform duration-300 group-hover:-translate-x-1">
-                      ←
-                    </span>
-                    <span>BACK</span>
-                  </span>
 
-                  <div
-                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
-                      darkMode
-                        ? "bg-linear-to-r from-blue-600/10 to-red-600/10"
-                        : "bg-linear-to-r from-red-600/10 to-blue-600/10"
-                    }`}
-                  />
-                </button>
-
-                {/* Next Button */}
-                <button
-                  disabled={isSubmitting || loadingExistingRegistration}
-                  onClick={
-                    loadingExistingRegistration
-                      ? undefined
-                      : currentStep === totalSteps
-                        ? handleSubmit
-                        : handleNext
-                  }
-                  className={`group relative flex-1 overflow-hidden rounded-full px-8 py-3 font-bold text-white transition-all duration-300 ${
-                    isSubmitting
-                      ? "cursor-not-allowed opacity-70"
-                      : "cursor-pointer hover:scale-105 active:scale-95"
-                  } ${
-                    darkMode
-                      ? "bg-linear-to-r from-blue-600 to-red-600 hover:shadow-lg hover:shadow-blue-600/40"
-                      : "bg-linear-to-r from-red-600 to-blue-600 hover:shadow-lg hover:shadow-red-600/40"
-                  }`}
-                >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    {currentStep === totalSteps && isSubmitting ? (
-                      <>
-                        <svg
-                          className="h-4 w-4 animate-spin"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            opacity="0.25"
-                          />
-                          <path
-                            d="M22 12a10 10 0 0 1-10 10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                        </svg>
-
-                        <span>SUBMITTING...</span>
-                      </>
-                    ) : (
-                      <span>
-                        {currentStep === totalSteps
-                          ? activeRegistrationId
-                            ? "SAVE CHANGES"
-                            : "SUBMIT"
-                          : "NEXT"}
-                      </span>
-                    )}
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
-
-                  {/* Hover Overlay */}
-                  <div
-                    className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
-                      darkMode
-                        ? "bg-linear-to-r from-blue-500 to-red-500"
-                        : "bg-linear-to-r from-red-500 to-blue-500"
-                    }`}
-                  />
-
-                  {/* Shine Effect */}
-                  <div
-                    className="
-                    absolute
-                    inset-0
-                    bg-[radial-gradient(circle_at_20%_50%,rgba(255,255,255,0.3),transparent_50%)]
-                    opacity-0
-                    transition-opacity
-                    duration-300
-                    group-hover:opacity-100
-                  "
-                  />
-                </button>
-              </div>
+              <FormNavigationButtons
+                currentStep={currentStep}
+                totalSteps={totalSteps}
+                isSubmitting={isSubmitting}
+                loadingExistingRegistration={loadingExistingRegistration}
+                activeRegistrationId={activeRegistrationId}
+                darkMode={darkMode}
+                onBack={handleBack}
+                onNext={handleNext}
+                onSubmit={() => void handleSubmit()}
+              />
             </div>
           </div>
+
           {/* Desktop Registration Progress */}
           <div className="hidden lg:block lg:col-span-1">
             <div className="sticky top-32">

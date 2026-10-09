@@ -1,9 +1,6 @@
 import { Fragment, useState, useMemo } from "react";
 import {
   Search,
-  ChevronDown,
-  ChevronUp,
-  ChevronsUpDown,
   Mail,
   UserRound,
   X,
@@ -18,6 +15,8 @@ import Pagination from "../pagination";
 import UserDetailModal, {
   type RegistrationVerificationAction,
 } from "../form/userdetailmodal";
+import SortTh, { type SortKey, type SortDir } from "./sortth";
+import ParticipantsEmptyState from "./participantsemptystate";
 
 /* ─────────── Types ─────────── */
 
@@ -54,50 +53,6 @@ type ParticipantsTableProps = {
   ) => Promise<void>;
   onDelete?: (registration: Registration) => void;
 };
-
-/* ─────────── Helpers ─────────── */
-
-type SortKey = keyof Pick<
-  ParticipantRow,
-  "name" | "email" | "eventName" | "registeredAt" | "team"
->;
-type SortDir = "asc" | "desc";
-
-function SortTh({
-  label,
-  sortKey,
-  currentKey,
-  direction,
-  onSort,
-}: {
-  label: string;
-  sortKey: SortKey;
-  currentKey: SortKey | null;
-  direction: SortDir;
-  onSort: (key: SortKey) => void;
-}) {
-  const isActive = currentKey === sortKey;
-
-  return (
-    <th
-      className="group cursor-pointer select-none px-4 py-4 text-left text-xs font-black uppercase tracking-[0.2em] text-white/70 transition-colors hover:text-white"
-      onClick={() => onSort(sortKey)}
-    >
-      <span className="inline-flex items-center gap-1.5">
-        {label}
-        {isActive ? (
-          direction === "asc" ? (
-            <ChevronUp className="h-3.5 w-3.5 text-white" />
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5 text-white" />
-          )
-        ) : (
-          <ChevronsUpDown className="h-3.5 w-3.5 text-white/40 opacity-0 transition-opacity group-hover:opacity-100" />
-        )}
-      </span>
-    </th>
-  );
-}
 
 /* ─────────── Main Component ─────────── */
 
@@ -364,8 +319,7 @@ export default function ParticipantsTable({
                                   <ChevronRight
                                     className={`h-3.5 w-3.5 transition-transform ${expandedTeamId === participant.id ? "rotate-90" : ""}`}
                                   />
-                                  Detail anggota  (
-                                  {participant.members.length})
+                                  Detail anggota  ({participant.members.length})
                                 </button>
                               )}
                           </div>
@@ -416,18 +370,6 @@ export default function ParticipantsTable({
                                     <Eye className="h-4 w-4" />
                                   </button>
                                 )}
-                              {/* {onDelete && participant.registration && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    onDelete(participant.registration!)
-                                  }
-                                  aria-label={`Hapus pendaftaran ${participant.team || participant.name}`}
-                                  className="rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-200 transition hover:bg-red-500/20"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              )} */}
                             </div>
                           </td>
                         )}
@@ -501,20 +443,9 @@ export default function ParticipantsTable({
           )}
         </>
       ) : (
-        /* ---- Empty state ---- */
-        <div className="flex min-h-60 flex-col items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/5 text-center">
-          <Users className="mb-4 h-12 w-12 text-white/40" />
-          <p className="max-w-md text-sm text-white/60">
-            {selectedEvent
-              ? search
-                ? `Tidak ada peserta "${search}" yang ditemukan untuk acara ${selectedEvent}.`
-                : `Tidak ada peserta yang terdaftar untuk event "${selectedEvent}".`
-              : search
-                ? `Tidak ada peserta yang cocok dengan kata kunci "${search}".`
-                : "Belum ada peserta yang mendaftar."}
-          </p>
-        </div>
+        <ParticipantsEmptyState selectedEvent={selectedEvent} search={search} />
       )}
+
       <UserDetailModal
         key={registrationDetail?.id ?? "closed"}
         open={registrationDetail !== null}
@@ -578,28 +509,28 @@ export default function ParticipantsTable({
         verification={
           registrationDetail && onVerificationAction
             ? {
-              registrationStatus: registrationDetail.ktmStatus,
-              paymentStatus: registrationDetail.paymentStatus,
-              requiresKtm: (() => {
-                const competitionName =
-                  registrationDetail.competition?.name ?? selectedEvent ?? "";
-                if (/ui\s*\/?\s*ux|hackathon/i.test(competitionName)) return true;
-                if (/e[-\s]?football/i.test(competitionName)) return false;
-                return (
-                  registrationDetail.competition?.requiresKtm ??
-                  true
-                );
-              })(),
-              requiresPayment: (() => {
-                const competitionName =
-                  registrationDetail.competition?.name ?? selectedEvent ?? "";
-                if (/ui\s*\/?\s*ux|e[-\s]?football/i.test(competitionName)) return true;
-                if (/hackathon/i.test(competitionName)) return false;
-                return (
-                  registrationDetail.competition?.requiresPayment ??
-                  true
-                );
-              })(),
+                registrationStatus: registrationDetail.ktmStatus,
+                paymentStatus: registrationDetail.paymentStatus,
+                requiresKtm: (() => {
+                  const competitionName =
+                    registrationDetail.competition?.name ?? selectedEvent ?? "";
+                  if (/ui\s*\/?\s*ux|hackathon/i.test(competitionName)) return true;
+                  if (/e[-\s]?football/i.test(competitionName)) return false;
+                  return (
+                    registrationDetail.competition?.requiresKtm ??
+                    true
+                  );
+                })(),
+                requiresPayment: (() => {
+                  const competitionName =
+                    registrationDetail.competition?.name ?? selectedEvent ?? "";
+                  if (/ui\s*\/?\s*ux|e[-\s]?football/i.test(competitionName)) return true;
+                  if (/hackathon/i.test(competitionName)) return false;
+                  return (
+                    registrationDetail.competition?.requiresPayment ??
+                    true
+                  );
+                })(),
                 onAction: (action, reason) =>
                   onVerificationAction(action, registrationDetail.id, reason),
               }

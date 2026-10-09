@@ -1,6 +1,4 @@
-import { Check, ChevronDown, Download, FileText, X } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
-import type { ReactNode } from "react";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,6 +14,8 @@ import {
   findPhoneNumber,
   type AdminUser,
 } from "../../services/user.services";
+import { UserInfoSection } from "./userdetail/userinfosection";
+import { CompetitionSection } from "./userdetail/competitionsection";
 
 export type UserDetailModalProps = {
   open: boolean;
@@ -47,35 +47,6 @@ export type RegistrationVerificationAction =
   | "reject-payment";
 
 const EMPTY_PROOF_FILES: RegistrationFile[] = [];
-const isTeamCompetition = (title: string) =>
-  /hackathon|ui\s*\/?\s*ux/i.test(title);
-
-function InfoLine({ label, value }: { label: string; value: string }) {
-  return (
-    <p className="flex flex-wrap gap-2 text-[1.04rem] leading-7 text-white/95 sm:text-[1.08rem]">
-      <span className="min-w-19 font-semibold text-white/90">{label}</span>
-      <span className="text-white">{value}</span>
-    </p>
-  );
-}
-
-function SectionCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-  accent?: string;
-}) {
-  return (
-    <article className="relative overflow-hidden sm:p-5">
-      <h3 className="text-xl font-black tracking-wide text-white sm:text-[1.35rem]">
-        {title}
-      </h3>
-      <div className="mt-4">{children}</div>
-    </article>
-  );
-}
 
 export default function UserDetailModal({
   open,
@@ -112,11 +83,7 @@ export default function UserDetailModal({
   >({});
 
   useEffect(() => {
-    if (!open) {
-      setFetchedUser(null);
-      setUserFetchError("");
-      return;
-    }
+    if (!open) return;
 
     let cancelled = false;
     const fetchUserData = async () => {
@@ -235,10 +202,7 @@ export default function UserDetailModal({
         (!verification.requiresKtm || nextCompletedKinds.has("ktm")) &&
         (!verification.requiresPayment || nextCompletedKinds.has("payment"));
 
-      if (
-        !mustCompleteBothUiUxVerifications ||
-        bothUiUxActionsCompleted
-      ) {
+      if (!mustCompleteBothUiUxVerifications || bothUiUxActionsCompleted) {
         onClose();
       } else {
         setSuccessToast(
@@ -251,6 +215,7 @@ export default function UserDetailModal({
       setBusyAction(null);
     }
   };
+
   useEffect(() => {
     if (!open) return;
 
@@ -313,349 +278,89 @@ export default function UserDetailModal({
           aria-modal="true"
           aria-labelledby="user-detail-title"
         >
-        <motion.div
-        initial={{ opacity: 0, scale: 0.97, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.98, y: 8 }}
-        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex w-full max-w-255 max-h-[90vh] flex-col overflow-hidden rounded-[1.8rem] border border-white/30 bg-[radial-gradient(circle_at_15%_15%,rgba(248,113,113,0.38),transparent_28%),radial-gradient(circle_at_78%_78%,rgba(96,165,250,0.28),transparent_30%),linear-gradient(120deg,#3b0d1a_0%,#5d0d22_20%,#1d2c4a_58%,#114ba5_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
-      >
-        <div className="pointer-events-none absolute -left-16 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-        <div className="pointer-events-none absolute -right-10 bottom-2 h-44 w-44 rounded-full bg-[#5b7cff]/20 blur-3xl" />
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-4 top-4 z-9999 pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white cursor-pointer transition hover:-translate-y-0.5 hover:bg-white/20"
-          style={{
-            zIndex: 9999,
-            animation:
-              "proof-zoom-in 0.35s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both",
-          }}
-          aria-label="Close modal"
-        >
-          <X className="h-6 w-6" />
-        </button>
-
-        <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
-          {successToast && (
-            <div className="mb-4">
-              <Toast
-                open
-                message={successToast}
-                duration={3000}
-                onClose={() => setSuccessToast("")}
-              />
-            </div>
-          )}
-          <div
-            className="mb-5 border-b border-white/80 pb-4"
-            style={{ animation: "proof-slide-down 0.3s 0.08s ease-out both" }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 8 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="relative flex w-full max-w-255 max-h-[90vh] flex-col overflow-hidden rounded-[1.8rem] border border-white/30 bg-[radial-gradient(circle_at_15%_15%,rgba(248,113,113,0.38),transparent_28%),radial-gradient(circle_at_78%_78%,rgba(96,165,250,0.28),transparent_30%),linear-gradient(120deg,#3b0d1a_0%,#5d0d22_20%,#1d2c4a_58%,#114ba5_100%)] text-white shadow-[0_28px_70px_rgba(0,0,0,0.48)]"
           >
-            <p className="mb-2 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.28em] text-white/90">
-              Detail
-            </p>
+            <div className="pointer-events-none absolute -left-16 top-4 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-10 bottom-2 h-44 w-44 rounded-full bg-[#5b7cff]/20 blur-3xl" />
 
-            <h2
-              id="user-detail-title"
-              className="text-2xl font-black uppercase tracking-wide sm:text-[2.1rem]"
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-4 top-4 z-9999 pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white cursor-pointer transition hover:-translate-y-0.5 hover:bg-white/20"
+              style={{
+                zIndex: 9999,
+                animation:
+                  "proof-zoom-in 0.35s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both",
+              }}
+              aria-label="Close modal"
             >
-              Detail User
-            </h2>
-          </div>
+              <X className="h-6 w-6" />
+            </button>
 
-          <div className="grid gap-5 lg:grid-cols-[1.02fr_1fr]">
-            <div
-              style={{ animation: "proof-slide-up 0.35s 0.15s ease-out both" }}
-            >
-              <SectionCard title="Information">
-                <div
-                  className="space-y-3"
-                  style={{
-                    animation: "proof-fade-in 0.3s 0.22s ease-out both",
-                  }}
-                >
-                  {resolvedId !== undefined && (
-                    <InfoLine label="ID :" value={String(resolvedId)} />
-                  )}
-                  <InfoLine label="Name :" value={name} />
-                  <InfoLine label="Email :" value={resolvedEmail} />
-                  <div className="flex flex-wrap items-center gap-2 text-[1.04rem] leading-7 text-white/95 sm:text-[1.08rem]">
-                    <span className="min-w-19 font-semibold text-white/90">
-                      WhatsApp :
-                    </span>
-
-                    {isLoadingUser && !resolvedPhone ? (
-                      <span className="text-white/60">Memuat nomor...</span>
-                    ) : hasValidWhatsappNumber ? (
-                      <>
-                        <a
-                          href={`https://wa.me/${whatsappLinkNumber}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Contact via WhatsApp"
-                          title="WhatsApp"
-                          className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 text-white transition hover:bg-[#1fba59] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                        >
-                          <FaWhatsapp className="h-5 w-5" />
-                          <span className="text-sm font-bold">Chat WhatsApp</span>
-                        </a>
-
-                        <span className="text-white">{resolvedPhone}</span>
-                      </>
-                    ) : (
-                      <span className="text-white/60">Belum ada</span>
-                    )}
-                  </div>
-                  <InfoLine label="Institution :" value={school} />
-                  {resolvedUpdatedAt && (
-                    <InfoLine label="Diperbarui :" value={resolvedUpdatedAt} />
-                  )}
-                  {userFetchError && (
-                    <p className="text-xs text-amber-200">{userFetchError}</p>
-                  )}
+            <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7 sm:py-7">
+              {successToast && (
+                <div className="mb-4">
+                  <Toast
+                    open
+                    message={successToast}
+                    duration={3000}
+                    onClose={() => setSuccessToast("")}
+                  />
                 </div>
+              )}
+              <div
+                className="mb-5 border-b border-white/80 pb-4"
+                style={{ animation: "proof-slide-down 0.3s 0.08s ease-out both" }}
+              >
+                <p className="mb-2 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.28em] text-white/90">
+                  Detail
+                </p>
 
-                <div
-                  className="mt-6 flex flex-wrap items-center gap-3"
-                  style={{ animation: "proof-fade-in 0.3s 0.3s ease-out both" }}
+                <h2
+                  id="user-detail-title"
+                  className="text-2xl font-black uppercase tracking-wide sm:text-[2.1rem]"
                 >
-                  {/* <StatusPill tone="success">Finalis</StatusPill> */}
+                  Detail User
+                </h2>
+              </div>
 
-                  <button
-                    type="button"
-                    className="inline-flex min-h-11 items-center rounded-full border border-white/85 bg-white px-4 text-sm font-black text-[#111] shadow-[0_8px_18px_rgba(0,0,0,0.16)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_22px_rgba(0,0,0,0.2)] cursor-pointer"
-                  >
-                    Sertifikat
-                  </button>
-                </div>
-              </SectionCard>
+              <div className="grid gap-5 lg:grid-cols-[1.02fr_1fr]">
+                <UserInfoSection
+                  resolvedId={resolvedId}
+                  name={name}
+                  resolvedEmail={resolvedEmail}
+                  resolvedPhone={resolvedPhone}
+                  isLoadingUser={isLoadingUser}
+                  hasValidWhatsappNumber={hasValidWhatsappNumber}
+                  whatsappLinkNumber={whatsappLinkNumber}
+                  school={school}
+                  resolvedUpdatedAt={resolvedUpdatedAt}
+                  userFetchError={userFetchError}
+                />
+
+                <CompetitionSection
+                  competitions={competitions}
+                  verification={verification}
+                  localRegistrationStatus={localRegistrationStatus}
+                  localPaymentStatus={localPaymentStatus}
+                  busyAction={busyAction}
+                  runVerification={runVerification}
+                  registrationId={registrationId}
+                  proofFiles={proofFiles}
+                  showProofs={showProofs}
+                  setShowProofs={setShowProofs}
+                  proofViews={proofViews}
+                  setProofViews={setProofViews}
+                  verificationError={verificationError}
+                />
+              </div>
             </div>
-
-            <div
-              style={{ animation: "proof-slide-up 0.35s 0.2s ease-out both" }}
-            >
-              <SectionCard title="Competition">
-                <div
-                  className="space-y-4"
-                  style={{
-                    animation: "proof-fade-in 0.3s 0.28s ease-out both",
-                  }}
-                >
-                  {competitions.map((competition) => {
-                    const teamCompetition = isTeamCompetition(competition.title);
-
-                    return (
-                      <article
-                        key={`${competition.title}-${competition.team}`}
-                        className="py-4 text-white/85"
-                      >
-                      <h4 className="text-lg font-black uppercase tracking-wide sm:text-xl">
-                        {competition.title}
-                      </h4>
-
-                      <div className="mt-4 space-y-3 text-[1rem] sm:text-[1.02rem]">
-                        {teamCompetition && (
-                          <p className="flex flex-wrap gap-2">
-                            <span className="font-bold">Tim</span>
-                            <span>:</span>
-                            <span>{competition.team}</span>
-                          </p>
-                        )}
-
-                        {teamCompetition && competition.role && (
-                            <p className="flex flex-wrap gap-2">
-                              <span className="font-bold">Role</span>
-                              <span>:</span>
-                              <span>{competition.role}</span>
-                            </p>
-                          )}
-
-                        {verification && (
-                          <div className="mt-5 flex flex-wrap items-start gap-3">
-                            {(
-                              [
-                                {
-                                  kind: "ktm",
-                                  title: "Verifikasi KTM",
-                                  status: localRegistrationStatus,
-                                  approve: "approve",
-                                  reject: "reject",
-                                },
-                                {
-                                  kind: "payment",
-                                  title: "Verifikasi Pembayaran",
-                                  status: localPaymentStatus,
-                                  approve: "approve-payment",
-                                  reject: "reject-payment",
-                                },
-                              ] as const
-                            )
-                              .filter((item) =>
-                                item.kind === "ktm"
-                                  ? verification.requiresKtm
-                                  : verification.requiresPayment,
-                              )
-                              .map((item) => (
-                                <section
-                                  key={item.title}
-                                  className="w-fit max-w-full rounded-2xl border border-white/15 bg-black/10 p-4"
-                                >
-                                  <h5 className="text-sm font-bold text-white/65">
-                                    {item.title}
-                                  </h5>
-                                  <p className="mt-1 text-xs text-white/80">
-                                    Status: {item.status || "pending"}
-                                  </p>
-                                  <div className="mt-3 flex flex-wrap gap-2">
-                                    <button
-                                      type="button"
-                                      disabled={busyAction !== null}
-                                      onClick={() =>
-                                        void runVerification(item.approve)
-                                      }
-                                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/30 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-400/20 disabled:opacity-50"
-                                    >
-                                      <Check className="h-3.5 w-3.5" />{" "}
-                                      {busyAction === item.approve
-                                        ? "Menyimpan..."
-                                        : "Setujui"}
-                                    </button>
-                                    <button
-                                      type="button"
-                                      disabled={busyAction !== null}
-                                      onClick={() =>
-                                        void runVerification(item.reject)
-                                      }
-                                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-300/30 bg-red-400/10 px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-red-400/20 disabled:opacity-50"
-                                    >
-                                      <X className="h-3.5 w-3.5" />{" "}
-                                      {busyAction === item.reject
-                                        ? "Menyimpan..."
-                                        : "Tolak"}
-                                    </button>
-                                  </div>
-                                </section>
-                              ))}
-                          </div>
-                        )}
-
-                        {registrationId !== undefined && (
-                          <section className="mt-5 rounded-2xl border border-white/15 bg-black/10 p-4">
-                            <button
-                              type="button"
-                              aria-expanded={showProofs}
-                              onClick={() => {
-                                if (!showProofs) setProofViews({});
-                                setShowProofs((visible) => !visible);
-                              }}
-                              className="flex w-full items-center justify-between gap-3 text-left font-black text-white transition hover:text-cyan-100"
-                            >
-                              <span className="inline-flex items-center gap-2">
-                                <FileText className="h-4 w-4" /> Bukti
-                              </span>
-                              <ChevronDown
-                                className={`h-4 w-4 transition-transform ${showProofs ? "rotate-180" : ""}`}
-                              />
-                            </button>
-
-                            {showProofs &&
-                              (proofFiles.length > 0 ? (
-                                <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                                  {proofFiles.map((file) => {
-                                    const view = proofViews[file.id];
-                                    const mimeType =
-                                      view?.type ?? file.mimeType;
-                                    const fileName =
-                                      file.originalName ?? `berkas-${file.id}`;
-
-                                    return (
-                                      <article
-                                        key={file.id}
-                                        className="overflow-hidden rounded-xl border border-white/15 bg-black/20 p-3"
-                                      >
-                                        <p className="mb-2 truncate text-sm font-bold text-white/85">
-                                          {file.kind === "payment_proof"
-                                            ? "Bukti pembayaran"
-                                            : "KTM / Identitas"}
-                                          {file.originalName
-                                            ? ` · ${file.originalName}`
-                                            : ""}
-                                        </p>
-                                        {view?.error ? (
-                                          <p
-                                            role="alert"
-                                            className="text-sm text-red-200"
-                                          >
-                                            Berkas gagal dimuat.
-                                          </p>
-                                        ) : !view?.url ? (
-                                          <p className="text-sm text-white/55">
-                                            Memuat berkas...
-                                          </p>
-                                        ) : mimeType.startsWith("image/") ? (
-                                          <a
-                                            href={view.url}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            title="Buka foto ukuran penuh"
-                                          >
-                                            <img
-                                              src={view.url}
-                                              alt={fileName}
-                                              className="max-h-72 w-full rounded-lg object-contain"
-                                            />
-                                          </a>
-                                        ) : mimeType === "application/pdf" ? (
-                                          <iframe
-                                            title={fileName}
-                                            src={view.url}
-                                            className="h-72 w-full rounded-lg bg-white"
-                                          />
-                                        ) : (
-                                          <div className="flex min-h-24 items-center justify-center rounded-lg border border-dashed border-white/20 text-sm text-white/60">
-                                            File siap diunduh
-                                          </div>
-                                        )}
-                                        {view?.url && (
-                                          <a
-                                            href={view.url}
-                                            download={fileName}
-                                            className="mt-3 inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-xs font-bold text-white/80 transition hover:bg-white/10"
-                                          >
-                                            <Download className="h-4 w-4" />{" "}
-                                            Unduh{" "}
-                                            {mimeType.startsWith("image/")
-                                              ? "foto"
-                                              : "file"}
-                                          </a>
-                                        )}
-                                      </article>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <p className="mt-4 text-sm text-white/60">
-                                  Belum ada dokumen yang diunggah.
-                                </p>
-                              ))}
-                          </section>
-                        )}
-                      </div>
-                      </article>
-                    );
-                  })}
-                </div>
-                {verificationError && (
-                  <p role="alert" className="mt-3 text-sm text-red-200">
-                    {verificationError}
-                  </p>
-                )}
-              </SectionCard>
-            </div>
-          </div>
-        </div>
-        </motion.div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>,

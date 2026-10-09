@@ -1,15 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-
-interface NavChild {
-  label: string;
-  hash: string;
-}
-
-interface NavItem {
-  label: string;
-  children?: NavChild[];
-}
+import type { NavItem } from "../../constants/navbar";
 
 interface DesktopNavMenuProps {
   navItems: NavItem[];
