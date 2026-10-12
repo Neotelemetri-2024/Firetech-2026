@@ -18,27 +18,27 @@ type MediaPartner = {
 const mediaPartners: MediaPartner[] = [
   {
     name: "Media Partner 1",
-    logo: lombaTeknoLogo,
+    logo: unandLogo,
   },
   {
     name: "Media Partner 2",
-    logo: lombaUiuxLogo,
-  },
-  {
-    name: "Media Partner 3",
-    logo: teknoEventCampusLogo,
-  },
-  {
-    name: "Media Partner 4",
-    logo: logoTeknoEventLogo,
-  },
-  {
-    name: "Media Partner 5",
     logo: hmsiLogo,
   },
   {
+    name: "Media Partner 3",
+    logo: lombaTeknoLogo,
+  },
+  {
+    name: "Media Partner 4",
+    logo: lombaUiuxLogo,
+  },
+  {
+    name: "Media Partner 5",
+    logo: teknoEventCampusLogo,
+  },
+  {
     name: "Media Partner 6",
-    logo: unandLogo,
+    logo: logoTeknoEventLogo,
   },
 ];
 
