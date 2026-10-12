@@ -121,7 +121,7 @@ export default function AdminDashboard() {
         icon: teamIcon,
       },
       {
-        value: String(selectedEvent.slotsLeft ?? 0),
+        value: String(verifiedUiUxRegistrations.length),
         label: "Terverifikasi",
         icon: verifiedPaymentIcon,
       },

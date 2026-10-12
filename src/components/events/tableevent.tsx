@@ -22,7 +22,12 @@ import Reset from "../../components/button/reset";
 
 /* ─────────── Types ─────────── */
 
-export type EventStatus = "Active" | "Finished" | "Upcoming" | "Closed" | "Ongoing";
+export type EventStatus =
+  | "Active"
+  | "Finished"
+  | "Upcoming"
+  | "Closed"
+  | "Ongoing";
 
 export type EventRow = {
   id: string;
@@ -162,7 +167,8 @@ export default function EventsTable({
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const isRegistrationClosed = (event: EventRow) => Boolean(event.registrationClosedAt);
+  const isRegistrationClosed = (event: EventRow) =>
+    Boolean(event.registrationClosedAt);
 
   /* ── Sorting ── */
   const handleSort = (key: SortKey) => {
@@ -321,9 +327,8 @@ export default function EventsTable({
                     const StatusIcon = getStatusIcon(event.status);
                     const filled = event.participants;
                     const max = event.maxParticipants;
-                    const fillPercent = max > 0
-                      ? Math.min((filled / max) * 100, 100)
-                      : 0;
+                    const fillPercent =
+                      max > 0 ? Math.min((filled / max) * 100, 100) : 0;
                     const registrationClosed = isRegistrationClosed(event);
 
                     return (
@@ -361,7 +366,8 @@ export default function EventsTable({
                           <p
                             className={`mt-1 text-xs font-semibold ${registrationClosed ? "text-amber-200" : "text-emerald-200"}`}
                           >
-                            Pendaftaran {registrationClosed ? "ditutup" : "dibuka"}
+                            Pendaftaran{" "}
+                            {registrationClosed ? "ditutup" : "dibuka"}
                           </p>
                         </td>
 
@@ -459,14 +465,13 @@ export default function EventsTable({
           <CalendarX className="mb-4 h-12 w-12 text-white/40" />
           <p className="max-w-md text-sm text-white/60">
             {search
-              ? `No events found with the keyword "${search}".`
+              ? `Tidak ada acara yang ditemukan dengan kata kunci "${search}".`
               : statusFilter && statusFilter !== "All Statuses"
-                ? `No events with the status "${statusFilter}".`
-                : "No events available."}
+                ? `Tidak ada acara dengan status "${statusFilter}".`
+                : "Tidak ada acara yang tersedia."}
           </p>
         </div>
       )}
-
     </div>
   );
 }

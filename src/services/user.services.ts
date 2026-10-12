@@ -65,3 +65,8 @@ export const getUserById = async (userId: number): Promise<AdminUser> => {
   const response = await api.get(`/admin/users/${userId}`);
   return response.data.data;
 };
+
+export const deleteUser = async (userId: number) => {
+  const response = await api.delete(`/admin/users/${userId}`);
+  return response.data;
+};

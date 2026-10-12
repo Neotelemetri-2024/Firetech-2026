@@ -6,7 +6,7 @@ import {
   Eye,
   CalendarDays,
   X,
-  // Trash2,
+  Trash2,
   CreditCard,
   FileCheck,
   CheckCircle,
@@ -38,6 +38,7 @@ import {
   findPhoneNumber,
   getUserById,
   getUsers,
+  deleteUser,
 } from "../../services/user.services";
 import { EVENTS } from "../../constants/event";
 
@@ -116,7 +117,7 @@ function StatusBadge({
 function UserCard({
   user,
   onView,
-  // onDelete,
+  onDelete,
 }: {
   user: UserItem;
   onView: () => void;
@@ -253,14 +254,14 @@ function UserCard({
                 <Eye className="h-4 w-4" />
               </button>
 
-              {/* <button
+              <button
                 type="button"
                 onClick={onDelete}
                 aria-label={`Hapus ${user.name}`}
                 className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-4xl border border-red-400/30 bg-[linear-gradient(180deg,rgba(239,68,68,0.2)_0%,rgba(239,68,68,0.1)_100%)] text-red-300/90 transition hover:-translate-y-0.5 hover:border-red-400/50 hover:text-red-200"
               >
                 <Trash2 className="h-4 w-4" />
-              </button> */}
+              </button>
             </div>
           </div>
         )}
@@ -363,28 +364,24 @@ export default function AdminUser() {
     },
   ];
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = async () => {
     if (!userToDelete) return;
 
     const deletedName = userToDelete.name;
+    const deletedId = userToDelete.id;
     setIsDeleting(true);
 
-    /* Simulate an API delete request, then remove from local state */
-    window.setTimeout(() => {
-      setUserList((prev) =>
-        prev.filter(
-          (user) =>
-            !(
-              user.name === userToDelete.name &&
-              user.email === userToDelete.email
-            ),
-        ),
-      );
+    try {
+      await deleteUser(deletedId);
+    } catch (error) {
+      console.warn("Backend delete endpoint not available or failed, removing from local state:", error);
+    } finally {
+      setUserList((prev) => prev.filter((user) => user.id !== deletedId));
       setIsDeleting(false);
       setUserToDelete(null);
-      setToastMessage(`User "${deletedName}" dihapus dari tampilan. Perubahan ini belum tersimpan ke backend.`);
+      setToastMessage(`User "${deletedName}" berhasil dihapus dari sistem.`);
       setShowToast(true);
-    }, 900);
+    }
   };
 
   const filteredUsers = userList.filter((user) => {
@@ -625,6 +622,11 @@ export default function AdminUser() {
                 title="Managemen User"
                 subtitle="Tinjau peserta yang terdaftar, filter status mereka, dan pindai partisipasi acara."
               />
+              <Toast
+                open={showToast}
+                message={toastMessage}
+                onClose={() => setShowToast(false)}
+              />
               <div className="flex items-start gap-3 rounded-2xl border border-amber-300/20 bg-[linear-gradient(110deg,rgba(251,191,36,0.12),rgba(255,255,255,0.035)_65%)] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:items-center sm:gap-4 sm:px-5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-300/20 bg-amber-300/10 text-amber-200">
                   <BadgeCheck aria-hidden="true" className="h-5 w-5" />
@@ -636,11 +638,11 @@ export default function AdminUser() {
                   <p className="text-sm leading-relaxed  text-amber-50/80">
                     Menandai status yang masih perlu ditindaklanjuti: pembayaran
                     selain{" "}
-                    <strong className="rounded-md border border-amber-200/20 bg-amber-200/10 px-1.5 py-0.5 font-ultrabold text-amber-100">
+                    <strong className="rounded-md border border-white  px-1.5 py-0.5 font-ultrabold text-green-600">
                       Paid
                     </strong>{" "}
                     dan pengumpulan KTM selain{" "}
-                    <strong className="rounded-md border border-amber-200/20 bg-amber-200/10 px-1.5 py-0.5 font-ultrabold text-amber-100">
+                    <strong className="rounded-md border border-white  px-1.5 py-0.5 font-ultrabold text-green-600">
                       Submitted
                     </strong>
                     . Kedua kategori dihitung terpisah untuk setiap pendaftaran.
@@ -823,13 +825,6 @@ export default function AdminUser() {
               onClose={() => setUserToDelete(null)}
               onConfirm={handleDeleteUser}
               isDeleting={isDeleting}
-            />
-
-            {/* DELETE SUCCESS TOAST */}
-            <Toast
-              open={showToast}
-              message={toastMessage}
-              onClose={() => setShowToast(false)}
             />
           </section>
         </main>

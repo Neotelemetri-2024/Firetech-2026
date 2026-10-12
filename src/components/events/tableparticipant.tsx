@@ -8,7 +8,7 @@ import {
   ArrowLeft,
   ChevronRight,
   Eye,
-  // Trash2,
+  Trash2,
 } from "lucide-react";
 import type { Registration } from "../../services/registration.services";
 import Pagination from "../pagination";
@@ -283,148 +283,163 @@ export default function ParticipantsTable({
                     return (
                       <Fragment key={participant.id}>
                         <tr className="transition-colors hover:bg-white/5">
-                        {/* Number */}
-                        <td className="px-4 py-4 text-center">
-                          <span className="text-xs font-bold text-white/50">
-                            {(currentPage - 1) * pageSize + index + 1}
-                          </span>
-                        </td>
-
-                        {/* Name */}
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)]">
-                              <UserRound className="h-4 w-4 text-white/70" />
-                            </div>
-                            <p className="font-black tracking-tight text-white">
-                              {participant.name}
-                            </p>
-                            {!isEFootball &&
-                              participant.members &&
-                              participant.members.length > 0 && (
-                                <button
-                                  type="button"
-                                  aria-expanded={
-                                    expandedTeamId === participant.id
-                                  }
-                                  onClick={() =>
-                                    setExpandedTeamId((current) =>
-                                      current === participant.id
-                                        ? null
-                                        : participant.id,
-                                    )
-                                  }
-                                  className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-cyan-200 transition hover:text-white"
-                                >
-                                  <ChevronRight
-                                    className={`h-3.5 w-3.5 transition-transform ${expandedTeamId === participant.id ? "rotate-90" : ""}`}
-                                  />
-                                  Detail anggota  ({participant.members.length})
-                                </button>
-                              )}
-                          </div>
-                        </td>
-
-                        {/* Email */}
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-3.5 w-3.5 shrink-0 text-white/50" />
-                            <span className="font-semibold text-white/75">
-                              {participant.email}
+                          {/* Number */}
+                          <td className="px-4 py-4 text-center">
+                            <span className="text-xs font-bold text-white/50">
+                              {(currentPage - 1) * pageSize + index + 1}
                             </span>
-                          </div>
-                        </td>
-
-                        {/* Team */}
-                        {showTeamColumn && (
-                          <td className="px-4 py-4">
-                            {participant.team ? (
-                              <div className="flex items-center justify-between gap-3">
-                                <span className="font-semibold text-white/80">
-                                  {participant.team}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-xs italic text-white/40">
-                                —
-                              </span>
-                            )}
                           </td>
-                        )}
-                        {(onVerificationAction || onDelete) && (
+
+                          {/* Name */}
                           <td className="px-4 py-4">
-                            <div className="flex justify-end gap-2">
-                              {onVerificationAction &&
-                                participant.registration && (
+                            <div className="flex items-center gap-3">
+                              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.08)_100%)]">
+                                <UserRound className="h-4 w-4 text-white/70" />
+                              </div>
+                              <p className="font-black tracking-tight text-white">
+                                {participant.name}
+                              </p>
+                              {!isEFootball &&
+                                participant.members &&
+                                participant.members.length > 0 && (
                                   <button
                                     type="button"
+                                    aria-expanded={
+                                      expandedTeamId === participant.id
+                                    }
                                     onClick={() =>
-                                      setRegistrationDetail(
-                                        participant.registration!,
+                                      setExpandedTeamId((current) =>
+                                        current === participant.id
+                                          ? null
+                                          : participant.id,
                                       )
                                     }
-                                    aria-label={`Lihat detail ${participant.team || participant.name}`}
-                                    title="Lihat detail"
-                                    className="rounded-lg border border-cyan-300/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20"
+                                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-cyan-200 transition hover:text-white"
                                   >
-                                    <Eye className="h-4 w-4" />
+                                    <ChevronRight
+                                      className={`h-3.5 w-3.5 transition-transform ${expandedTeamId === participant.id ? "rotate-90" : ""}`}
+                                    />
+                                    Detail anggota ({participant.members.length}
+                                    )
                                   </button>
                                 )}
                             </div>
                           </td>
-                        )}
-                      </tr>
-                      {!isEFootball &&
-                        expandedTeamId === participant.id &&
-                        participant.members && (
-                          <tr
-                            key={`${participant.id}-members`}
-                            className="bg-black/15"
-                          >
-                            <td
-                              colSpan={
-                                (showTeamColumn ? 4 : 3) +
-                                (onVerificationAction || onDelete ? 1 : 0)
-                              }
-                              className="px-6 py-4"
-                            >
-                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {participant.members.map(
-                                  (member, memberIndex) => (
-                                    <div
-                                      key={`${participant.id}-member-${memberIndex}`}
-                                      className="rounded-xl border border-white/15 bg-white/5 p-3"
+
+                          {/* Email */}
+                          <td className="px-4 py-4">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-3.5 w-3.5 shrink-0 text-white/50" />
+                              <span className="font-semibold text-white/75">
+                                {participant.email}
+                              </span>
+                            </div>
+                          </td>
+
+                          {/* Team */}
+                          {showTeamColumn && (
+                            <td className="px-4 py-4">
+                              {participant.team ? (
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="font-semibold text-white/80">
+                                    {participant.team}
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-xs italic text-white/40">
+                                  —
+                                </span>
+                              )}
+                            </td>
+                          )}
+                          {(onVerificationAction || onDelete) && (
+                            <td className="px-4 py-4">
+                              <div className="flex justify-end gap-2">
+                                {onVerificationAction &&
+                                  participant.registration && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setRegistrationDetail(
+                                          participant.registration!,
+                                        )
+                                      }
+                                      aria-label={`Lihat detail ${participant.team || participant.name}`}
+                                      title="Lihat detail"
+                                      className="cursor-pointer rounded-lg border border-cyan-300/30 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20"
                                     >
-                                      <p className="font-bold text-white">
-                                        {member.name}
-                                        {memberIndex === 0 ? (
-                                          <span className="ml-2 text-xs font-semibold text-blue-200">
-                                            Ketua
-                                          </span>
-                                        ) : null}
-                                      </p>
-                                      {member.email && (
-                                        <p className="mt-1 break-all text-xs text-white/65">
-                                          {member.email}
-                                        </p>
-                                      )}
-                                      {member.phone && (
-                                        <p className="mt-1 text-xs text-white/65">
-                                          {member.phone}
-                                        </p>
-                                      )}
-                                      {member.institution && (
-                                        <p className="mt-1 text-xs text-white/65">
-                                          {member.institution}
-                                        </p>
-                                      )}
-                                    </div>
-                                  ),
-                                )}
+                                      <Eye className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                {onDelete &&
+                                  participant.registration && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        onDelete(participant.registration!)
+                                      }
+                                      aria-label={`Hapus pendaftaran ${participant.team || participant.name}`}
+                                      title="Hapus pendaftaran"
+                                      className="cursor-pointer rounded-lg border border-red-300/30 bg-red-400/10 px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-red-400/20"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  )}
                               </div>
                             </td>
-                          </tr>
-                        )}
+                          )}
+                        </tr>
+                        {!isEFootball &&
+                          expandedTeamId === participant.id &&
+                          participant.members && (
+                            <tr
+                              key={`${participant.id}-members`}
+                              className="bg-black/15"
+                            >
+                              <td
+                                colSpan={
+                                  (showTeamColumn ? 4 : 3) +
+                                  (onVerificationAction || onDelete ? 1 : 0)
+                                }
+                                className="px-6 py-4"
+                              >
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                  {participant.members.map(
+                                    (member, memberIndex) => (
+                                      <div
+                                        key={`${participant.id}-member-${memberIndex}`}
+                                        className="rounded-xl border border-white/15 bg-white/5 p-3"
+                                      >
+                                        <p className="font-bold text-white">
+                                          {member.name}
+                                          {memberIndex === 0 ? (
+                                            <span className="ml-2 text-xs font-semibold text-blue-200">
+                                              Ketua
+                                            </span>
+                                          ) : null}
+                                        </p>
+                                        {member.email && (
+                                          <p className="mt-1 break-all text-xs text-white/65">
+                                            {member.email}
+                                          </p>
+                                        )}
+                                        {member.phone && (
+                                          <p className="mt-1 text-xs text-white/65">
+                                            {member.phone}
+                                          </p>
+                                        )}
+                                        {member.institution && (
+                                          <p className="mt-1 text-xs text-white/65">
+                                            {member.institution}
+                                          </p>
+                                        )}
+                                      </div>
+                                    ),
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
                       </Fragment>
                     );
                   })}
