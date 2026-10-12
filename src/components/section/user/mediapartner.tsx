@@ -6,6 +6,7 @@ import lombaTeknoLogo from "../../../assets/mediapartner/lombatekno.webp";
 import lombaUiuxLogo from "../../../assets/mediapartner/lombauiux.webp";
 import teknoEventCampusLogo from "../../../assets/mediapartner/teknoeventcampus.webp";
 import logoTeknoEventLogo from "../../../assets/mediapartner/teknoevent.webp";
+import hmsiLogo from "../../../assets/mediapartner/hmsi.webp";
 
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
@@ -30,6 +31,10 @@ const mediaPartners: MediaPartner[] = [
   {
     name: "Media Partner 4",
     logo: logoTeknoEventLogo,
+  },
+  {
+    name: "Media Partner 5",
+    logo: hmsiLogo,
   },
 ];
 
@@ -74,7 +79,7 @@ export default function MediaPartner() {
             <motion.div
               key={item.name}
               whileHover={{ y: -4, scale: 1.03 }}
-              className="flex min-h-40 items-center cursor-pointer justify-center rounded-2xl border border-white/10 p-6 sm:min-h-48 sm:p-8"
+              className="flex min-h-40 items-center cursor-pointer justify-center rounded-2xl p-6 sm:min-h-48 sm:p-8"
             >
               <img
                 src={item.logo}

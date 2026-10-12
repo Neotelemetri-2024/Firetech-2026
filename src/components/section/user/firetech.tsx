@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../../context/themecontext";
 import { headingVariants } from "../../animations/headingvariants";
-import AboutVideo from "../../../assets/vid_firetech.mp4";
+import About from "../../../assets/tentang.webp";
 
 type OverviewCard = {
   id: string;
@@ -144,12 +144,8 @@ export default function Firetech() {
                 }`}
               >
                 <div className="overflow-hidden rounded-3xl">
-                  <video
-                    src={AboutVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
+                  <img
+                    src={About}
                     className="h-65 w-85 object-cover scale-[1.24] transition-all duration-700  sm:h-80 sm:w-112.5 lg:h-90 lg:w-3xl"
                   />
                 </div>

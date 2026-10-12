@@ -67,7 +67,7 @@ export default function Sponsor() {
               key={item.name}
               whileHover={{ scale: 1.04 }}
               transition={{ type: "spring", stiffness: 250, damping: 18 }}
-              className="flex min-h-48 items-center cursor-pointer justify-center rounded-2xl border border-white/10 p-8"
+              className="flex min-h-48 items-center cursor-pointer justify-center rounded-2xl p-8"
             >
               <img
                 src={item.logo}
@@ -82,7 +82,7 @@ export default function Sponsor() {
 
         <div className="mx-auto mt-10 max-w-4xl">
           <Call
-            phone="62895618028352"
+            phone="6285264676041"
             title="Jadilah Sponsor Kami"
             subtitle="Tertarik untuk mendukung Firetech 2026? Ayo diskusikan peluang sponsor dengan tim kami."
           />
