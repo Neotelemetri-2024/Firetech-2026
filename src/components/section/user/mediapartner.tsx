@@ -7,7 +7,7 @@ import lombaUiuxLogo from "../../../assets/mediapartner/lombauiux.webp";
 import teknoEventCampusLogo from "../../../assets/mediapartner/teknoeventcampus.webp";
 import logoTeknoEventLogo from "../../../assets/mediapartner/teknoevent.webp";
 import hmsiLogo from "../../../assets/mediapartner/hmsi.webp";
-
+import unandLogo from "../../../assets/mediapartner/unand.webp";
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
   name: string;
@@ -35,6 +35,10 @@ const mediaPartners: MediaPartner[] = [
   {
     name: "Media Partner 5",
     logo: hmsiLogo,
+  },
+  {
+    name: "Media Partner 6",
+    logo: unandLogo,
   },
 ];
 
