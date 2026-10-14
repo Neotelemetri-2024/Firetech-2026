@@ -30,7 +30,7 @@ export default function EventSlide({
 
     if (title === "Fast Typing") {
       window.open(
-        "https://fast-typing-firetech2026.vercel.app/",
+        "https://fasttyping.firetech.neotelemetri.id/",
         "_blank",
         "noopener,noreferrer",
       );

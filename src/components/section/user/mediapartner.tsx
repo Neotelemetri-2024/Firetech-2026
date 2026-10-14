@@ -8,6 +8,9 @@ import teknoEventCampusLogo from "../../../assets/mediapartner/teknoeventcampus.
 import logoTeknoEventLogo from "../../../assets/mediapartner/teknoevent.webp";
 import hmsiLogo from "../../../assets/mediapartner/hmsi.webp";
 import unandLogo from "../../../assets/mediapartner/unand.webp";
+import himatekomLogo from "../../../assets/mediapartner/himatekom.webp";
+import hmifLogo from "../../../assets/mediapartner/hmif.webp";
+import bemftiLogo from "../../../assets/mediapartner/bemfti.webp";
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
   name: string;
@@ -22,22 +25,34 @@ const mediaPartners: MediaPartner[] = [
   },
   {
     name: "Media Partner 2",
-    logo: hmsiLogo,
+    logo: bemftiLogo,
   },
   {
     name: "Media Partner 3",
-    logo: lombaTeknoLogo,
+    logo: hmsiLogo,
   },
   {
     name: "Media Partner 4",
-    logo: lombaUiuxLogo,
+    logo: himatekomLogo,
   },
   {
     name: "Media Partner 5",
-    logo: teknoEventCampusLogo,
+    logo: hmifLogo,
   },
   {
     name: "Media Partner 6",
+    logo: lombaTeknoLogo,
+  },
+  {
+    name: "Media Partner 7",
+    logo: lombaUiuxLogo,
+  },
+  {
+    name: "Media Partner 8",
+    logo: teknoEventCampusLogo,
+  },
+  {
+    name: "Media Partner 9",
     logo: logoTeknoEventLogo,
   },
 ];
