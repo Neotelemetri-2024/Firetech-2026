@@ -5,7 +5,7 @@ import Call from "../../button/call";
 import baraLogo from "../../../assets/sponsor/Bara.webp";
 import saynanaLogo from "../../../assets/sponsor/saynana.webp";
 import telkomLogo from "../../../assets/sponsor/telkom.webp";
-import telkomaiLogo from "../../../assets/sponsor/telkomai.webp";
+import telkomaiLogo from "../../../assets/sponsor/telkomAI.webp";
 
 // Tipe data untuk sponsor dengan property name dan logo
 type Sponsor = {
