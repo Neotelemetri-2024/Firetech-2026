@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Call from "../../button/call";
 import baraLogo from "../../../assets/sponsor/Bara.webp";
 import saynanaLogo from "../../../assets/sponsor/saynana.webp";
+import telkomLogo from "../../../assets/sponsor/telkom.webp";
+import telkomaiLogo from "../../../assets/sponsor/telkomai.webp";
 
 // Tipe data untuk sponsor dengan property name dan logo
 type Sponsor = {
@@ -20,6 +22,14 @@ const sponsors: Sponsor[] = [
   {
     name: "Sponsor 2",
     logo: saynanaLogo,
+  },
+  {
+    name: "Sponsor 3",
+    logo: telkomLogo,
+  },
+  {
+    name: "Sponsor 4",
+    logo: telkomaiLogo,
   },
 ];
 
