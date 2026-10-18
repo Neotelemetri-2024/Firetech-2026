@@ -79,7 +79,7 @@ export default function UiUxForm({
 
   return (
     <Payment
-      amount={50000}
+      amount={30000}
       paymentProof={formData.paymentProof}
       existingFiles={existingFiles}
       registrationId={registrationId}

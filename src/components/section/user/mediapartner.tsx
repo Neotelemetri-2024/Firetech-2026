@@ -12,6 +12,7 @@ import himatekomLogo from "../../../assets/mediapartner/himatekom.webp";
 import hmifLogo from "../../../assets/mediapartner/hmif.webp";
 import bemftiLogo from "../../../assets/mediapartner/bemfti.webp";
 import bemunandLogo from "../../../assets/mediapartner/bemunand.webp";
+import hmjtekinfoLogo from "../../../assets/mediapartner/hmjtekinfo.webp";
 // Tipe data untuk media partner dengan property name dan logo
 type MediaPartner = {
   name: string;
@@ -46,18 +47,22 @@ const mediaPartners: MediaPartner[] = [
   },
   {
     name: "Media Partner 7",
+    logo: hmjtekinfoLogo,
+  },  
+  {
+    name: "Media Partner 8",
     logo: lombaTeknoLogo,
   },
   {
-    name: "Media Partner 8",
+    name: "Media Partner 9",
     logo: lombaUiuxLogo,
   },
   {
-    name: "Media Partner 9",
+    name: "Media Partner 10",
     logo: teknoEventCampusLogo,
   },
   {
-    name: "Media Partner 10",
+    name: "Media Partner 11",
     logo: logoTeknoEventLogo,
   },
 ];
