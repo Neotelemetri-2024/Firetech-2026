@@ -252,7 +252,10 @@ const Dashboard = () => {
                 lg:justify-start
               "
               >
-                <motion.button
+                <motion.a
+                  href="https://drive.google.com/drive/folders/1UOsubeWpbZqO3J4FR1KscMsK_6qIdEEY"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{
                     scale: 1.04,
                     y: -3,
@@ -274,6 +277,9 @@ const Dashboard = () => {
                     transition-all
                     duration-300
                     cursor-pointer
+                    inline-flex
+                    items-center
+                    justify-center
                     ${
                       darkMode
                         ? "border-black bg-transparent text-black"
@@ -293,7 +299,7 @@ const Dashboard = () => {
                     ${darkMode ? "bg-black/10" : "bg-white/10"}
                   `}
                   />
-                </motion.button>
+                </motion.a>
               </motion.div>
             </div>
 
