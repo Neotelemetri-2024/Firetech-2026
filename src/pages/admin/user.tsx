@@ -139,6 +139,11 @@ function UserCard({
             <h3 className="text-xl font-black leading-tight text-white truncate">
               {user.name}
             </h3>
+            {isAdmin && (
+              <span className="rounded-full border border-purple-400/30 bg-purple-500/20 px-3 py-0.5 text-xs font-bold text-purple-300">
+                Admin
+              </span>
+            )}
           </div>
 
           <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-black">
@@ -423,9 +428,20 @@ export default function AdminUser() {
     );
   });
 
-  const totalPages = Math.ceil(filteredUsers.length / PAGE_SIZE);
+  const sortedFilteredUsers = [...filteredUsers].sort((a, b) => {
+    const aAdmin = ["ADMIN", "SUPER_ADMIN"].includes(
+      a.role?.toUpperCase() ?? "",
+    );
+    const bAdmin = ["ADMIN", "SUPER_ADMIN"].includes(
+      b.role?.toUpperCase() ?? "",
+    );
+    if (aAdmin === bAdmin) return 0;
+    return aAdmin ? 1 : -1;
+  });
 
-  const paginatedUsers = filteredUsers.slice(
+  const totalPages = Math.ceil(sortedFilteredUsers.length / PAGE_SIZE);
+
+  const paginatedUsers = sortedFilteredUsers.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
