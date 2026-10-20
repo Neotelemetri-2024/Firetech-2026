@@ -87,7 +87,7 @@ export default function AddMember({
         file={formData.ktm ?? null}
         existingFile={existingKtm}
         registrationId={registrationId}
-        note="Mohon gabungkan kartu KTM seluruh anggota tim menjadi satu file."
+        note="Mohon gabungkan kartu KTM seluruh anggota tim menjadi satu file, KRS terbaru bisa digunakan sebagai pengganti KTM, jikalau KTM hilang."
         required
         onChange={onChange}
         onDelete={() =>
