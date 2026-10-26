@@ -26,7 +26,7 @@ const faqData = [
     id: "04",
     question: "Di mana Firetech 2026 akan diselenggarakan?",
     answer:
-      "Event ini akan diselenggarakan di PKM Unand, Universitas Andalas.",
+      "Event ini akan diselenggarakan di Telkom AI Center.",
   },
   {
     id: "05",
