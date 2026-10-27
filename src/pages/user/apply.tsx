@@ -1,4 +1,4 @@
-import { Code2, Palette, Gamepad2 } from "lucide-react";
+import { Code2, Palette, Gamepad2, LockKeyhole } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Category } from "../../types/applysevent";
 import HackathonForm from "../../components/apply/hackathonform";
@@ -50,6 +50,14 @@ export default function Apply() {
     getStepStatus,
     getStepColor,
   } = useApplyForm();
+
+  const selectedCompetition = availableCompetitions.find(
+    ({ slug }) => slug === competitionSlugMap[selectedCategory],
+  );
+  const isFormLocked =
+    !loadingExistingRegistration &&
+    Boolean(selectedCompetition?.isFull) &&
+    !activeRegistrationId;
 
   const renderActiveForm = () => {
     switch (selectedCategory) {
@@ -124,46 +132,77 @@ export default function Apply() {
           {/* Form Section */}
           <div className="lg:col-span-2">
             <div
-              className={`overflow-hidden rounded-3xl border-2 p-6 backdrop-blur-sm transition-all duration-500 animate-slideInUp ${
+              className={`relative overflow-hidden rounded-3xl border-2 p-6 backdrop-blur-sm transition-all duration-500 animate-slideInUp ${
                 darkMode
                   ? "border-slate-300 bg-white/70 hover:border-blue-600 hover:shadow-lg hover:shadow-blue-600/20"
                   : "border-slate-700 bg-slate-900/50 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20"
               }`}
             >
-              <StepIndicator
-                stepLabels={stepLabels}
-                totalSteps={totalSteps}
-                currentStep={currentStep}
-                darkMode={darkMode}
-                getStepStatus={getStepStatus}
-                getStepColor={(step) => getStepColor(step, darkMode)}
-              />
+              <fieldset
+                disabled={isFormLocked}
+                className="min-w-0 space-y-6 disabled:opacity-60"
+                aria-label={`Formulir pendaftaran ${selectedCategory}`}
+              >
+                <StepIndicator
+                  stepLabels={stepLabels}
+                  totalSteps={totalSteps}
+                  currentStep={currentStep}
+                  darkMode={darkMode}
+                  getStepStatus={getStepStatus}
+                  getStepColor={(step) => getStepColor(step, darkMode)}
+                />
 
-              <ReviewRegistrationNotice
-                activeRegistrationId={activeRegistrationId}
-                existingFiles={existingFiles}
-                existingRegistration={existingRegistration}
-              />
+                <ReviewRegistrationNotice
+                  activeRegistrationId={activeRegistrationId}
+                  existingFiles={existingFiles}
+                  existingRegistration={existingRegistration}
+                />
 
-              {loadingExistingRegistration ? (
-                <p className="py-10 text-center text-white/75">
-                  Memuat data pendaftaran...
-                </p>
-              ) : (
-                <div className="space-y-6">{renderActiveForm()}</div>
+                {loadingExistingRegistration ? (
+                  <p className="py-10 text-center text-white/75">
+                    Memuat data pendaftaran...
+                  </p>
+                ) : (
+                  <div className="space-y-6">{renderActiveForm()}</div>
+                )}
+
+                <FormNavigationButtons
+                  currentStep={currentStep}
+                  totalSteps={totalSteps}
+                  isSubmitting={isSubmitting}
+                  loadingExistingRegistration={loadingExistingRegistration}
+                  activeRegistrationId={activeRegistrationId}
+                  darkMode={darkMode}
+                  onBack={handleBack}
+                  onNext={handleNext}
+                  onSubmit={() => void handleSubmit()}
+                />
+              </fieldset>
+
+              {isFormLocked && (
+                <div
+                  role="status"
+                  className={`absolute inset-0 z-20 flex items-center justify-center rounded-3xl p-6 text-center backdrop-blur-sm ${
+                    darkMode
+                      ? "bg-white/65 text-slate-900"
+                      : "bg-slate-950/75 text-white"
+                  }`}
+                >
+                  <div className="max-w-sm">
+                    <LockKeyhole
+                      aria-hidden="true"
+                      className={`mx-auto mb-4 h-12 w-12 ${
+                        darkMode ? "text-blue-700" : "text-red-500"
+                      }`}
+                    />
+                    <h2 className="text-xl font-bold">Kuota Penuh</h2>
+                    <p className="mt-2 text-sm leading-relaxed opacity-80">
+                      Pendaftaran {selectedCategory} telah ditutup karena kuota
+                      peserta sudah terpenuhi.
+                    </p>
+                  </div>
+                </div>
               )}
-
-              <FormNavigationButtons
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                isSubmitting={isSubmitting}
-                loadingExistingRegistration={loadingExistingRegistration}
-                activeRegistrationId={activeRegistrationId}
-                darkMode={darkMode}
-                onBack={handleBack}
-                onNext={handleNext}
-                onSubmit={() => void handleSubmit()}
-              />
             </div>
           </div>
 
