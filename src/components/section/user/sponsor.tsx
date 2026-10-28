@@ -6,6 +6,8 @@ import baraLogo from "../../../assets/sponsor/Bara.webp";
 import saynanaLogo from "../../../assets/sponsor/saynana.webp";
 import telkomLogo from "../../../assets/sponsor/telkom.webp";
 import telkomaiLogo from "../../../assets/sponsor/telkomAI.webp";
+import semenpadangLogo from "../../../assets/sponsor/semenpadang.webp";
+import popmieLogo from "../../../assets/sponsor/popmie.webp";
 
 // Tipe data untuk sponsor dengan property name dan logo
 type Sponsor = {
@@ -31,6 +33,14 @@ const sponsors: Sponsor[] = [
     name: "Sponsor 4",
     logo: telkomaiLogo,
   },
+  {
+    name: "Sponsor 5",
+    logo: semenpadangLogo,
+  },
+  {
+    name: "Sponsor 6",
+    logo: popmieLogo,
+  }
 ];
 
 // Main component untuk menampilkan sponsor dengan animasi
