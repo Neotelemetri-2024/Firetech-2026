@@ -15,7 +15,7 @@ export const timelineEvents = [
   {
     id: 2,
     title: "Opening Ceremony",
-    date: "7 Oktober 2026",
+    date: "6 November 2026",
     description:
       "Firetech 2026 resmi dimulai dengan sambutan, pengarahan acara, dan pengenalan terhadap berbagai kegiatan menarik yang telah disiapkan.",
     icon: Rocket,
