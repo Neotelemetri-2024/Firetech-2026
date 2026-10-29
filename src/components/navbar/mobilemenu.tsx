@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, UserRound, LogOut } from "lucide-react";
+import { ChevronDown, UserRound, LogOut, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { NavItem } from "../../constants/navbar";
 
 interface MobileMenuProps {
@@ -27,6 +28,11 @@ export default function MobileMenu({
   onNavClick,
   onLoginClick,
 }: MobileMenuProps) {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = String(user.role || localStorage.getItem("role") || "").toUpperCase();
+  const isAdmin = role?.includes("ADMIN") ?? false;
+
   const isActive = (item: NavItem) =>
     item.label.toLowerCase() === activeSection;
 
@@ -51,8 +57,8 @@ export default function MobileMenu({
         <div
           className={`pointer-events-none absolute inset-0 ${
             darkMode
-              ? "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.16),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.18),transparent_45%)]"
-              : "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.08),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.10),transparent_45%)]"
+              ? "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.16),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.18),transparent_45%)]"      
+              : "bg-[radial-gradient(circle_at_top_left,rgba(239,68,68,.08),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.10),transparent_45%)]"      
           }`}
         />
 
@@ -184,6 +190,21 @@ export default function MobileMenu({
               darkMode ? "bg-white/10" : "bg-slate-200"
             }`}
           />
+
+          {/* Admin Dashboard Button - Mobile */}
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate("/admin")}
+              className="group mb-2 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-r from-red-600 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-red-500/20 active:scale-[0.98]"
+            >
+              <Shield
+                size={18}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>Dashboard Admin</span>
+            </button>
+          )}
 
           {/* Login Button - Mobile */}
           <button
